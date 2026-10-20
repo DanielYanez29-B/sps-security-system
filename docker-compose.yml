@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  sps-db:
+    image: mysql:8.0
+    container_name: sps_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sps_db
+    ports:
+      - "3306:3306"
+    volumes:
+      # Monta la carpeta sql para que MySQL ejecute los scripts al arrancar por primera vez
+      - ./sql:/docker-entrypoint-initdb.d
+      - sps_mysql_data:/var/lib/mysql
+
+  sps-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: sps_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: sps-db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - sps-db
+
+volumes:
+  sps_mysql_data:
