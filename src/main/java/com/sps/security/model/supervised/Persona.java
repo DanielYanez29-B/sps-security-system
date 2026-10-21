@@ -1,5 +1,7 @@
 package com.sps.security.model.supervised;
 
+import com.sps.security.model.enums.TipoElemento;
+
 public class Persona extends ElementoSupervisado {
     private String nombre;
     private String parentesco;
@@ -7,7 +9,7 @@ public class Persona extends ElementoSupervisado {
 
     public Persona(Integer idElemento,
                    Integer idCliente,
-                   String tipoElemento,
+                   TipoElemento tipoElemento,
                    Boolean estadoActivo,
                    String nombre,
                    String parentesco,

@@ -1,5 +1,7 @@
 package com.sps.security.model.supervised;
 
+import com.sps.security.model.enums.TipoElemento;
+
 public class Mascota extends ElementoSupervisado {
     private String nombre;
     private String especie;
@@ -8,7 +10,7 @@ public class Mascota extends ElementoSupervisado {
 
     public Mascota(Integer idElemento,
                    Integer idCliente,
-                   String tipoElemento,
+                   TipoElemento tipoElemento,
                    Boolean estadoActivo,
                    String nombre,
                    String especie,
