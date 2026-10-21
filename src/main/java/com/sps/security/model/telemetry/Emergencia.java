@@ -1,5 +1,7 @@
 package com.sps.security.model.telemetry;
 
+import com.sps.security.model.enums.EstadoAtencion;
+
 import java.time.LocalDateTime;
 
 public class Emergencia {
@@ -7,14 +9,14 @@ public class Emergencia {
     private Integer idAlarma;
     private LocalDateTime fechaHora;
     private String detallesEmergencia;
-    private String estadoAtencion;
+    private EstadoAtencion estadoAtencion;
     private String conductaTomada;
 
     public Emergencia(Integer idEmergencia,
                       Integer idAlarma,
                       LocalDateTime fechaHora,
                       String detallesEmergencia,
-                      String estadoAtencion,
+                      EstadoAtencion estadoAtencion,
                       String conductaTomada) {
         this.idEmergencia = idEmergencia;
         this.idAlarma = idAlarma;
@@ -56,11 +58,11 @@ public class Emergencia {
         this.detallesEmergencia = detallesEmergencia;
     }
 
-    public String getEstadoAtencion() {
+    public EstadoAtencion getEstadoAtencion() {
         return estadoAtencion;
     }
 
-    public void setEstadoAtencion(String estadoAtencion) {
+    public void setEstadoAtencion(EstadoAtencion estadoAtencion) {
         this.estadoAtencion = estadoAtencion;
     }
 

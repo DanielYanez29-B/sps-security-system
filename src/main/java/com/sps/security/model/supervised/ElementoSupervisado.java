@@ -1,14 +1,16 @@
 package com.sps.security.model.supervised;
 
+import com.sps.security.model.enums.TipoElemento;
+
 public abstract class ElementoSupervisado {
     private Integer idElemento;
     private Integer idCliente;
-    private String tipoElemento;
+    private TipoElemento tipoElemento;
     private Boolean estadoActivo;
 
     public ElementoSupervisado(Integer idElemento,
                                Integer idCliente,
-                               String tipoElemento,
+                               TipoElemento tipoElemento,
                                Boolean estadoActivo) {
         this.idElemento = idElemento;
         this.idCliente = idCliente;
@@ -32,11 +34,11 @@ public abstract class ElementoSupervisado {
         this.idCliente = idCliente;
     }
 
-    public String getTipoElemento() {
+    public TipoElemento getTipoElemento() {
         return tipoElemento;
     }
 
-    public void setTipoElemento(String tipoElemento) {
+    public void setTipoElemento(TipoElemento tipoElemento) {
         this.tipoElemento = tipoElemento;
     }
 
