@@ -2,7 +2,7 @@ package com.sps.security.model.supervised;
 
 import com.sps.security.model.enums.TipoElemento;
 
-public abstract class ElementoSupervisado {
+public class ElementoSupervisado {
     private Integer idElemento;
     private Integer idCliente;
     private TipoElemento tipoElemento;

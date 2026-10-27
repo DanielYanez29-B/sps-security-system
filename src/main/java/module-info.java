@@ -6,6 +6,7 @@ module com.sps.security {
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
+    requires java.sql;
 
     opens com.sps.security to javafx.fxml;
     exports com.sps.security;

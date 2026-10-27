@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sps.security.controller.LoginController">
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+    </padding>
+    <children>
+        <Label text="Iniciar Sesión">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Label>
+        <VBox spacing="5.0">
+            <children>
+                <Label text="Email" />
+                <TextField fx:id="txtEmail" promptText="Ingresa tu email" />
+            </children>
+        </VBox>
+        <VBox spacing="5.0">
+            <children>
+                <Label text="Contraseña" />
+                <PasswordField fx:id="txtPassword" promptText="Ingresa tu contraseña" />
+            </children>
+        </VBox>
+        <Button  maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#autenticar" text="Ingresar" />
+      <Label fx:id="advertenciaLabel" prefHeight="26.0" prefWidth="541.0" textAlignment="CENTER" textFill="RED" />
+    </children>
+
+</VBox>

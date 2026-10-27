@@ -5,23 +5,33 @@ import java.util.Objects;
 public class Usuario {
     private Integer idUsuario;
     private Integer idRol;
-    private Integer idCliente;
+    private String username;
     private String email;
     private String contraseña;
     private Boolean estadoActivo;
 
     public Usuario(Integer idUsuario,
                    Integer idRol,
-                   Integer idCliente,
+                   String username,
                    String email,
                    String contraseña,
                    Boolean estadoActivo) {
         this.idUsuario = idUsuario;
         this.idRol = idRol;
-        this.idCliente = idCliente;
+        this.username = username;
         this.email = email;
         this.contraseña = contraseña;
         this.estadoActivo = estadoActivo;
+    }
+
+    public Usuario() {}
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getIdUsuario() {
@@ -40,13 +50,6 @@ public class Usuario {
         this.idRol = idRol;
     }
 
-    public Integer getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Integer idCliente) {
-        this.idCliente = idCliente;
-    }
 
     public String getEmail() {
         return email;
@@ -76,11 +79,11 @@ public class Usuario {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(getIdUsuario(), usuario.getIdUsuario()) && Objects.equals(getIdRol(), usuario.getIdRol()) && Objects.equals(getIdCliente(), usuario.getIdCliente()) && Objects.equals(getEmail(), usuario.getEmail()) && Objects.equals(getContraseña(), usuario.getContraseña()) && Objects.equals(getEstadoActivo(), usuario.getEstadoActivo());
+        return Objects.equals(getIdUsuario(), usuario.getIdUsuario()) && Objects.equals(getIdRol(), usuario.getIdRol()) && Objects.equals(getUsername(), usuario.getUsername()) && Objects.equals(getEmail(), usuario.getEmail()) && Objects.equals(getContraseña(), usuario.getContraseña()) && Objects.equals(getEstadoActivo(), usuario.getEstadoActivo());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIdUsuario(), getIdRol(), getIdCliente(), getEmail(), getContraseña(), getEstadoActivo());
+        return Objects.hash(getIdUsuario(), getIdRol(), getUsername(), getEmail(), getContraseña(), getEstadoActivo());
     }
 }
