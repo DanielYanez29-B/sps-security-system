@@ -1,19 +1,17 @@
 package com.sps.security.controller;
 
-import com.sps.security.dao.UsuarioDAO;
-import com.sps.security.dao.impl.UsuarioDAOImpl;
 import com.sps.security.model.users.Usuario;
+import com.sps.security.service.UsuarioService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class GestionUsuariosController {
 
-    // Componentes de la Tabla
+    // Componentes FXML de la Tabla
     @FXML private TableView<Usuario> tblUsuarios;
     @FXML private TableColumn<Usuario, Integer> colId;
     @FXML private TableColumn<Usuario, String> colUsername;
@@ -21,15 +19,15 @@ public class GestionUsuariosController {
     @FXML private TableColumn<Usuario, Integer> colRol;
     @FXML private TableColumn<Usuario, Boolean> colEstado;
 
-    // Componentes del Formulario
+    // Componentes FXML del Formulario
     @FXML private TextField txtUsername;
     @FXML private TextField txtEmail;
     @FXML private PasswordField txtContrasena;
     @FXML private TextField txtIdRol;
     @FXML private CheckBox chkEstadoActivo;
 
-    // Capa de Acceso a Datos y Lista Observable
-    private final UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
+    // Servicio de Negocio y Lista de Datos
+    private final UsuarioService usuarioService = new UsuarioService();
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     private Usuario usuarioSeleccionado = null;
 
@@ -38,55 +36,41 @@ public class GestionUsuariosController {
         configurarTabla();
         cargarUsuarios();
 
-        // Escuchar la selección de una fila en la tabla
-        tblUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                usuarioSeleccionado = newSelection;
-                cargarFormulario(newSelection);
+        // Listener para sincronizar la fila seleccionada de la tabla con el formulario
+        tblUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            if (newSel != null) {
+                usuarioSeleccionado = newSel;
+                cargarFormulario(newSel);
             }
         });
     }
 
     private void configurarTabla() {
-        // Mapeo directo mediante Lambdas (sin reflexión ni fallos silenciosos)
-        colId.setCellValueFactory(cellData ->
-                new SimpleObjectProperty<>(cellData.getValue().getIdUsuario()));
-
-        colUsername.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getUsername()));
-
-        colEmail.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getEmail()));
-
-        colRol.setCellValueFactory(cellData ->
-                new SimpleObjectProperty<>(cellData.getValue().getIdRol()));
-
-        colEstado.setCellValueFactory(cellData ->
-                new SimpleObjectProperty<>(cellData.getValue().getEstadoActivo()));
+        // Mapeo seguro mediante Lambdas (evita que la tabla quede en blanco)
+        colId.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getIdUsuario()));
+        colUsername.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getUsername()));
+        colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
+        colRol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getIdRol()));
+        colEstado.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getEstadoActivo()));
 
         tblUsuarios.setItems(listaUsuarios);
     }
+
     private void cargarUsuarios() {
-        listaUsuarios.setAll(usuarioDAO.obtenerTodos());
+        listaUsuarios.setAll(usuarioService.listarUsuarios());
     }
 
     @FXML
     private void handleGuardar() {
-        if (!validarFormulario(true)) return;
+        try {
+            Usuario nuevoUsuario = construirUsuarioDesdeFormulario();
+            usuarioService.registrarUsuario(nuevoUsuario);
 
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setUsername(txtUsername.getText().trim());
-        nuevoUsuario.setEmail(txtEmail.getText().trim());
-        nuevoUsuario.setContrasena(txtContrasena.getText().trim());
-        nuevoUsuario.setIdRol(Integer.parseInt(txtIdRol.getText().trim()));
-        nuevoUsuario.setEstadoActivo(chkEstadoActivo.isSelected());
-
-        if (usuarioDAO.guardar(nuevoUsuario)) {
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario registrado correctamente.");
             cargarUsuarios();
             handleLimpiar();
-        } else {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo registrar el usuario.");
+        } catch (RuntimeException e) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Validación de Negocio", e.getMessage());
         }
     }
 
@@ -97,22 +81,25 @@ public class GestionUsuariosController {
             return;
         }
 
-        if (!validarFormulario(false)) return;
+        try {
+            usuarioSeleccionado.setUsername(txtUsername.getText().trim());
+            usuarioSeleccionado.setEmail(txtEmail.getText().trim());
 
-        usuarioSeleccionado.setUsername(txtUsername.getText().trim());
-        usuarioSeleccionado.setEmail(txtEmail.getText().trim());
-        if (!txtContrasena.getText().isBlank()) {
-            usuarioSeleccionado.setContrasena(txtContrasena.getText().trim());
-        }
-        usuarioSeleccionado.setIdRol(Integer.parseInt(txtIdRol.getText().trim()));
-        usuarioSeleccionado.setEstadoActivo(chkEstadoActivo.isSelected());
+            // Solo actualiza la contraseña si se ingresó algo en el campo
+            if (!txtContrasena.getText().isBlank()) {
+                usuarioSeleccionado.setContrasena(txtContrasena.getText().trim());
+            }
 
-        if (usuarioDAO.actualizar(usuarioSeleccionado)) {
+            usuarioSeleccionado.setIdRol(parsearIdRol());
+            usuarioSeleccionado.setEstadoActivo(chkEstadoActivo.isSelected());
+
+            usuarioService.actualizarUsuario(usuarioSeleccionado);
+
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario actualizado correctamente.");
             cargarUsuarios();
             handleLimpiar();
-        } else {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo actualizar el usuario.");
+        } catch (RuntimeException e) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Validación de Negocio", e.getMessage());
         }
     }
 
@@ -123,12 +110,13 @@ public class GestionUsuariosController {
             return;
         }
 
-        if (usuarioDAO.eliminar(usuarioSeleccionado)) {
+        try {
+            usuarioService.eliminarUsuario(usuarioSeleccionado);
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario eliminado correctamente.");
             cargarUsuarios();
             handleLimpiar();
-        } else {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo eliminar el usuario.");
+        } catch (RuntimeException e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
     }
 
@@ -143,30 +131,30 @@ public class GestionUsuariosController {
         tblUsuarios.getSelectionModel().clearSelection();
     }
 
-    private void cargarFormulario(Usuario usuario) {
-        txtUsername.setText(usuario.getUsername());
-        txtEmail.setText(usuario.getEmail());
-        txtContrasena.clear(); // Por seguridad no mostramos la contraseña
-        txtIdRol.setText(usuario.getIdRol() != null ? usuario.getIdRol().toString() : "");
-        chkEstadoActivo.setSelected(usuario.getEstadoActivo() != null && usuario.getEstadoActivo());
+    private Usuario construirUsuarioDesdeFormulario() {
+        Usuario u = new Usuario();
+        u.setUsername(txtUsername.getText().trim());
+        u.setEmail(txtEmail.getText().trim());
+        u.setContrasena(txtContrasena.getText().trim());
+        u.setIdRol(parsearIdRol());
+        u.setEstadoActivo(chkEstadoActivo.isSelected());
+        return u;
     }
 
-    private boolean validarFormulario(boolean esNuevo) {
-        if (txtUsername.getText().isBlank() || txtEmail.getText().isBlank() || txtIdRol.getText().isBlank()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Validación", "Los campos Username, Email e ID Rol son obligatorios.");
-            return false;
-        }
-        if (esNuevo && txtContrasena.getText().isBlank()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Validación", "La contraseña es obligatoria para nuevos usuarios.");
-            return false;
-        }
+    private Integer parsearIdRol() {
         try {
-            Integer.parseInt(txtIdRol.getText().trim());
+            return Integer.parseInt(txtIdRol.getText().trim());
         } catch (NumberFormatException e) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Validación", "El ID de Rol debe ser un número entero válido.");
-            return false;
+            throw new IllegalArgumentException("El ID de Rol debe ser un número entero válido.");
         }
-        return true;
+    }
+
+    private void cargarFormulario(Usuario u) {
+        txtUsername.setText(u.getUsername());
+        txtEmail.setText(u.getEmail());
+        txtContrasena.clear(); // Por seguridad no se llena la contraseña existente
+        txtIdRol.setText(u.getIdRol() != null ? u.getIdRol().toString() : "");
+        chkEstadoActivo.setSelected(u.getEstadoActivo() != null && u.getEstadoActivo());
     }
 
     private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
