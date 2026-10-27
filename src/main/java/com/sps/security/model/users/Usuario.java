@@ -7,83 +7,54 @@ public class Usuario {
     private Integer idRol;
     private String username;
     private String email;
-    private String contraseña;
+    private String contrasena;
     private Boolean estadoActivo;
 
-    public Usuario(Integer idUsuario,
-                   Integer idRol,
-                   String username,
-                   String email,
-                   String contraseña,
-                   Boolean estadoActivo) {
+    public Usuario() {
+        this.estadoActivo = true;
+    }
+
+    public Usuario(Integer idUsuario, Integer idRol, String username, String email, String contrasena, Boolean estadoActivo) {
         this.idUsuario = idUsuario;
         this.idRol = idRol;
         this.username = username;
         this.email = email;
-        this.contraseña = contraseña;
-        this.estadoActivo = estadoActivo;
+        this.contrasena = contrasena;
+        this.estadoActivo = estadoActivo != null ? estadoActivo : true;
     }
 
-    public Usuario() {}
+    public Integer getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
 
-    public String getUsername() {
-        return username;
-    }
+    public Integer getIdRol() { return idRol; }
+    public void setIdRol(Integer idRol) { this.idRol = idRol; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
 
-    public Integer getIdRol() {
-        return idRol;
-    }
+    public Boolean getEstadoActivo() { return estadoActivo; }
+    public void setEstadoActivo(Boolean estadoActivo) { this.estadoActivo = estadoActivo; }
 
-    public void setIdRol(Integer idRol) {
-        this.idRol = idRol;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContraseña() {
-        return contraseña;
-    }
-
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
-
-    public Boolean getEstadoActivo() {
-        return estadoActivo;
-    }
-
-    public void setEstadoActivo(Boolean estadoActivo) {
-        this.estadoActivo = estadoActivo;
-    }
-
+    // equals() y hashCode() exclusivamente basados en la PK idUsuario
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(getIdUsuario(), usuario.getIdUsuario()) && Objects.equals(getIdRol(), usuario.getIdRol()) && Objects.equals(getUsername(), usuario.getUsername()) && Objects.equals(getEmail(), usuario.getEmail()) && Objects.equals(getContraseña(), usuario.getContraseña()) && Objects.equals(getEstadoActivo(), usuario.getEstadoActivo());
+        return idUsuario != null && idUsuario.equals(usuario.idUsuario);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIdUsuario(), getIdRol(), getUsername(), getEmail(), getContraseña(), getEstadoActivo());
+        return idUsuario != null ? Objects.hash(idUsuario) : super.hashCode();
+    }
+    public Boolean isEstadoActivo() {
+        return estadoActivo;
     }
 }

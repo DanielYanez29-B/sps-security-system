@@ -20,11 +20,24 @@ public class LoginController {
 
     @FXML
     public void autenticar(ActionEvent event) {
-        String email = txtEmail.getText();
+        String email = txtEmail.getText().trim();
         String contrasena = txtPassword.getText();
 
-        if (loginController.verificarUsuario(email, contrasena).isEmpty()) {
-            advertenciaLabel.setText("Emai o contraseña incorrecto");
+        // 1. Validar que no haya campos vacíos
+        if (email.isEmpty() || contrasena.isEmpty()) {
+            advertenciaLabel.setText("Por favor, llena todos los campos");
+            return;
+        }
+
+        // 2. Guardar el resultado en una variable para evitar consultar 2 veces a la BD
+        var usuarioOpt = loginController.verificarUsuario(email, contrasena);
+
+        if (usuarioOpt.isEmpty()) {
+            advertenciaLabel.setText("Email o contraseña incorrectos");
+        } else {
+            advertenciaLabel.setText(""); // Limpiar aviso de error
+            AuthService.setCurrentUser(usuarioOpt.get());
+            // TODO: Redirigir a la pantalla principal
         }
     }
 }
