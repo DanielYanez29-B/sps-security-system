@@ -8,7 +8,7 @@ Este proyecto es una aplicación de escritorio desarrollada en **JavaFX** con ar
 
 Antes de comenzar, asegúrate de tener instalado en tu equipo:
 
-1. **Java Development Kit (JDK) 21** o superior.
+1. **Java Development Kit (JDK) 25**.
 2. **Git** para el control de versiones.
 3. **IntelliJ IDEA** (recomendado, ya cuenta con soporte nativo para Maven y JavaFX).
 

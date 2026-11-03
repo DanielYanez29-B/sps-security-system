@@ -159,6 +159,7 @@ CREATE TABLE ALARMA (
                         fecha_hora DATETIME NOT NULL,
                         nivel_prioridad VARCHAR(20) DEFAULT 'MEDIA', -- 'BAJA', 'MEDIA', 'ALTA', 'CRITICA'
                         tipo_alarma VARCHAR(50) NOT NULL,           -- 'PIR_MOVIMIENTO', 'MAGNETICO_PUERTA', 'TEMPERATURA'
+                        estado VARCHAR(20) DEFAULT 'PENDIENTE',     -- 'PENDIENTE', 'EN_ATENCION', 'ATENDIDA', 'CANCELADA'
                         descripcion TEXT,
                         FOREIGN KEY (id_dispositivo) REFERENCES DISPOSITIVO(id_dispositivo) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -173,6 +174,7 @@ CREATE TABLE NOTIFICACION (
                               FOREIGN KEY (id_alarma) REFERENCES ALARMA(id_alarma) ON DELETE CASCADE,
                               FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
 
 -- ---------------------------------------------------------
 -- DATOS INICIALES DE PRUEBA (SEEDING)
