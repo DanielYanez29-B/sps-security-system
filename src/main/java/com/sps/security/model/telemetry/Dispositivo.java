@@ -1,11 +1,13 @@
 package com.sps.security.model.telemetry;
 
+import com.sps.security.model.enums.TipoInstalacion;
+
 import java.time.LocalDate;
 
 public class Dispositivo {
     private Integer idDispositivo;
     private Integer idElemento;
-    private String tipoInstalacion;
+    private TipoInstalacion tipoInstalacion;
     private String numSerie;
     private String fabricante;
     private LocalDate fechaInstalacion;
@@ -13,7 +15,7 @@ public class Dispositivo {
 
     public Dispositivo(Integer idDispositivo,
                        Integer idElemento,
-                       String tipoInstalacion,
+                       TipoInstalacion tipoInstalacion,
                        String numSerie,
                        String fabricante,
                        LocalDate fechaInstalacion,
@@ -43,11 +45,11 @@ public class Dispositivo {
         this.idElemento = idElemento;
     }
 
-    public String getTipoInstalacion() {
+    public TipoInstalacion getTipoInstalacion() {
         return tipoInstalacion;
     }
 
-    public void setTipoInstalacion(String tipoInstalacion) {
+    public void setTipoInstalacion(TipoInstalacion tipoInstalacion) {
         this.tipoInstalacion = tipoInstalacion;
     }
 

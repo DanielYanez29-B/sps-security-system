@@ -1,10 +1,30 @@
 -- =========================================================
 -- PROYECTO S.P.S. - SISTEMA DE MONITOREO DE SEGURIDAD
--- Script para MySQL / MariaDB (XAMPP)
+-- Script Oficial para MySQL / MariaDB (XAMPP)
+-- Modelo Optimizado: 12 Entidades
 -- =========================================================
 
 CREATE DATABASE IF NOT EXISTS sps_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE sps_db;
+
+-- Deshabilitar restricciones temporalmente para borrado limpio
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS NOTIFICACION;
+DROP TABLE IF EXISTS ALARMA;
+DROP TABLE IF EXISTS DISPOSITIVO;
+DROP TABLE IF EXISTS ELEMENTO_SUPERVISADO;
+DROP TABLE IF EXISTS ASIGNACION;
+DROP TABLE IF EXISTS SERVICIO;
+DROP TABLE IF EXISTS JORNADA;
+DROP TABLE IF EXISTS GUARDIA;
+DROP TABLE IF EXISTS USUARIO;
+DROP TABLE IF EXISTS CLIENTE;
+DROP TABLE IF EXISTS ROL_PERMISO;
+DROP TABLE IF EXISTS PERMISO;
+DROP TABLE IF EXISTS ROL;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- ---------------------------------------------------------
 -- Módulo 1: Seguridad y Control de Acceso (RBAC)
@@ -18,7 +38,7 @@ CREATE TABLE ROL (
 
 CREATE TABLE PERMISO (
                          id_permiso INT AUTO_INCREMENT PRIMARY KEY,
-                         nombre VARCHAR(50) NOT NULL UNIQUE,
+                         clave_permiso VARCHAR(50) NOT NULL UNIQUE,
                          descripcion TEXT
 ) ENGINE=InnoDB;
 
@@ -30,51 +50,58 @@ CREATE TABLE ROL_PERMISO (
                              FOREIGN KEY (id_permiso) REFERENCES PERMISO(id_permiso) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE USUARIO (
+                         id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+                         id_rol INT NOT NULL,
+                         username VARCHAR(50) NOT NULL UNIQUE,
+                         email VARCHAR(100) NOT NULL UNIQUE,
+                         contrasena VARCHAR(255) NOT NULL,
+                         estado_activo BOOLEAN DEFAULT TRUE,
+                         FOREIGN KEY (id_rol) REFERENCES ROL(id_rol)
+) ENGINE=InnoDB;
+
 -- ---------------------------------------------------------
--- Módulo 2: Clientes y Usuarios
+-- Módulo 2: Clientes y Servicios
 -- ---------------------------------------------------------
 
 CREATE TABLE CLIENTE (
                          id_cliente INT AUTO_INCREMENT PRIMARY KEY,
-                         nombre VARCHAR(100) NOT NULL,
+                         razon_social VARCHAR(100) NOT NULL,
                          rfc VARCHAR(15) UNIQUE,
                          telefono VARCHAR(20),
                          email VARCHAR(100) UNIQUE,
                          calle VARCHAR(100),
                          num_ext VARCHAR(20),
-                         num_int VARCHAR(20),
                          colonia VARCHAR(100),
                          ciudad VARCHAR(100),
                          estado VARCHAR(100),
                          cp VARCHAR(10)
 ) ENGINE=InnoDB;
 
-CREATE TABLE USUARIO (
-                         id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-                         id_rol INT NOT NULL,
-                         id_cliente INT NULL,
-                         email VARCHAR(100) NOT NULL UNIQUE,
-                         contrasena VARCHAR(255) NOT NULL,
-                         estado_activo BOOLEAN DEFAULT TRUE,
-                         FOREIGN KEY (id_rol) REFERENCES ROL(id_rol),
-                         FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente) ON DELETE SET NULL
+CREATE TABLE SERVICIO (
+                          id_servicio INT AUTO_INCREMENT PRIMARY KEY,
+                          id_cliente INT NOT NULL,
+                          nombre_servicio VARCHAR(100) NOT NULL,
+                          direccion TEXT NOT NULL,
+                          fecha_inicio DATE NOT NULL,
+                          estado VARCHAR(20) DEFAULT 'ACTIVO',
+                          FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------
--- Módulo 3: Operativo, Personal y Nómina
+-- Módulo 3: Personal y Operativa
 -- ---------------------------------------------------------
 
 CREATE TABLE GUARDIA (
                          id_guardia INT AUTO_INCREMENT PRIMARY KEY,
-                         id_cliente INT NULL,
                          id_usuario INT UNIQUE NULL,
                          nombres VARCHAR(100) NOT NULL,
                          apellido_paterno VARCHAR(100) NOT NULL,
                          apellido_materno VARCHAR(100),
+                         rfc VARCHAR(15) UNIQUE,
                          fecha_ingreso DATE NOT NULL,
                          estatus_activo BOOLEAN DEFAULT TRUE,
-                         FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente),
-                         FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario)
+                         FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE JORNADA (
@@ -85,154 +112,90 @@ CREATE TABLE JORNADA (
                          estado_actividad BOOLEAN DEFAULT TRUE
 ) ENGINE=InnoDB;
 
-CREATE TABLE SERVICIO (
-                          id_servicio INT AUTO_INCREMENT PRIMARY KEY,
-                          id_cliente INT NOT NULL,
-                          nombre_servicio VARCHAR(100) NOT NULL,
-                          fecha_inicio DATE NOT NULL,
-                          fecha_fin DATE NULL,
-                          FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente)
-) ENGINE=InnoDB;
-
 CREATE TABLE ASIGNACION (
                             id_asignacion INT AUTO_INCREMENT PRIMARY KEY,
                             id_guardia INT NOT NULL,
                             id_servicio INT NOT NULL,
                             id_jornada INT NOT NULL,
                             fecha_asignacion DATE NOT NULL,
-                            FOREIGN KEY (id_guardia) REFERENCES GUARDIA(id_guardia),
-                            FOREIGN KEY (id_servicio) REFERENCES SERVICIO(id_servicio),
+                            FOREIGN KEY (id_guardia) REFERENCES GUARDIA(id_guardia) ON DELETE CASCADE,
+                            FOREIGN KEY (id_servicio) REFERENCES SERVICIO(id_servicio) ON DELETE CASCADE,
                             FOREIGN KEY (id_jornada) REFERENCES JORNADA(id_jornada)
 ) ENGINE=InnoDB;
 
-CREATE TABLE PAGO_NOMINA (
-                             id_pago INT AUTO_INCREMENT PRIMARY KEY,
-                             id_guardia INT NOT NULL,
-                             fecha_pago DATE NOT NULL,
-                             periodo_pago VARCHAR(50) NOT NULL,
-                             monto_base DECIMAL(10,2) NOT NULL,
-                             monto_incentivos DECIMAL(10,2) DEFAULT 0.00,
-                             deducciones DECIMAL(10,2) DEFAULT 0.00,
-                             monto_neto DECIMAL(10,2) GENERATED ALWAYS AS (monto_base + monto_incentivos - deducciones) STORED,
-                             FOREIGN KEY (id_guardia) REFERENCES GUARDIA(id_guardia)
-) ENGINE=InnoDB;
-
 -- ---------------------------------------------------------
--- Módulo 4: Elementos Supervisados (Herencia / Generalización)
+-- Módulo 4: Elementos Supervisados (Sin Herencia)
 -- ---------------------------------------------------------
 
 CREATE TABLE ELEMENTO_SUPERVISADO (
                                       id_elemento INT AUTO_INCREMENT PRIMARY KEY,
-                                      id_cliente INT NOT NULL,
-                                      tipo_elemento VARCHAR(20) NOT NULL, -- 'VEHICULO', 'PERSONA', 'MASCOTA', 'EQUIPO'
+                                      id_servicio INT NOT NULL,
+                                      tipo_elemento VARCHAR(30) NOT NULL, -- 'VEHICULO', 'PERSONA', 'MASCOTA', 'EQUIPO'
+                                      identificador VARCHAR(100) NOT NULL, -- Placas, Serie, Nombre o Matrícula
+                                      descripcion TEXT,
                                       estado_activo BOOLEAN DEFAULT TRUE,
-                                      FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente)
-) ENGINE=InnoDB;
-
-CREATE TABLE VEHICULO (
-                          id_elemento INT PRIMARY KEY,
-                          placas VARCHAR(20) NOT NULL UNIQUE,
-                          marca VARCHAR(50),
-                          modelo VARCHAR(50),
-                          color VARCHAR(30),
-                          num_serie VARCHAR(50),
-                          FOREIGN KEY (id_elemento) REFERENCES ELEMENTO_SUPERVISADO(id_elemento) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE PERSONA (
-                         id_elemento INT PRIMARY KEY,
-                         nombre VARCHAR(100) NOT NULL,
-                         parentesco VARCHAR(50),
-                         telefono_contacto VARCHAR(20),
-                         FOREIGN KEY (id_elemento) REFERENCES ELEMENTO_SUPERVISADO(id_elemento) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE MASCOTA (
-                         id_elemento INT PRIMARY KEY,
-                         nombre VARCHAR(50) NOT NULL,
-                         especie VARCHAR(50) NOT NULL,
-                         raza VARCHAR(50),
-                         color VARCHAR(30),
-                         FOREIGN KEY (id_elemento) REFERENCES ELEMENTO_SUPERVISADO(id_elemento) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE EQUIPO (
-                        id_elemento INT PRIMARY KEY,
-                        num_serie VARCHAR(50) NOT NULL UNIQUE,
-                        marca VARCHAR(50),
-                        tipo_equipo VARCHAR(50),
-                        FOREIGN KEY (id_elemento) REFERENCES ELEMENTO_SUPERVISADO(id_elemento) ON DELETE CASCADE
+                                      FOREIGN KEY (id_servicio) REFERENCES SERVICIO(id_servicio) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------
--- Módulo 5: Supervisión, IoT y Telemetría
+-- Módulo 5: IoT y Telemetría
 -- ---------------------------------------------------------
-
-CREATE TABLE SUPERVISION (
-                             id_supervision INT AUTO_INCREMENT PRIMARY KEY,
-                             id_guardia INT NOT NULL,
-                             id_elemento INT NOT NULL,
-                             fecha_hora DATETIME NOT NULL,
-                             detalles_observacion TEXT,
-                             FOREIGN KEY (id_guardia) REFERENCES GUARDIA(id_guardia),
-                             FOREIGN KEY (id_elemento) REFERENCES ELEMENTO_SUPERVISADO(id_elemento)
-) ENGINE=InnoDB;
 
 CREATE TABLE DISPOSITIVO (
                              id_dispositivo INT AUTO_INCREMENT PRIMARY KEY,
-                             id_elemento INT NULL,
-                             tipo_instalacion VARCHAR(20) DEFAULT 'INSTITUCIONAL',
+                             id_servicio INT NOT NULL,
                              num_serie VARCHAR(50) NOT NULL UNIQUE,
-                             fabricante VARCHAR(50),
+                             mac_address VARCHAR(17) UNIQUE,
+                             ip_asignada VARCHAR(15),
+                             fabricante VARCHAR(50) DEFAULT 'ESP32',
                              fecha_instalacion DATE,
                              estado_actividad BOOLEAN DEFAULT TRUE,
-                             FOREIGN KEY (id_elemento) REFERENCES ELEMENTO_SUPERVISADO(id_elemento)
-) ENGINE=InnoDB;
-
-CREATE TABLE SENSOR (
-                        id_sensor INT AUTO_INCREMENT PRIMARY KEY,
-                        id_dispositivo INT NOT NULL,
-                        tipo_sensor VARCHAR(50) NOT NULL,
-                        ubicacion VARCHAR(100),
-                        estado_actividad BOOLEAN DEFAULT TRUE,
-                        FOREIGN KEY (id_dispositivo) REFERENCES DISPOSITIVO(id_dispositivo)
+                             FOREIGN KEY (id_servicio) REFERENCES SERVICIO(id_servicio) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE ALARMA (
                         id_alarma INT AUTO_INCREMENT PRIMARY KEY,
-                        id_sensor INT NOT NULL,
+                        id_dispositivo INT NOT NULL,
                         fecha_hora DATETIME NOT NULL,
-                        estado_actual VARCHAR(50) NOT NULL,
-                        ubicacion VARCHAR(100),
-                        tipo_alarma VARCHAR(50) NOT NULL,
-                        FOREIGN KEY (id_sensor) REFERENCES SENSOR(id_sensor)
-) ENGINE=InnoDB;
-
-CREATE TABLE EMERGENCIA (
-                            id_emergencia INT AUTO_INCREMENT PRIMARY KEY,
-                            id_alarma INT UNIQUE NULL,
-                            fecha_hora DATETIME NOT NULL,
-                            detalles_emergencia TEXT,
-                            estado_atencion VARCHAR(50) NOT NULL,
-                            conducta_tomada TEXT,
-                            FOREIGN KEY (id_alarma) REFERENCES ALARMA(id_alarma)
+                        nivel_prioridad VARCHAR(20) DEFAULT 'MEDIA', -- 'BAJA', 'MEDIA', 'ALTA', 'CRITICA'
+                        tipo_alarma VARCHAR(50) NOT NULL,           -- 'PIR_MOVIMIENTO', 'MAGNETICO_PUERTA', 'TEMPERATURA'
+                        descripcion TEXT,
+                        FOREIGN KEY (id_dispositivo) REFERENCES DISPOSITIVO(id_dispositivo) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE NOTIFICACION (
                               id_notificacion INT AUTO_INCREMENT PRIMARY KEY,
-                              id_emergencia INT NULL,
-                              id_alarma INT NULL,
+                              id_alarma INT NOT NULL,
+                              id_usuario INT NOT NULL,
                               fecha_hora DATETIME NOT NULL,
                               mensaje TEXT NOT NULL,
-                              estado_envio VARCHAR(50) NOT NULL,
-                              FOREIGN KEY (id_emergencia) REFERENCES EMERGENCIA(id_emergencia),
-                              FOREIGN KEY (id_alarma) REFERENCES ALARMA(id_alarma)
+                              leido BOOLEAN DEFAULT FALSE,
+                              FOREIGN KEY (id_alarma) REFERENCES ALARMA(id_alarma) ON DELETE CASCADE,
+                              FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE AUTORIDAD (
-                           id_autoridad INT AUTO_INCREMENT PRIMARY KEY,
-                           nombre VARCHAR(100) NOT NULL,
-                           dependencia VARCHAR(100) NOT NULL,
-                           telefono_contacto VARCHAR(20) NOT NULL,
-                           canalizacion_emergencia TEXT
-) ENGINE=InnoDB;
+-- ---------------------------------------------------------
+-- DATOS INICIALES DE PRUEBA (SEEDING)
+-- ---------------------------------------------------------
+
+INSERT INTO ROL (id_rol, nombre, descripcion) VALUES
+                                                  (1, 'ROLE_ADMIN', 'Administrador general del sistema'),
+                                                  (2, 'ROLE_OPERADOR', 'Monitoreo de alarmas y dispositivos en tiempo real'),
+                                                  (3, 'ROLE_GUARDIA', 'Personal operativo de campo');
+
+INSERT INTO PERMISO (id_permiso, clave_permiso, descripcion) VALUES
+                                                                 (1, 'USUARIO_GESTION', 'Crear y modificar usuarios'),
+                                                                 (2, 'ALARMA_VER', 'Visualizar tablero de alertas'),
+                                                                 (3, 'DISPOSITIVO_CONFIG', 'Configurar parámetros de red e IP de ESP32');
+
+INSERT INTO ROL_PERMISO (id_rol, id_permiso) VALUES
+                                                 (1, 1), (1, 2), (1, 3),
+                                                 (2, 2), (2, 3);
+
+INSERT INTO USUARIO (id_usuario, id_rol, username, email, contrasena, estado_activo) VALUES
+    (1, 1, 'admin', 'admin@sps-security.com', 'admin123', TRUE);
+
+INSERT INTO JORNADA (nombre_jornada, hora_inicio, hora_fin, estado_actividad) VALUES
+                                                                                  ('Matutino 8h', '06:00:00', '14:00:00', TRUE),
+                                                                                  ('Vespertino 8h', '14:00:00', '22:00:00', TRUE),
+                                                                                  ('Nocturno 10h', '22:00:00', '06:00:00', TRUE);
