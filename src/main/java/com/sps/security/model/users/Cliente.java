@@ -12,6 +12,7 @@ public class Cliente {
     private String num_ext;
     private String num_int;
     private String colonia;
+
     private String ciudad;
     private String estado;
     private String cp;
