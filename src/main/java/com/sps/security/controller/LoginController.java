@@ -1,6 +1,7 @@
 package com.sps.security.controller;
 
 import com.sps.security.service.access_service.AuthService;
+import com.sps.security.util.NavigationService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -37,7 +38,8 @@ public class LoginController {
         } else {
             advertenciaLabel.setText(""); // Limpiar aviso de error
             AuthService.setCurrentUser(usuarioOpt.get());
-            // TODO: Redirigir a la pantalla principal
+            NavigationService.getInstance().cargarVista("usuarios-view.fxml");;
+
         }
     }
 }
