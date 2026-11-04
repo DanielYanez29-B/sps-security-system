@@ -37,7 +37,6 @@ public class LoginController {
             advertenciaLabel.setText("Email o contraseña incorrectos");
         } else {
             advertenciaLabel.setText(""); // Limpiar aviso de error
-            AuthService.setCurrentUser(usuarioOpt.get());
             NavigationService.getInstance().cargarVista("usuarios-view.fxml");;
 
         }
