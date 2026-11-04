@@ -1,0 +1,182 @@
+/* --- VARIABLES Y GLOBAL --- */
+.root {
+    -fx-background-color: #0A1118;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.main-container {
+    -fx-background-color: #0A1118;
+}
+
+.content-area {
+    -fx-background-color: #0A1118;
+    -fx-padding: 15;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    -fx-background-color: #0E1721;
+    -fx-border-color: #1A2634;
+    -fx-border-width: 0 1 0 0;
+}
+
+.logo-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #10B981;
+}
+
+.logo-subtitle {
+    -fx-font-size: 9px;
+    -fx-text-fill: #94A3B8;
+    -fx-letter-spacing: 2px;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 15;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: #16222F;
+    -fx-text-fill: #FFFFFF;
+}
+
+.nav-button:selected {
+    -fx-background-color: #10B98115;
+    -fx-text-fill: #10B981;
+    -fx-border-color: #10B981;
+    -fx-border-width: 0 0 0 3;
+    -fx-font-weight: bold;
+}
+
+/* Tarjeta informativa lateral */
+.status-card {
+    -fx-background-color: #12222E;
+    -fx-border-color: #10B98140;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 12;
+}
+
+.status-card-title {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.status-card-sub {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 10px;
+}
+
+/* Sección de Usuario */
+.user-card {
+    -fx-background-color: #141E28;
+    -fx-padding: 8;
+    -fx-background-radius: 8;
+}
+
+.user-avatar {
+    -fx-background-color: #3B82F6;
+    -fx-background-radius: 50%;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+}
+
+.avatar-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.user-name {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.user-role {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 10px;
+}
+
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #EF4444;
+    -fx-border-color: #EF444440;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #EF444420;
+}
+
+/* --- HEADER --- */
+.header {
+    -fx-background-color: #0A1118;
+    -fx-border-color: #1A2634;
+    -fx-border-width: 0 0 1 0;
+}
+
+.header-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+.header-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748B;
+}
+
+.status-badge {
+    -fx-background-color: #14212D;
+    -fx-padding: 6 12;
+    -fx-background-radius: 20;
+}
+
+.status-dot-online {
+    -fx-background-color: #10B981;
+    -fx-background-radius: 50%;
+    -fx-min-width: 8px;
+    -fx-min-height: 8px;
+}
+
+.status-text {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 12px;
+}
+
+.icon-button {
+    -fx-background-color: #14212D;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 50%;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-background-color: #1E2D3B;
+}
+
+.notification-badge {
+    -fx-background-color: #EF4444;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 1 5;
+    -fx-translate-x: 4;
+    -fx-translate-y: -4;
+}

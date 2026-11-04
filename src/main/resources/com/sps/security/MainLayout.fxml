@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sps.security.controller.MainController"
+            stylesheets="@styles.css"
+            prefWidth="1280" prefHeight="800" styleClass="main-container">
+
+    <!-- Encabezado en la parte superior -->
+    <top>
+        <fx:include fx:id="header" source="HeaderView.fxml"/>
+    </top>
+
+    <!-- Barra lateral de navegación -->
+    <left>
+        <fx:include fx:id="sidebar" source="SidebarView.fxml"/>
+    </left>
+
+    <!-- Área de contenido dinámico -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <!-- Las vistas se cargan dinámicamente aquí -->
+        </StackPane>
+    </center>
+
+</BorderPane>
