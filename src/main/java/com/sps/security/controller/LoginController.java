@@ -38,7 +38,7 @@ public class LoginController {
             mostrarError("Email o contraseña incorrectos");
         } else {
             ocultarError(); // Limpiar aviso de error
-            NavigationService.getInstance().cargarVista("usuarios-view.fxml");;
+            NavigationService.getInstance().cargarVista("MainLayout.fxml");;
         }
     }
     private void mostrarError(String mensaje) {

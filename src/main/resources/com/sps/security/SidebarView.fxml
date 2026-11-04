@@ -41,7 +41,7 @@
                 <Label text="NT" styleClass="avatar-text"/>
             </StackPane>
             <VBox HBox.hgrow="ALWAYS">
-                <Label fx:id="lblUserName" text="Nora Tiscareño" styleClass="user-name"/>
+                <Label fx:id="lblUserName" styleClass="user-name"/>
                 <Label fx:id="lblUserRole" text="Administrador" styleClass="user-role"/>
             </VBox>
         </HBox>
