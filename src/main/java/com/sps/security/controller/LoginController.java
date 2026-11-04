@@ -2,6 +2,7 @@ package com.sps.security.controller;
 
 import com.sps.security.service.access_service.AuthService;
 import com.sps.security.util.NavigationService;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,7 +17,7 @@ public class LoginController {
     @FXML
     private PasswordField txtPassword;
     @FXML
-    private Label advertenciaLabel;
+    private Label lblError;;
 
 
     @FXML
@@ -26,7 +27,7 @@ public class LoginController {
 
         // 1. Validar que no haya campos vacíos
         if (email.isEmpty() || contrasena.isEmpty()) {
-            advertenciaLabel.setText("Por favor, llena todos los campos");
+            mostrarError("Por favor, llena todos los campos");
             return;
         }
 
@@ -34,12 +35,29 @@ public class LoginController {
         var usuarioOpt = loginController.verificarUsuario(email, contrasena);
 
         if (usuarioOpt.isEmpty()) {
-            advertenciaLabel.setText("Email o contraseña incorrectos");
+            mostrarError("Email o contraseña incorrectos");
         } else {
-            advertenciaLabel.setText(""); // Limpiar aviso de error
-            AuthService.setCurrentUser(usuarioOpt.get());
-            NavigationService.getInstance().cargarVista("usuarios-view.fxml");;
-
+            ocultarError(); // Limpiar aviso de error
+            NavigationService.getInstance().cargarVista("MainLayout.fxml");;
         }
+    }
+    private void mostrarError(String mensaje) {
+        // Platform.runLater asegura la actualización si la consulta corre en un hilo secundario/DB
+        Platform.runLater(() -> {
+            lblError.setText(mensaje);
+            lblError.setVisible(true);
+            lblError.setManaged(true);
+        });
+    }
+
+    /**
+     * Oculta la advertencia y libera el espacio en el VBox.
+     */
+    private void ocultarError() {
+        Platform.runLater(() -> {
+            lblError.setText("");
+            lblError.setVisible(false);
+            lblError.setManaged(false);
+        });
     }
 }

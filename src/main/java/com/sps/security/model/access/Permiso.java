@@ -2,12 +2,12 @@ package com.sps.security.model.access;
 
 public class Permiso {
     private Integer idPermiso;
-    private String nombre;
+    private String clavePermiso;
     private String descripcion;
 
-    public Permiso(Integer idPermiso, String nombre, String descripcion) {
+    public Permiso(Integer idPermiso, String clavePermiso, String descripcion) {
         this.idPermiso = idPermiso;
-        this.nombre = nombre;
+        this.clavePermiso = clavePermiso;
         this.descripcion = descripcion;
     }
 
@@ -19,12 +19,12 @@ public class Permiso {
         this.idPermiso = idPermiso;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getClavePermiso() {
+        return clavePermiso;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setClavePermiso(String clavePermiso) {
+        this.clavePermiso = clavePermiso;
     }
 
     public String getDescripcion() {
