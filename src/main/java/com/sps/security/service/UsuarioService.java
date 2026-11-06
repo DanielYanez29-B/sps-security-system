@@ -3,6 +3,7 @@ package com.sps.security.service;
 import com.sps.security.dao.UsuarioDAO;
 import com.sps.security.dao.impl.UsuarioDAOImpl;
 import com.sps.security.model.users.Usuario;
+import com.sps.security.util.PasswordUtil;
 
 import java.util.List;
 
@@ -26,6 +27,10 @@ public class  UsuarioService {
         validarCamposObligatorios(usuario, true);
         validarFormatoEmail(usuario.getEmail());
 
+        usuario.setContrasena(
+                PasswordUtil.hash(usuario.getContrasena())
+        );
+
         boolean guardado = usuarioDAO.guardar(usuario);
         if (!guardado) {
             throw new RuntimeException("Error en base de datos: No se pudo registrar el usuario.");
@@ -39,7 +44,14 @@ public class  UsuarioService {
         }
         validarCamposObligatorios(usuario, false);
         validarFormatoEmail(usuario.getEmail());
+        String contrasena =
+                prepararContrasenaParaActualizar(
+                        usuario.getContrasena()
+                );
 
+        if (contrasena != null) {
+            usuario.setContrasena(contrasena);
+        }
         boolean actualizado = usuarioDAO.actualizar(usuario);
         if (!actualizado) {
             throw new RuntimeException("Error en base de datos: No se pudo actualizar el registro.");
@@ -81,5 +93,20 @@ public class  UsuarioService {
         if (!email.matches(regex)) {
             throw new IllegalArgumentException("El formato del correo electrónico es inválido.");
         }
+
+    }
+
+    private String prepararContrasenaParaActualizar(
+            String contrasena
+    ) {
+        if (contrasena == null || contrasena.isBlank()) {
+            return null;
+        }
+
+        if (contrasena.startsWith("$2")) {
+            return contrasena;
+        }
+
+        return PasswordUtil.hash(contrasena);
     }
 }
