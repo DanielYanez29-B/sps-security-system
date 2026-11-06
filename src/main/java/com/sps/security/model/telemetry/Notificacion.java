@@ -4,24 +4,24 @@ import java.time.LocalDateTime;
 
 public class Notificacion {
     private Integer idNotificacion;
-    private Integer idEmergencia;
     private Integer idAlarma;
+    private Integer idUsuario;
     private LocalDateTime fechaHora;
-    private String notificacion;
-    private String estadoEnvio;
+    private String mensaje;
+    private Boolean leido;
 
     public Notificacion(Integer idNotificacion,
-                        Integer idEmergencia,
                         Integer idAlarma,
+                        Integer idUsuario,
                         LocalDateTime fechaHora,
-                        String notificacion,
-                        String estadoEnvio) {
+                        String mensaje,
+                        Boolean leido) {
         this.idNotificacion = idNotificacion;
-        this.idEmergencia = idEmergencia;
         this.idAlarma = idAlarma;
+        this.idUsuario = idUsuario;
         this.fechaHora = fechaHora;
-        this.notificacion = notificacion;
-        this.estadoEnvio = estadoEnvio;
+        this.mensaje = mensaje;
+        this.leido = leido;
     }
 
     public Integer getIdNotificacion() {
@@ -32,22 +32,21 @@ public class Notificacion {
         this.idNotificacion = idNotificacion;
     }
 
-    public Integer getIdEmergencia() {
-        return idEmergencia;
-    }
-
-    public void setIdEmergencia(Integer idEmergencia) {
-        this.idEmergencia = idEmergencia;
-    }
-
     public Integer getIdAlarma() {
         return idAlarma;
     }
-
     public void setIdAlarma(Integer idAlarma) {
         this.idAlarma = idAlarma;
     }
 
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
     public LocalDateTime getFechaHora() {
         return fechaHora;
     }
@@ -56,19 +55,19 @@ public class Notificacion {
         this.fechaHora = fechaHora;
     }
 
-    public String getNotificacion() {
-        return notificacion;
+    public String getMensaje() {
+        return mensaje;
     }
 
-    public void setNotificacion(String notificacion) {
-        this.notificacion = notificacion;
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
     }
 
-    public String getEstadoEnvio() {
-        return estadoEnvio;
+    public Boolean getLeido() {
+        return leido;
     }
 
-    public void setEstadoEnvio(String estadoEnvio) {
-        this.estadoEnvio = estadoEnvio;
+    public void setLeido(Boolean leido) {
+        this.leido = leido;
     }
 }

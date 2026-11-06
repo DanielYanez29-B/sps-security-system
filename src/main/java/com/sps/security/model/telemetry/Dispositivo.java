@@ -1,29 +1,30 @@
 package com.sps.security.model.telemetry;
 
-import com.sps.security.model.enums.TipoInstalacion;
-
 import java.time.LocalDate;
 
 public class Dispositivo {
     private Integer idDispositivo;
-    private Integer idElemento;
-    private TipoInstalacion tipoInstalacion;
+    private Integer idServicio;
     private String numSerie;
+    private String macAddress;
+    private String ipAsignada;
     private String fabricante;
     private LocalDate fechaInstalacion;
     private Boolean estadoActividad;
 
     public Dispositivo(Integer idDispositivo,
-                       Integer idElemento,
-                       TipoInstalacion tipoInstalacion,
+                       Integer idServicio,
                        String numSerie,
+                       String macAddress,
+                       String ipAsignada,
                        String fabricante,
                        LocalDate fechaInstalacion,
                        Boolean estadoActividad) {
         this.idDispositivo = idDispositivo;
-        this.idElemento = idElemento;
-        this.tipoInstalacion = tipoInstalacion;
+        this.idServicio = idServicio;
         this.numSerie = numSerie;
+        this.macAddress = macAddress;
+        this.ipAsignada = ipAsignada;
         this.fabricante = fabricante;
         this.fechaInstalacion = fechaInstalacion;
         this.estadoActividad = estadoActividad;
@@ -37,20 +38,11 @@ public class Dispositivo {
         this.idDispositivo = idDispositivo;
     }
 
-    public Integer getIdElemento() {
-        return idElemento;
+    public Integer getIdServicio() {
+        return idServicio;
     }
-
-    public void setIdElemento(Integer idElemento) {
-        this.idElemento = idElemento;
-    }
-
-    public TipoInstalacion getTipoInstalacion() {
-        return tipoInstalacion;
-    }
-
-    public void setTipoInstalacion(TipoInstalacion tipoInstalacion) {
-        this.tipoInstalacion = tipoInstalacion;
+    public void setIdServicio(Integer idServicio) {
+        this.idServicio = idServicio;
     }
 
     public String getNumSerie() {
@@ -59,6 +51,22 @@ public class Dispositivo {
 
     public void setNumSerie(String numSerie) {
         this.numSerie = numSerie;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
+    }
+
+    public String getIpAsignada() {
+        return ipAsignada;
+    }
+
+    public void setIpAsignada(String ipAsignada) {
+        this.ipAsignada = ipAsignada;
     }
 
     public String getFabricante() {
