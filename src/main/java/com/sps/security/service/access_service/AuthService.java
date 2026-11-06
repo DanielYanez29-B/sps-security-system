@@ -1,65 +1,76 @@
 package com.sps.security.service.access_service;
 
-import com.sps.security.dao.UsuarioDAO;
+import com.sps.security.dao.impl.PermisoDAOImpl;
+import com.sps.security.dao.impl.RolDAOImpl;
 import com.sps.security.dao.impl.UsuarioDAOImpl;
+import com.sps.security.model.access.Permiso;
+import com.sps.security.model.access.Rol;
 import com.sps.security.model.users.Usuario;
 import com.sps.security.util.PasswordUtil;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AuthService {
+    private static final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
+    private static final PermisoDAOImpl permisoDAO = new PermisoDAOImpl();
+    private static final RolDAOImpl rolDAO = new RolDAOImpl();
+
+    private static final Map<Integer, Set<String>> permisosPorRol = new HashMap<>();
+    private static Usuario currentUser = null;
+    private static Set<String> permisosActuales = Collections.emptySet();
+
+    static {
+        cargarPermisosPorRol();
+    }
+
+    public static void cargarPermisosPorRol() {   // público para poder refrescar
+        permisosPorRol.clear();
+        for (Rol rol : rolDAO.obtenerTodos()) {
+            Set<String> claves = permisoDAO.obtenerPorRolId(rol.getIdRol())
+                    .stream()
+                    .map(Permiso::getClavePermiso)
+                    .collect(Collectors.toSet());
+            permisosPorRol.put(rol.getIdRol(), claves);
+        }
+    }
 
     private final UsuarioDAO usuarioDAO;
     private static Usuario currentUser;
 
-    public AuthService() {
-        this.usuarioDAO = new UsuarioDAOImpl();
-    }
+    public Optional<Usuario> verificarUsuario(String email, String password) {
+        Optional<Usuario> usuario = usuarioDAO.autenticar(email, password);
 
-    public AuthService(UsuarioDAO usuarioDAO) {
-        this.usuarioDAO = usuarioDAO;
-    }
-
-    public Optional<Usuario> verificarUsuario(
-            String email,
-            String password
-    ) {
-        if (email == null || email.isBlank()
-                || password == null || password.isBlank()) {
-            return Optional.empty();
-        }
-
-        Optional<Usuario> resultado =
-                usuarioDAO.buscarPorEmail(email.trim());
-
-        if (resultado.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Usuario usuario = resultado.get();
-
-        if (!Boolean.TRUE.equals(usuario.getEstadoActivo())) {
-            return Optional.empty();
-        }
-
-        if (!PasswordUtil.verificar(
-                password,
-                usuario.getContrasena())) {
-            return Optional.empty();
+        if (usuario.isPresent() && Boolean.TRUE.equals(usuario.get().getEstadoActivo())) {
+            iniciarSesion(usuario.get());
+            return usuario;
         }
 
         return Optional.of(usuario);
     }
 
-    public static void setCurrentUser(Usuario user) {
+    private static void iniciarSesion(Usuario user) {
         currentUser = user;
+        permisosActuales = permisoDAO.obtenerPorRolId(user.getIdRol())
+                .stream()
+                .map(Permiso::getClavePermiso)
+                .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    public static void limpiarSesion() {
+        currentUser = null;
+        permisosActuales = Collections.emptySet();
+    }
+
+    public static boolean tienePermiso(String clavePermiso) {
+        return permisosActuales.contains(clavePermiso);
     }
 
     public static Usuario getCurrentUser() {
         return currentUser;
     }
 
-    public static void limpiarSesion() {
-        currentUser = null;
+    public static boolean haySesion() {
+        return currentUser != null;
     }
 }
