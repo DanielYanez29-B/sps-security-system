@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
-    // SQLs con el nombre correcto de columna: id_usuario
     private static final String INSERT_USER =
             "INSERT INTO USUARIO (id_rol, username, email, contrasena, estado_activo) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_USER =
@@ -132,6 +131,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             e.printStackTrace();
         }
         return Optional.empty();
+    }
+
+    @Override
+    public void obtenerPermisos(){
+
     }
 
     // Helper para evitar duplicar código de binding en INSERT y UPDATE
