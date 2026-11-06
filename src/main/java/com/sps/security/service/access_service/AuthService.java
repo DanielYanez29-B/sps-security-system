@@ -35,18 +35,20 @@ public class AuthService {
         }
     }
 
-    private final UsuarioDAO usuarioDAO;
-    private static Usuario currentUser;
 
     public Optional<Usuario> verificarUsuario(String email, String password) {
-        Optional<Usuario> usuario = usuarioDAO.autenticar(email, password);
+        Optional<Usuario> usuario = usuarioDAO.buscarPorEmail(email);
 
-        if (usuario.isPresent() && Boolean.TRUE.equals(usuario.get().getEstadoActivo())) {
+        if (usuario.isPresent()
+                && Boolean.TRUE.equals(usuario.get().getEstadoActivo())
+                && PasswordUtil.verificar(
+                password,
+                usuario.get().getContrasena())) {
             iniciarSesion(usuario.get());
             return usuario;
         }
 
-        return Optional.of(usuario);
+        return Optional.empty();
     }
 
     private static void iniciarSesion(Usuario user) {

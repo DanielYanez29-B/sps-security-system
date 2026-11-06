@@ -195,7 +195,9 @@ INSERT INTO ROL_PERMISO (id_rol, id_permiso) VALUES
                                                  (2, 2), (2, 3);
 
 INSERT INTO USUARIO (id_usuario, id_rol, username, email, contrasena, estado_activo) VALUES
-    (1, 1, 'admin', 'admin@sps-security.com', 'admin123', TRUE);
+    (1, 1, 'admin', 'admin@sps-security.com',
+     '$2a$12$4OMPPDOkCIUq03qbF.bZTOwRu5B9Q0vve6KES/oUaAN7dpK9p3WBi',
+     TRUE);
 
 INSERT INTO JORNADA (nombre_jornada, hora_inicio, hora_fin, estado_actividad) VALUES
                                                                                   ('Matutino 8h', '06:00:00', '14:00:00', TRUE),
