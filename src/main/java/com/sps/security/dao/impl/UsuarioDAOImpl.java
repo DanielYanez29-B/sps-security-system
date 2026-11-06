@@ -140,6 +140,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         return Optional.empty();
     }
 
+
     // Helper para evitar duplicar código de binding en INSERT y UPDATE
     private void setStatementParams(PreparedStatement pstmt, Usuario usuario) throws SQLException {
         if (usuario.getIdRol() != null) {
