@@ -1,27 +1,32 @@
 package com.sps.security.model.telemetry;
 
 import com.sps.security.model.enums.EstadoAlarma;
-
-import java.time.LocalDate;
+import com.sps.security.model.enums.NivelPrioridad;
 import java.time.LocalDateTime;
 
 public class Alarma {
     private Integer idAlarma;
+    private Integer idDispositivo;
     private LocalDateTime fechaHora;
-    private EstadoAlarma estadoActual;
-    private String ubicacion;
+    private NivelPrioridad nivelPrioridad;
     private String tipoAlarma;
+    private EstadoAlarma estado;
+    private String descripcion;
 
     public Alarma(Integer idAlarma,
+                  Integer idDispositivo,
                   LocalDateTime fechaHora,
-                  EstadoAlarma estadoActual,
-                  String ubicacion,
-                  String tipoAlarma) {
+                  NivelPrioridad nivelPrioridad,
+                  String tipoAlarma,
+                  EstadoAlarma estado,
+                  String descripcion) {
         this.idAlarma = idAlarma;
+        this.idDispositivo = idDispositivo;
         this.fechaHora = fechaHora;
-        this.estadoActual = estadoActual;
-        this.ubicacion = ubicacion;
+        this.nivelPrioridad = nivelPrioridad;
         this.tipoAlarma = tipoAlarma;
+        this.estado = estado;
+        this.descripcion = descripcion;
     }
 
     public Integer getIdAlarma() {
@@ -32,6 +37,14 @@ public class Alarma {
         this.idAlarma = idAlarma;
     }
 
+    public Integer getIdDispositivo() {
+        return idDispositivo;
+    }
+
+    public void setIdDispositivo(Integer idDispositivo) {
+        this.idDispositivo = idDispositivo;
+    }
+
     public LocalDateTime getFechaHora() {
         return fechaHora;
     }
@@ -40,20 +53,27 @@ public class Alarma {
         this.fechaHora = fechaHora;
     }
 
-    public EstadoAlarma getEstadoActual() {
-        return estadoActual;
+    public NivelPrioridad getNivelPrioridad() {
+        return nivelPrioridad;
     }
 
-    public void setEstadoActual(EstadoAlarma estadoActual) {
-        this.estadoActual = estadoActual;
+    public void setNivelPrioridad(NivelPrioridad nivelPrioridad) {
+        this.nivelPrioridad = nivelPrioridad;
     }
 
-    public String getUbicacion() {
-        return ubicacion;
+    public EstadoAlarma getEstado() {
+        return estado;
     }
 
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
+    public void setEstado(EstadoAlarma estado) {
+        this.estado = estado;
+    }
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public String getTipoAlarma() {

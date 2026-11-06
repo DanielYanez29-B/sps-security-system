@@ -6,6 +6,7 @@ import com.sps.security.dao.impl.UsuarioDAOImpl;
 import com.sps.security.model.access.Permiso;
 import com.sps.security.model.access.Rol;
 import com.sps.security.model.users.Usuario;
+import com.sps.security.util.PasswordUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class AuthService {
         }
     }
 
+    private final UsuarioDAO usuarioDAO;
+    private static Usuario currentUser;
 
     public Optional<Usuario> verificarUsuario(String email, String password) {
         Optional<Usuario> usuario = usuarioDAO.autenticar(email, password);
@@ -42,7 +45,8 @@ public class AuthService {
             iniciarSesion(usuario.get());
             return usuario;
         }
-        return Optional.empty();
+
+        return Optional.of(usuario);
     }
 
     private static void iniciarSesion(Usuario user) {
