@@ -34,6 +34,7 @@ public class AuthService {
         }
     }
 
+
     public Optional<Usuario> verificarUsuario(String email, String password) {
         Optional<Usuario> usuario = usuarioDAO.autenticar(email, password);
 
