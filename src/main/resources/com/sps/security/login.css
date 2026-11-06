@@ -1,0 +1,180 @@
+/* --- RAÍZ Y FONDO GLOBAL --- */
+.login-root {
+    -fx-background-color: #060B11;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- ENCABEZADO --- */
+.header-bar {
+    -fx-background-color: transparent;
+}
+
+.logo-icon-box {
+    -fx-background-color: #10B98120;
+    -fx-border-color: #10B981;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4 8;
+}
+
+.logo-icon {
+    -fx-font-size: 14px;
+}
+
+.logo-text-bold {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1px;
+}
+
+.logo-divider {
+    -fx-text-fill: #334155;
+    -fx-font-size: 16px;
+}
+
+.logo-text-sub {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 11px;
+    -fx-letter-spacing: 2px;
+}
+
+.nav-link {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 13px;
+    -fx-underline: false;
+    -fx-border-color: transparent;
+}
+
+.nav-link:hover {
+    -fx-text-fill: #FFFFFF;
+}
+
+.nav-link-active {
+    -fx-text-fill: #A3E635;
+    -fx-border-color: #A3E635;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* --- SECCIÓN IZQUIERDA (HERO) --- */
+.hero-title {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 38px;
+    -fx-font-weight: bold;
+}
+
+.hero-subtitle {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 16px;
+}
+
+.hero-line-accent {
+    -fx-background-color: #10B981;
+    -fx-background-radius: 2;
+}
+
+.hero-description {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 14px;
+}
+
+.feature-icon {
+    -fx-font-size: 16px;
+}
+
+.feature-text {
+    -fx-text-fill: #CBD5E1;
+    -fx-font-size: 14px;
+}
+
+/* --- TARJETA DE LOGIN (DERECHA) --- */
+.login-card {
+    -fx-background-color: #0E1620;
+    -fx-border-color: #1E2D3D;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 20, 0, 0, 10);
+}
+
+.card-title-accent {
+    -fx-text-fill: #A3E635;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.card-title {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.field-label {
+    -fx-text-fill: #E2E8F0;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Campos de entrada */
+.custom-input {
+    -fx-background-color: #141F2B;
+    -fx-border-color: #243447;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #475569;
+    -fx-padding: 10 14;
+    -fx-font-size: 13px;
+}
+
+.custom-input:focused {
+    -fx-border-color: #10B981;
+    -fx-background-color: #162433;
+}
+
+/* Botón principal */
+.btn-primary {
+    -fx-background-color: #A3E635;
+    -fx-text-fill: #091306;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 12 0;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #B4F542;
+    -fx-effect: dropshadow(three-pass-box, rgba(163, 230, 53, 0.3), 10, 0, 0, 0);
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #8ECA28;
+}
+
+/* Links secundaarios */
+.link-forgot {
+    -fx-text-fill: #A3E635;
+    -fx-font-size: 12px;
+    -fx-underline: true;
+}
+
+.link-forgot:hover {
+    -fx-text-fill: #B4F542;
+}
+
+.error-label {
+    -fx-text-fill: #EF4444;
+    -fx-font-size: 12px;
+}
+
+/* --- FOOTER --- */
+.footer-bar {
+    -fx-background-color: transparent;
+}
+
+.footer-text {
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+}

@@ -11,11 +11,13 @@ import java.util.Optional;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
-    // SQLs con el nombre correcto de columna: id_usuario
     private static final String INSERT_USER =
             "INSERT INTO USUARIO (id_rol, username, email, contrasena, estado_activo) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_USER =
-            "UPDATE USUARIO SET id_rol = ?, username = ?, email = ?, contrasena = ?, estado_activo = ? WHERE id_usuario = ?";
+            "UPDATE USUARIO SET " +
+                    "id_rol = ?, username = ?, email = ?, " +
+                    "estado_activo = ? " +
+                    "WHERE id_usuario = ?";
     private static final String DELETE_USER =
             "DELETE FROM USUARIO WHERE id_usuario = ?";
     private static final String SELECT_USER_BY_ID =
@@ -23,7 +25,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     private static final String SELECT_ALL_USERS =
             "SELECT * FROM USUARIO";
     private static final String AUTENTICAR =
-            "SELECT * FROM USUARIO WHERE email = ? AND contrasena = ?";
+            "SELECT * FROM USUARIO WHERE email = ?";
 
     @Override
     public boolean guardar(Usuario usuario) {
@@ -116,12 +118,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public Optional<Usuario> autenticar(String email, String password) {
+    public Optional<Usuario> buscarPorEmail(String email) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(AUTENTICAR)) {
+             PreparedStatement pstmt =
+                     conn.prepareStatement(AUTENTICAR)) {
 
             pstmt.setString(1, email);
-            pstmt.setString(2, password);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -129,10 +131,15 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(
+                    "No se pudo buscar el usuario por email.",
+                    e
+            );
         }
+
         return Optional.empty();
     }
+
 
     // Helper para evitar duplicar código de binding en INSERT y UPDATE
     private void setStatementParams(PreparedStatement pstmt, Usuario usuario) throws SQLException {
@@ -157,4 +164,5 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         usuario.setEstadoActivo(rs.getBoolean("estado_activo"));
         return usuario;
     }
+
 }

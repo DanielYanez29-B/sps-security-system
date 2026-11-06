@@ -1,37 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<VBox prefHeight="400.0" prefWidth="600.0"
-      xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.sps.security.controller.LoginController">
-    <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-    </padding>
-    <children>
-        <Label text="Iniciar Sesión">
-            <font>
-                <Font name="System Bold" size="20.0" />
-            </font>
-        </Label>
-        <VBox spacing="5.0">
-            <children>
-                <Label text="Email" />
-                <TextField fx:id="txtEmail" promptText="Ingresa tu email" />
-            </children>
-        </VBox>
-        <VBox spacing="5.0">
-            <children>
-                <Label text="Contraseña" />
-                <PasswordField fx:id="txtPassword" promptText="Ingresa tu contraseña" />
-            </children>
-        </VBox>
-        <Button  maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#autenticar" text="Ingresar" />
-      <Label fx:id="advertenciaLabel" prefHeight="26.0" prefWidth="541.0" textAlignment="CENTER" textFill="RED" />
-    </children>
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sps.security.controller.LoginController"
+            stylesheets="@login.css"
+            prefWidth="1100" prefHeight="650" styleClass="login-root">
 
-</VBox>
+    <!-- ================= ENCABEZADO / HEADER ================= -->
+    <top>
+        <HBox styleClass="header-bar" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="20" right="40" bottom="20" left="40"/>
+            </padding>
+
+            <!-- Logo SPS -->
+            <HBox alignment="CENTER_LEFT" spacing="12" HBox.hgrow="ALWAYS">
+                <StackPane styleClass="logo-icon-box">
+                    <Label text="🛡" styleClass="logo-icon"/>
+                </StackPane>
+                <Label text="S.P.S." styleClass="logo-text-bold"/>
+                <Label text="|" styleClass="logo-divider"/>
+                <Label text="SEGURIDAD PRIVADA" styleClass="logo-text-sub"/>
+            </HBox>
+
+            <!-- Links de Navegación -->
+            <HBox alignment="CENTER_RIGHT" spacing="25" styleClass="nav-links">
+                <Hyperlink text="Inicio" styleClass="nav-link, nav-link-active"/>
+                <Hyperlink text="Servicios" styleClass="nav-link"/>
+                <Hyperlink text="Contacto" styleClass="nav-link"/>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <center>
+        <HBox alignment="CENTER" spacing="60" styleClass="main-container">
+            <padding>
+                <Insets top="30" right="50" bottom="30" left="50"/>
+            </padding>
+
+            <!-- PANEL IZQUIERDO: Información del Sistema -->
+            <VBox alignment="CENTER_LEFT" spacing="18" HBox.hgrow="ALWAYS" maxWidth="480">
+                <VBox spacing="6">
+                    <Label text="Acceso al sistema" styleClass="hero-title"/>
+                    <Label text="Centro de monitoreo y gestión de seguridad" styleClass="hero-subtitle"/>
+                </VBox>
+
+                <!-- Línea decorativa neón -->
+                <Region styleClass="hero-line-accent" maxWidth="80" prefHeight="3"/>
+
+                <Label text="Administra servicios, personal y alertas desde una sola plataforma."
+                       styleClass="hero-description" wrapText="true"/>
+
+                <VBox spacing="14" styleClass="features-list">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label text="🖥" styleClass="feature-icon"/>
+                        <Label text="Monitoreo en tiempo real" styleClass="feature-text"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label text="👥" styleClass="feature-icon"/>
+                        <Label text="Gestión de guardias" styleClass="feature-text"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label text="🔔" styleClass="feature-icon"/>
+                        <Label text="Alertas inteligentes" styleClass="feature-text"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- PANEL DERECHO: Tarjeta de Login -->
+            <VBox alignment="CENTER" HBox.hgrow="NEVER">
+                <VBox styleClass="login-card" spacing="20" prefWidth="380">
+                    <padding>
+                        <Insets top="35" right="30" bottom="35" left="30"/>
+                    </padding>
+
+                    <!-- Título de la tarjeta -->
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="//" styleClass="card-title-accent"/>
+                        <Label text="Iniciar sesión" styleClass="card-title"/>
+                    </HBox>
+
+                    <!-- Campo Usuario / Email -->
+                    <VBox spacing="6">
+                        <Label text="Usuario" styleClass="field-label"/>
+                        <TextField fx:id="txtEmail" promptText="Ingresa tu usuario" styleClass="custom-input"/>
+                    </VBox>
+
+                    <!-- Campo Contraseña -->
+                    <VBox spacing="6">
+                        <Label text="Contraseña" styleClass="field-label"/>
+                        <PasswordField fx:id="txtPassword" promptText="Ingresa tu contraseña" styleClass="custom-input"/>
+                    </VBox>
+
+                    <!-- Mensaje de Error (si existe en tu lógica) -->
+                    <Label fx:id="lblError" styleClass="error-label" visible="false" managed="false"/>
+
+                    <!-- Botón Ingresar -->
+                    <Button onAction="#autenticar" text="INICIAR SESIÓN" maxWidth="Infinity" styleClass="btn-primary"/>
+
+                    <!-- Link Olvidé Contraseña -->
+                    <HBox alignment="CENTER">
+                        <Hyperlink text="¿Olvidaste tu contraseña?" styleClass="link-forgot"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </HBox>
+    </center>
+
+    <!-- ================= PIE DE PÁGINA / FOOTER ================= -->
+    <bottom>
+        <HBox styleClass="footer-bar" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="40" bottom="15" left="40"/>
+            </padding>
+            <Label text="S.P.S. · Plataforma de Seguridad Integral" styleClass="footer-text" HBox.hgrow="ALWAYS"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="© 2026" styleClass="footer-text"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

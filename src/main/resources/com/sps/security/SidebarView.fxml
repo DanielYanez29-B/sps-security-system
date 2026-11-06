@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sps.security.controller.SidebarController"
+      styleClass="sidebar" prefWidth="240" spacing="15">
+    <padding>
+        <Insets top="20" right="15" bottom="20" left="15"/>
+    </padding>
+
+    <!-- Logo SPS -->
+    <VBox alignment="CENTER" spacing="5" styleClass="logo-box">
+        <Label text="S.P.S." styleClass="logo-title"/>
+        <Label text="SEGURIDAD PRIVADA" styleClass="logo-subtitle"/>
+    </VBox>
+
+    <!-- Menú de Navegación -->
+    <VBox spacing="8" VBox.vgrow="ALWAYS" styleClass="nav-menu">
+        <ToggleButton fx:id="btnInicio" onAction="#onInicio" text="Inicio" styleClass="nav-button" selected="true" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnUsuarios" onAction="#onUsuarios" text="Usuarios" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnGuardias" onAction="#onGuardias" text="Guardias" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnServicios" onAction="#onServicios" text="Servicios" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnMonitoreo" onAction="#onMonitoreo" text="Monitoreo" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnAlertas" onAction="#onAlertas" text="Alertas" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnReportes" onAction="#onReportes" text="Reportes" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnConfig" onAction="#onConfig" text="Configuración" styleClass="nav-button" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- Tarjeta informativa / Estado -->
+    <VBox styleClass="status-card" spacing="5">
+        <Label text="Seguridad en tiempo real" styleClass="status-card-title"/>
+        <Label text="Siempre un paso adelante." styleClass="status-card-sub"/>
+    </VBox>
+
+    <!-- Perfil de usuario (Abajo) -->
+    <VBox spacing="10" styleClass="user-section">
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="user-card">
+            <!-- Avatar placeholder -->
+            <StackPane styleClass="user-avatar">
+                <Label text="NT" styleClass="avatar-text"/>
+            </StackPane>
+            <VBox HBox.hgrow="ALWAYS">
+                <Label fx:id="lblUserName" styleClass="user-name"/>
+                <Label fx:id="lblUserRole" styleClass="user-role"/>
+            </VBox>
+        </HBox>
+        <Button onAction="#onLogout" text="Cerrar sesión" styleClass="logout-button" maxWidth="Infinity"/>
+    </VBox>
+</VBox>

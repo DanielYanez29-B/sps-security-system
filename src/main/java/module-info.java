@@ -7,6 +7,7 @@ module com.sps.security {
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
     requires java.sql;
+    requires bcrypt;
 
 
     opens com.sps.security.controller to javafx.fxml;
