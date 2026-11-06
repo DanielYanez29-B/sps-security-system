@@ -15,6 +15,8 @@ public class Rol {
         this.permisos = permisos;
     }
 
+    public Rol() {};
+
     public Integer getIdRol() {
         return idRol;
     }

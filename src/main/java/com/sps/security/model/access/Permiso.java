@@ -10,6 +10,7 @@ public class Permiso {
         this.clavePermiso = clavePermiso;
         this.descripcion = descripcion;
     }
+    public Permiso(){};
 
     public Integer getIdPermiso() {
         return idPermiso;
