@@ -133,10 +133,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         return Optional.empty();
     }
 
-    @Override
-    public void obtenerPermisos(){
-
-    }
 
     // Helper para evitar duplicar código de binding en INSERT y UPDATE
     private void setStatementParams(PreparedStatement pstmt, Usuario usuario) throws SQLException {
