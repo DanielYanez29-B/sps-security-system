@@ -7,6 +7,7 @@ import com.sps.security.model.access.Permiso;
 import com.sps.security.model.access.Rol;
 import com.sps.security.model.users.Usuario;
 import com.sps.security.util.PasswordUtil;
+import com.sps.security.util.TareasBackground;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,6 +63,7 @@ public class AuthService {
     public static void limpiarSesion() {
         currentUser = null;
         permisosActuales = Collections.emptySet();
+        TareasBackground.detenerTodo();
     }
 
     public static boolean tienePermiso(String clavePermiso) {
