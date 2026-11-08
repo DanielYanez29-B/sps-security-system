@@ -18,7 +18,7 @@ public class AuthService {
     private static final RolDAOImpl rolDAO = new RolDAOImpl();
 
     private static final Map<Integer, Set<String>> permisosPorRol = new HashMap<>();
-    private static Usuario currentUser = null;
+    private static volatile Usuario currentUser = null;
     private static Set<String> permisosActuales = Collections.emptySet();
 
     static {
