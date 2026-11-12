@@ -1,6 +1,7 @@
 package com.sps.security;
 
 import com.sps.security.util.NavigationService;
+import com.sps.security.util.TareasBackground;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,5 +17,10 @@ public class HelloApplication extends Application {
         stage.setTitle("Sistema de Monitoreo SPS");
         NavigationService.getInstance().cargarVista("login-view.fxml");;
 
+    }
+
+    @Override
+    public void stop() {
+        TareasBackground.detenerTodo();
     }
 }
