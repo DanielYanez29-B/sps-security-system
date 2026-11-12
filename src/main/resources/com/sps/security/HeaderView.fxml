@@ -20,7 +20,7 @@
     <HBox alignment="CENTER_RIGHT" spacing="15">
         <!-- Indicador Online y Hora -->
         <HBox alignment="CENTER" spacing="8" styleClass="status-badge">
-            <Region styleClass="status-dot-online"/>
+            <Region styleClass="status-dot-online"/>>
             <Label fx:id="lblStatusTime"  styleClass="status-text"/>
         </HBox>
 

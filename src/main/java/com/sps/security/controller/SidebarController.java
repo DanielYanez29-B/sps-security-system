@@ -5,11 +5,10 @@ import com.sps.security.service.access_service.AuthService;
 import com.sps.security.util.NavigationService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SidebarController implements Initializable {
@@ -55,8 +54,10 @@ public class SidebarController implements Initializable {
 
     @FXML
     public void onLogout() {
-        AuthService.limpiarSesion();
-        NavigationService.getInstance().cargarVista("login-view.fxml");
+        if (confirmacionCerrarSesion()) {
+            AuthService.limpiarSesion();
+            NavigationService.getInstance().cargarVista("login-view.fxml");
+        }
     }
 
     @FXML
@@ -139,5 +140,19 @@ public class SidebarController implements Initializable {
         boolean canSeeConfig = AuthService.tienePermiso("ROL_GESTION") || AuthService.tienePermiso("DISPOSITIVO_CONFIG");
         btnConfig.setVisible(canSeeConfig);
         btnConfig.setManaged(canSeeConfig);
+    }
+
+    private boolean confirmacionCerrarSesion(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar Cierre de Sesión");
+        alert.setHeaderText("¿Estás seguro de que quieres cerrar la sesión?");
+        alert.setContentText("Selecciona 'Aceptar' para confirmar o 'Cancelar' para volver atrás.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
