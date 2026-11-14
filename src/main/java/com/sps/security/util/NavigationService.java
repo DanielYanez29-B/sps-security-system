@@ -3,19 +3,23 @@ package com.sps.security.util;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
 import java.io.IOException;
+import java.net.URL;
 
 public class NavigationService {
 
     private static NavigationService instance;
+
     private Stage stage;
 
-    // Ruta base donde se encuentran tus vistas FXML
-    private static final String FXML_PATH = "/com/sps/security/";
+    private static final String FXML_PATH =
+            "/com/sps/security/";
 
     private NavigationService() {
-        // Constructor privado para patrón Singleton
     }
 
     public static NavigationService getInstance() {
@@ -25,22 +29,13 @@ public class NavigationService {
         return instance;
     }
 
-    /**
-     * Debe llamarse una sola vez al iniciar la aplicación en el método start() de Main.
-     */
     public void setPrimaryStage(Stage stage) {
         this.stage = stage;
     }
 
-    /**
-     * Carga y cambia la vista principal en la ventana actual.
-     * @param fxmlName Nombre del archivo FXML (ejemplo: "Login.fxml" o "Dashboard.fxml")
-     */
     public void cargarVista(String fxmlName) {
         try {
-            String fullPath = FXML_PATH + fxmlName;
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fullPath));
-            Parent root = loader.load();
+            Parent root = cargarFXML(fxmlName);
 
             if (stage.getScene() == null) {
                 stage.setScene(new Scene(root));
@@ -53,18 +48,18 @@ public class NavigationService {
             stage.show();
 
         } catch (IOException e) {
-            System.err.println("Error al cargar la vista FXML: " + fxmlName);
+            System.err.println(
+                    "Error al cargar la vista FXML: " + fxmlName
+            );
             e.printStackTrace();
         }
     }
 
-    /**
-     * Sobrecarga del método cargarVista para devolver el controlador si se necesita pasar parámetros.
-     */
     public <T> T cargarVistaConControlador(String fxmlName) {
         try {
-            String fullPath = FXML_PATH + fxmlName;
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fullPath));
+            URL url = obtenerURL(fxmlName);
+
+            FXMLLoader loader = new FXMLLoader(url);
             Parent root = loader.load();
 
             if (stage.getScene() == null) {
@@ -80,9 +75,68 @@ public class NavigationService {
             return loader.getController();
 
         } catch (IOException e) {
-            System.err.println("Error al cargar la vista: " + fxmlName);
+            System.err.println(
+                    "Error al cargar la vista: " + fxmlName
+            );
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void cargarVistaEnContenido(String fxmlName) {
+        if (stage == null || stage.getScene() == null) {
+            throw new IllegalStateException(
+                    "La ventana principal no está inicializada."
+            );
+        }
+
+        Node nodo = stage.getScene()
+                .getRoot()
+                .lookup("#contentArea");
+
+        if (!(nodo instanceof StackPane contentArea)) {
+            throw new IllegalStateException(
+                    "No se encontró el StackPane contentArea "
+                            + "en la pantalla principal."
+            );
+        }
+
+        try {
+            Parent vista = cargarFXML(fxmlName);
+
+            contentArea.getChildren().setAll(vista);
+
+        } catch (IOException e) {
+            System.err.println(
+                    "Error al cargar el contenido: " + fxmlName
+            );
+            e.printStackTrace();
+        }
+    }
+
+    private Parent cargarFXML(String fxmlName)
+            throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                obtenerURL(fxmlName)
+        );
+
+        return loader.load();
+    }
+
+    private URL obtenerURL(String fxmlName)
+            throws IOException {
+
+        String ruta = FXML_PATH + fxmlName;
+
+        URL url = getClass().getResource(ruta);
+
+        if (url == null) {
+            throw new IOException(
+                    "No se encontró el archivo FXML: " + ruta
+            );
+        }
+
+        return url;
     }
 }
