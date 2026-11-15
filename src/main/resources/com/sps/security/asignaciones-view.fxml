@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.sps.security.controller.GestionAsignacionesController"
+            stylesheets="@operativo.css"
+            styleClass="operativo-root"
+            fitToWidth="true"
+            hbarPolicy="NEVER">
+
+    <VBox spacing="22" styleClass="operativo-content">
+
+        <VBox spacing="6">
+
+            <Label text="Gestión de Asignaciones"
+                   styleClass="operativo-title"/>
+
+            <Label text="Organiza el personal de seguridad por servicio, jornada y fecha."
+                   styleClass="operativo-subtitle"/>
+
+        </VBox>
+
+        <VBox spacing="18" styleClass="operativo-card">
+
+            <Label text="Datos de la asignación"
+                   styleClass="operativo-card-title"/>
+
+            <Label text="Utiliza los identificadores de registros existentes en MySQL."
+                   styleClass="operativo-subtitle"/>
+
+            <GridPane hgap="16" vgap="14">
+
+                <columnConstraints>
+                    <ColumnConstraints minWidth="155"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="ID del guardia"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="0"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoIdGuardia"
+                           promptText="Ejemplo: 1"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="0"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="ID del servicio"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="1"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoIdServicio"
+                           promptText="Ejemplo: 1"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="1"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="ID de la jornada"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="2"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoIdJornada"
+                           promptText="Ejemplo: 1"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="2"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Fecha de asignación"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="3"
+                       GridPane.columnIndex="0"/>
+
+                <DatePicker fx:id="campoFechaAsignacion"
+                            styleClass="operativo-input"
+                            GridPane.rowIndex="3"
+                            GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+            <HBox spacing="10">
+
+                <Button fx:id="botonGuardar"
+                        text="Registrar asignación"
+                        onAction="#guardarAsignacion"
+                        styleClass="operativo-button,operativo-primary"/>
+
+                <Button text="Nuevo / Limpiar"
+                        onAction="#nuevaAsignacion"
+                        styleClass="operativo-button,operativo-secondary"/>
+
+                <Button text="Eliminar asignación"
+                        onAction="#eliminarAsignacion"
+                        styleClass="operativo-button,operativo-danger"/>
+
+            </HBox>
+
+        </VBox>
+
+        <VBox spacing="16" styleClass="operativo-card">
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+
+                <Label text="Asignaciones registradas"
+                       styleClass="operativo-card-title"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Actualizar tabla"
+                        onAction="#actualizarTabla"
+                        styleClass="operativo-button,operativo-secondary"/>
+
+            </HBox>
+
+            <TableView fx:id="tablaAsignaciones"
+                       prefHeight="350"
+                       styleClass="operativo-table"
+                       VBox.vgrow="ALWAYS">
+
+                <columns>
+
+                    <TableColumn fx:id="columnaId"
+                                 text="ID"
+                                 prefWidth="75"/>
+
+                    <TableColumn fx:id="columnaGuardia"
+                                 text="ID Guardia"
+                                 prefWidth="145"/>
+
+                    <TableColumn fx:id="columnaServicio"
+                                 text="ID Servicio"
+                                 prefWidth="145"/>
+
+                    <TableColumn fx:id="columnaJornada"
+                                 text="ID Jornada"
+                                 prefWidth="145"/>
+
+                    <TableColumn fx:id="columnaFecha"
+                                 text="Fecha de asignación"
+                                 prefWidth="190"/>
+
+                </columns>
+
+            </TableView>
+
+        </VBox>
+
+    </VBox>
+
+</ScrollPane>
