@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.sps.security.controller.GestionGuardiasController"
+            stylesheets="@operativo.css"
+            styleClass="operativo-root"
+            fitToWidth="true"
+            hbarPolicy="NEVER">
+
+    <VBox spacing="22" styleClass="operativo-content">
+
+        <VBox spacing="6">
+
+            <Label text="Gestión de Guardias"
+                   styleClass="operativo-title"/>
+
+            <Label text="Gestiona y consulta el estado de tu personal operativo."
+                   styleClass="operativo-subtitle"/>
+
+        </VBox>
+
+        <VBox spacing="18" styleClass="operativo-card">
+
+            <Label text="Datos del guardia"
+                   styleClass="operativo-card-title"/>
+
+            <GridPane hgap="16" vgap="14">
+
+                <columnConstraints>
+                    <ColumnConstraints minWidth="145"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="ID de usuario"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="0"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoIdUsuario"
+                           promptText="Opcional"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="0"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Nombres"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="1"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoNombres"
+                           promptText="Nombres del guardia"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="1"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Apellido paterno"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="2"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoApellidoPaterno"
+                           promptText="Apellido paterno"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="2"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Apellido materno"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="3"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoApellidoMaterno"
+                           promptText="Opcional"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="3"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="RFC"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="4"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoRfc"
+                           promptText="RFC opcional"
+                           styleClass="operativo-input"
+                           GridPane.rowIndex="4"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Fecha de ingreso"
+                       styleClass="operativo-label"
+                       GridPane.rowIndex="5"
+                       GridPane.columnIndex="0"/>
+
+                <DatePicker fx:id="campoFechaIngreso"
+                            styleClass="operativo-input"
+                            GridPane.rowIndex="5"
+                            GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+            <HBox spacing="10">
+
+                <Button fx:id="botonGuardar"
+                        text="Registrar guardia"
+                        onAction="#guardarGuardia"
+                        styleClass="operativo-button,operativo-primary"/>
+
+                <Button text="Nuevo / Limpiar"
+                        onAction="#nuevoGuardia"
+                        styleClass="operativo-button,operativo-secondary"/>
+
+                <Button text="Activar"
+                        onAction="#activarGuardia"
+                        styleClass="operativo-button,operativo-success"/>
+
+                <Button text="Desactivar"
+                        onAction="#desactivarGuardia"
+                        styleClass="operativo-button,operativo-danger"/>
+
+            </HBox>
+
+        </VBox>
+
+        <VBox spacing="16" styleClass="operativo-card">
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+
+                <Label text="Guardias registrados"
+                       styleClass="operativo-card-title"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Actualizar tabla"
+                        onAction="#actualizarTabla"
+                        styleClass="operativo-button,operativo-secondary"/>
+
+            </HBox>
+
+            <TableView fx:id="tablaGuardias"
+                       prefHeight="350"
+                       styleClass="operativo-table"
+                       VBox.vgrow="ALWAYS">
+
+                <columns>
+
+                    <TableColumn fx:id="columnaId"
+                                 text="ID"
+                                 prefWidth="65"/>
+
+                    <TableColumn fx:id="columnaNombre"
+                                 text="Nombre completo"
+                                 prefWidth="230"/>
+
+                    <TableColumn fx:id="columnaRfc"
+                                 text="RFC"
+                                 prefWidth="165"/>
+
+                    <TableColumn fx:id="columnaFecha"
+                                 text="Fecha de ingreso"
+                                 prefWidth="155"/>
+
+                    <TableColumn fx:id="columnaEstado"
+                                 text="Estado"
+                                 prefWidth="110"/>
+
+                </columns>
+
+            </TableView>
+
+        </VBox>
+
+    </VBox>
+
+</ScrollPane>

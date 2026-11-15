@@ -1,109 +1,62 @@
 package com.sps.security.model.operative;
 
 import java.time.LocalDate;
-import java.util.Objects;
+
 
 public class Guardia {
-    private Integer idGuardia;
-    private Integer idCliente;
+    private int idGuardia;
     private Integer idUsuario;
     private String nombres;
     private String apellidoPaterno;
     private String apellidoMaterno;
+    private String rfc;
     private LocalDate fechaIngreso;
-    private Boolean estatusActivo;
+    private boolean estatusActivo;
 
-    public Guardia(Integer idGuardia,
-                   Integer idCliente,
-                   Integer idUsuario,
-                   String nombres,
-                   String apellidoPaterno,
-                   String apellidoMaterno,
-                   LocalDate fechaIngreso,
-                   Boolean estatusActivo) {
+    public Guardia() {
+        this.estatusActivo = true;
+    }
+
+    public Guardia(int idGuardia, Integer idUsuario, String nombres,
+                   String apellidoPaterno, String apellidoMaterno,
+                   LocalDate fechaIngreso, String rfc, boolean estatusActivo) {
         this.idGuardia = idGuardia;
-        this.idCliente = idCliente;
         this.idUsuario = idUsuario;
         this.nombres = nombres;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
         this.fechaIngreso = fechaIngreso;
+        this.rfc = rfc;
         this.estatusActivo = estatusActivo;
     }
 
-    public Integer getIdGuardia() {
-        return idGuardia;
-    }
+    public int getIdGuardia() { return idGuardia; }
+    public void setIdGuardia(int idGuardia) { this.idGuardia = idGuardia; }
 
-    private void setIdGuardia(Integer idGuardia) {
-        this.idGuardia = idGuardia;
-    }
+    public Integer getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
 
-    public Integer getIdCliente() {
-        return idCliente;
-    }
+    public String getNombres() { return nombres; }
+    public void setNombres(String nombres) { this.nombres = nombres; }
 
-    public void setIdCliente(Integer idCliente) {
-        this.idCliente = idCliente;
-    }
+    public String getApellidoPaterno() { return apellidoPaterno; }
+    public void setApellidoPaterno(String apellidoPaterno) { this.apellidoPaterno = apellidoPaterno; }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
+    public String getApellidoMaterno() { return apellidoMaterno; }
+    public void setApellidoMaterno(String apellidoMaterno) { this.apellidoMaterno = apellidoMaterno; }
 
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+    public String getRfc() { return rfc; }
+    public void setRfc(String rfc) { this.rfc = rfc; }
 
-    public String getNombres() {
-        return nombres;
-    }
+    public LocalDate getFechaIngreso() { return fechaIngreso; }
+    public void setFechaIngreso(LocalDate fechaIngreso) { this.fechaIngreso = fechaIngreso; }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
-    }
-
-    public String getApellidoPaterno() {
-        return apellidoPaterno;
-    }
-
-    public void setApellidoPaterno(String apellidoPaterno) {
-        this.apellidoPaterno = apellidoPaterno;
-    }
-
-    public String getApellidoMaterno() {
-        return apellidoMaterno;
-    }
-
-    public void setApellidoMaterno(String apellidoMaterno) {
-        this.apellidoMaterno = apellidoMaterno;
-    }
-
-    public LocalDate getFechaIngreso() {
-        return fechaIngreso;
-    }
-
-    public void setFechaIngreso(LocalDate fechaIngreso) {
-        this.fechaIngreso = fechaIngreso;
-    }
-
-    public Boolean getEstatusActivo() {
-        return estatusActivo;
-    }
-
-    public void setEstatusActivo(Boolean estatusActivo) {
-        this.estatusActivo = estatusActivo;
-    }
+    public boolean isEstatusActivo() { return estatusActivo; }
+    public void setEstatusActivo(boolean estatusActivo) { this.estatusActivo = estatusActivo; }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Guardia guardia = (Guardia) o;
-        return Objects.equals(getIdGuardia(), guardia.getIdGuardia()) && Objects.equals(getIdCliente(), guardia.getIdCliente()) && Objects.equals(getIdUsuario(), guardia.getIdUsuario()) && Objects.equals(getNombres(), guardia.getNombres()) && Objects.equals(getApellidoPaterno(), guardia.getApellidoPaterno()) && Objects.equals(getApellidoMaterno(), guardia.getApellidoMaterno()) && Objects.equals(getFechaIngreso(), guardia.getFechaIngreso()) && Objects.equals(getEstatusActivo(), guardia.getEstatusActivo());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getIdGuardia(), getIdCliente(), getIdUsuario(), getNombres(), getApellidoPaterno(), getApellidoMaterno(), getFechaIngreso(), getEstatusActivo());
+    public String toString() {
+        String materno = (apellidoMaterno == null || apellidoMaterno.isBlank()) ? "" : " " + apellidoMaterno;
+        return nombres + " " + apellidoPaterno + materno;
     }
 }
