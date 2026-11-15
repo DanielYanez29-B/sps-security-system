@@ -55,7 +55,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
              PreparedStatement pstmt = conn.prepareStatement(UPDATE_USER)) {
 
             setStatementParams(pstmt, usuario);
-            pstmt.setInt(6, usuario.getIdUsuario());
+            pstmt.setInt(5, usuario.getIdUsuario());
 
             return pstmt.executeUpdate() > 0;
 
