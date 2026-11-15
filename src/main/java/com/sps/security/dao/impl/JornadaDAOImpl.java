@@ -1,7 +1,7 @@
 package com.sps.security.dao.impl;
 
 import com.sps.security.dao.JornadaDAO;
-import com.sps.security.model.Jornada;
+import com.sps.security.model.operative.Jornada;
 import com.sps.security.util.DatabaseConnection;
 
 import java.sql.*;
@@ -13,7 +13,7 @@ public class JornadaDAOImpl implements JornadaDAO {
 
     @Override
     public boolean guardar(Jornada jornada) {
-        // CORRECCIÓN: nombre -> nombre_jornada | activo -> estado_actividad
+
         String sql = "INSERT INTO JORNADA (nombre_jornada, hora_inicio, hora_fin, estado_actividad) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -63,7 +63,6 @@ public class JornadaDAOImpl implements JornadaDAO {
 
     @Override
     public boolean actualizar(Jornada jornada) {
-        // CORRECCIÓN: nombre -> nombre_jornada | activo -> estado_actividad
         String sql = "UPDATE JORNADA SET nombre_jornada = ?, hora_inicio = ?, hora_fin = ?, estado_actividad = ? WHERE id_jornada = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -94,7 +93,6 @@ public class JornadaDAOImpl implements JornadaDAO {
 
     @Override
     public Optional<Jornada> obtenerPorNombre(String nombreTurno) {
-        // CORRECCIÓN: nombre -> nombre_jornada
         String sql = "SELECT * FROM JORNADA WHERE nombre_jornada = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
