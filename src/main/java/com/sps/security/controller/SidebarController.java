@@ -70,14 +70,18 @@ public class SidebarController implements Initializable {
         NavigationService.getInstance().cargarVista("usuarios-view.fxml");
     }
 
+
     @FXML
     public void onGuardias() {
-        // NavigationService.getInstance().cargarVista("guardias-view.fxml");
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("guardias-view.fxml");
     }
+
 
     @FXML
     public void onServicios() {
-        // NavigationService.getInstance().cargarVista("servicios-view.fxml");
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("asignaciones-view.fxml");
     }
 
     @FXML

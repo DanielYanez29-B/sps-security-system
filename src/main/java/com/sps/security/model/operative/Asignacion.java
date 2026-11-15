@@ -1,7 +1,6 @@
 package com.sps.security.model.operative;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Asignacion {
     private Integer idAsignacion;
