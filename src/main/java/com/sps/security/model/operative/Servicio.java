@@ -1,24 +1,30 @@
+
 package com.sps.security.model.operative;
 
 import java.time.LocalDate;
 
 public class Servicio {
+
     private Integer idServicio;
     private Integer idCliente;
     private String nombreServicio;
+    private String direccion;
     private LocalDate fechaInicio;
-    private LocalDate fechaFin;
+    private String estado;
 
     public Servicio(Integer idServicio,
                     Integer idCliente,
                     String nombreServicio,
+                    String direccion,
                     LocalDate fechaInicio,
-                    LocalDate fechaFin) {
+                    String estado) {
+
         this.idServicio = idServicio;
         this.idCliente = idCliente;
         this.nombreServicio = nombreServicio;
+        this.direccion = direccion;
         this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
+        this.estado = estado;
     }
 
     public Integer getIdServicio() {
@@ -45,6 +51,14 @@ public class Servicio {
         this.nombreServicio = nombreServicio;
     }
 
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }
@@ -53,13 +67,11 @@ public class Servicio {
         this.fechaInicio = fechaInicio;
     }
 
-    public LocalDate getFechaFin() {
-        return fechaFin;
+    public String getEstado() {
+        return estado;
     }
 
-    public void setFechaFin(LocalDate fechaFin) {
-        this.fechaFin = fechaFin;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
-
-
 }
