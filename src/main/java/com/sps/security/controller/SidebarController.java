@@ -80,7 +80,8 @@ public class SidebarController implements Initializable {
 
     @FXML
     public void onServicios() {
-        // NavigationService.getInstance().cargarVista("servicios-view.fxml");
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("asignaciones-view.fxml");
     }
 
     @FXML
