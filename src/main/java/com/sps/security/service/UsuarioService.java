@@ -23,6 +23,10 @@ public class  UsuarioService {
         return usuarioDAO.obtenerTodos();
     }
 
+    public List<Usuario> listarUsuariosActivosEInactivos(String activoEInactivo) {
+        return usuarioDAO.obtenerUsuariosActivosEInactivos(activoEInactivo);
+    }
+
     public void registrarUsuario(Usuario usuario) {
         validarCamposObligatorios(usuario, true);
         validarFormatoEmail(usuario.getEmail());
@@ -68,7 +72,6 @@ public class  UsuarioService {
             throw new RuntimeException("Error en base de datos: No se pudo eliminar el usuario.");
         }
     }
-
     // Reglas de Validación de Negocio
     private void validarCamposObligatorios(Usuario u, boolean esNuevo) {
         if (u == null) {
