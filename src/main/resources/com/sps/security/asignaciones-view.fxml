@@ -27,7 +27,7 @@
             <Label text="Datos de la asignación"
                    styleClass="operativo-card-title"/>
 
-            <Label text="Utiliza los identificadores de registros existentes en MySQL."
+            <Label text="Selecciona un guardia, un servicio y una jornada activos."
                    styleClass="operativo-subtitle"/>
 
             <GridPane hgap="16" vgap="14">
@@ -37,38 +37,41 @@
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
-                <Label text="ID del guardia"
+                <Label text="Guardia"
                        styleClass="operativo-label"
                        GridPane.rowIndex="0"
                        GridPane.columnIndex="0"/>
 
-                <TextField fx:id="campoIdGuardia"
-                           promptText="Ejemplo: 1"
-                           styleClass="operativo-input"
-                           GridPane.rowIndex="0"
-                           GridPane.columnIndex="1"/>
+                <ComboBox fx:id="campoIdGuardia"
+                          promptText="Selecciona un guardia"
+                          maxWidth="Infinity"
+                          styleClass="operativo-input"
+                          GridPane.rowIndex="0"
+                          GridPane.columnIndex="1"/>
 
-                <Label text="ID del servicio"
+                <Label text="Servicio"
                        styleClass="operativo-label"
                        GridPane.rowIndex="1"
                        GridPane.columnIndex="0"/>
 
-                <TextField fx:id="campoIdServicio"
-                           promptText="Ejemplo: 1"
-                           styleClass="operativo-input"
-                           GridPane.rowIndex="1"
-                           GridPane.columnIndex="1"/>
+                <ComboBox fx:id="campoIdServicio"
+                          promptText="Selecciona un servicio"
+                          maxWidth="Infinity"
+                          styleClass="operativo-input"
+                          GridPane.rowIndex="1"
+                          GridPane.columnIndex="1"/>
 
-                <Label text="ID de la jornada"
+                <Label text="Jornada"
                        styleClass="operativo-label"
                        GridPane.rowIndex="2"
                        GridPane.columnIndex="0"/>
 
-                <TextField fx:id="campoIdJornada"
-                           promptText="Ejemplo: 1"
-                           styleClass="operativo-input"
-                           GridPane.rowIndex="2"
-                           GridPane.columnIndex="1"/>
+                <ComboBox fx:id="campoIdJornada"
+                          promptText="Selecciona una jornada"
+                          maxWidth="Infinity"
+                          styleClass="operativo-input"
+                          GridPane.rowIndex="2"
+                          GridPane.columnIndex="1"/>
 
                 <Label text="Fecha de asignación"
                        styleClass="operativo-label"
@@ -76,6 +79,7 @@
                        GridPane.columnIndex="0"/>
 
                 <DatePicker fx:id="campoFechaAsignacion"
+                            maxWidth="Infinity"
                             styleClass="operativo-input"
                             GridPane.rowIndex="3"
                             GridPane.columnIndex="1"/>
@@ -112,6 +116,21 @@
 
                 <Button text="Actualizar tabla"
                         onAction="#actualizarTabla"
+                        styleClass="operativo-button,operativo-secondary"/>
+
+            </HBox>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+
+                <Label text="Filtrar por fecha"
+                       styleClass="operativo-label"/>
+
+                <DatePicker fx:id="filtroFecha"
+                            promptText="Todas las fechas"
+                            styleClass="operativo-input"/>
+
+                <Button text="Limpiar filtro"
+                        onAction="#limpiarFiltro"
                         styleClass="operativo-button,operativo-secondary"/>
 
             </HBox>
