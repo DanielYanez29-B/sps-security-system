@@ -2,6 +2,8 @@ module com.sps.security {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
+    requires javafx.media;
+    requires java.desktop;
 
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.javafx;
@@ -12,6 +14,8 @@ module com.sps.security {
 
     opens com.sps.security.controller to javafx.fxml;
     opens com.sps.security.model.users to javafx.fxml;
+    opens com.sps.security.model.telemetry to javafx.fxml;
+    opens com.sps.security.model.enums to javafx.fxml;
     opens com.sps.security.service to javafx.fxml;
     opens com.sps.security to javafx.fxml;
     exports com.sps.security;

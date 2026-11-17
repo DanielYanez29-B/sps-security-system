@@ -99,12 +99,14 @@ public class SidebarController implements Initializable {
 
     @FXML
     public void onMonitoreo() {
-        // NavigationService.getInstance().cargarVista("monitoreo-view.fxml");
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("dispositivos-view.fxml");
     }
 
     @FXML
     public void onAlertas() {
-        // NavigationService.getInstance().cargarVista("alertas-view.fxml");
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("alarmas-view.fxml");
     }
 
     @FXML

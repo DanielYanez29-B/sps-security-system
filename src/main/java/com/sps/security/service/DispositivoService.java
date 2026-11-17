@@ -2,6 +2,8 @@ package com.sps.security.service;
 
 import com.sps.security.dao.DispositivoDAO;
 import com.sps.security.dao.impl.DispositivoDAOImpl;
+import com.sps.security.dao.ServicioDAO;
+import com.sps.security.dao.impl.ServicioDAOImpl;
 import com.sps.security.model.telemetry.Dispositivo;
 
 import java.util.Optional;
@@ -12,20 +14,28 @@ public class DispositivoService {
             "^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$";
 
     private final DispositivoDAO dispositivoDAO;
+    private final ServicioDAO servicioDAO;
 
     public DispositivoService() {
         this.dispositivoDAO = new DispositivoDAOImpl();
+        this.servicioDAO = new ServicioDAOImpl();
     }
 
     public DispositivoService(DispositivoDAO dispositivoDAO) {
+        this(dispositivoDAO, null);
+    }
+
+    public DispositivoService(DispositivoDAO dispositivoDAO, ServicioDAO servicioDAO) {
         if (dispositivoDAO == null) {
             throw new IllegalArgumentException("El DAO no puede ser nulo.");
         }
         this.dispositivoDAO = dispositivoDAO;
+        this.servicioDAO = servicioDAO;
     }
 
     public void registrar(Dispositivo dispositivo) {
         validarDatos(dispositivo);
+        validarServicio(dispositivo.getIdServicio());
 
         Optional<Dispositivo> existente =
                 dispositivoDAO.obtenerPorNumSerie(dispositivo.getNumSerie());
@@ -35,6 +45,7 @@ public class DispositivoService {
                     "El número de serie ya está registrado."
             );
         }
+        validarMacDuplicada(dispositivo.getMacAddress(), null);
 
         prepararParaGuardar(dispositivo);
 
@@ -55,6 +66,7 @@ public class DispositivoService {
         }
 
         validarDatos(dispositivo);
+        validarServicio(dispositivo.getIdServicio());
 
         Optional<Dispositivo> existente =
                 dispositivoDAO.obtenerPorNumSerie(dispositivo.getNumSerie());
@@ -66,6 +78,7 @@ public class DispositivoService {
                     "El número de serie ya pertenece a otro dispositivo."
             );
         }
+        validarMacDuplicada(dispositivo.getMacAddress(), dispositivo.getIdDispositivo());
 
         prepararParaGuardar(dispositivo);
 
@@ -149,6 +162,32 @@ public class DispositivoService {
 
         if (dispositivo.getEstadoActividad() == null) {
             dispositivo.setEstadoActividad(true);
+        }
+    }
+
+    private void validarServicio(Integer idServicio) {
+        if (servicioDAO == null) return;
+        var servicio = servicioDAO.obtenerPorId(idServicio)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "El servicio seleccionado no existe."));
+        if (servicio.getEstado() != null
+                && !"ACTIVO".equalsIgnoreCase(servicio.getEstado())) {
+            throw new IllegalArgumentException(
+                    "El servicio seleccionado está inactivo.");
+        }
+    }
+
+    private void validarMacDuplicada(String mac, Integer idActual) {
+        if (mac == null || mac.isBlank()) return;
+        String normalizada = mac.toUpperCase();
+        boolean duplicada = dispositivoDAO.obtenerTodos().stream()
+                .filter(d -> d.getMacAddress() != null
+                        && d.getMacAddress().equalsIgnoreCase(normalizada))
+                .anyMatch(d -> idActual == null
+                        || !idActual.equals(d.getIdDispositivo()));
+        if (duplicada) {
+            throw new IllegalArgumentException(
+                    "La dirección MAC ya está registrada.");
         }
     }
 

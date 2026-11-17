@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sps.security.controller.NotificacionesController"
+      spacing="10" styleClass="operativo-content">
+    <Label text="Notificaciones" styleClass="operativo-title"/>
+    <HBox spacing="8">
+        <Button text="Marcar seleccionada" onAction="#marcarLeida"/>
+        <Button text="Marcar todas como leídas" onAction="#marcarTodas"/>
+    </HBox>
+    <TableView fx:id="tablaNotificaciones" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="columnaFecha" text="Fecha"/>
+            <TableColumn fx:id="columnaMensaje" text="Mensaje" prefWidth="500"/>
+            <TableColumn fx:id="columnaLeida" text="Estado"/>
+        </columns>
+    </TableView>
+</VBox>

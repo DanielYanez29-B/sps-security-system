@@ -26,8 +26,8 @@
 
         <!-- Botón de Notificaciones con Insignia (Badge) -->
         <StackPane styleClass="notification-container">
-            <Button fx:id="btnNotifications" text="🔔" styleClass="icon-button"/>
-            <Label fx:id="lblNotificationCount" text="3" styleClass="notification-badge"
+            <Button fx:id="btnNotifications" text="🔔" onAction="#onNotifications" styleClass="icon-button"/>
+            <Label fx:id="lblNotificationCount" text="0" styleClass="notification-badge"
                    StackPane.alignment="TOP_RIGHT"/>
         </StackPane>
 

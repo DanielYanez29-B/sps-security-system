@@ -89,6 +89,10 @@ public class  UsuarioService {
         if (esNuevo && (u.getContrasena() == null || u.getContrasena().isBlank())) {
             throw new IllegalArgumentException("La contraseña es obligatoria para nuevos registros.");
         }
+        if (u.getContrasena() != null && !u.getContrasena().isBlank()
+                && !u.getContrasena().startsWith("$2") && u.getContrasena().length() < 8) {
+            throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres.");
+        }
     }
 
     private void validarFormatoEmail(String email) {
