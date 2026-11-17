@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 
 public class GestionUsuariosController {
 
@@ -25,11 +26,25 @@ public class GestionUsuariosController {
     @FXML private PasswordField txtContrasena;
     @FXML private TextField txtIdRol;
     @FXML private CheckBox chkEstadoActivo;
+    @FXML
+    private StackPane modalFormulario;
 
     // Servicio de Negocio y Lista de Datos
     private final UsuarioService usuarioService = new UsuarioService();
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     private Usuario usuarioSeleccionado = null;
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
+    }
 
     @FXML
     public void initialize() {
@@ -41,6 +56,30 @@ public class GestionUsuariosController {
             if (newSel != null) {
                 usuarioSeleccionado = newSel;
                 cargarFormulario(newSel);
+            }
+        });
+        // Indicador visual con punto de color en la columna Estado
+        colEstado.setCellFactory(column -> new javafx.scene.control.TableCell<>() {
+            @Override
+            protected void updateItem(Boolean activo, boolean empty) {
+                super.updateItem(activo, empty);
+                if (empty || activo == null) {
+                    setText(null);
+                    setStyle("");
+                } else if (activo) {
+                    setText("●  Activo");
+                    setStyle("-fx-text-fill: #16A34A; -fx-font-weight: bold;");
+                } else {
+                    setText("●  Inactivo");
+                    setStyle("-fx-text-fill: #94A3B8; -fx-font-weight: bold;");
+                }
+            }
+        });
+
+// Abrir el modal automáticamente al hacer doble clic en un usuario para editar/eliminar
+        tblUsuarios.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tblUsuarios.getSelectionModel().getSelectedItem() != null) {
+                mostrarFormulario();
             }
         });
     }

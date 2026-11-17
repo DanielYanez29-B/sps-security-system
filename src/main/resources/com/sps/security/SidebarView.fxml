@@ -20,6 +20,8 @@
     <VBox spacing="8" VBox.vgrow="ALWAYS" styleClass="nav-menu">
         <ToggleButton fx:id="btnInicio" onAction="#onInicio" text="Inicio" styleClass="nav-button" selected="true" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnUsuarios" onAction="#onUsuarios" text="Usuarios" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnJornadas" onAction="#onJornadas" text="Jornadas" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnAsignaciones" onAction="#onAsignaciones" text="Asignaciones" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnGuardias" onAction="#onGuardias" text="Guardias" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnServicios" onAction="#onServicios" text="Servicios" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnMonitoreo" onAction="#onMonitoreo" text="Monitoreo" styleClass="nav-button" maxWidth="Infinity"/>
