@@ -1,11 +1,15 @@
+
 package com.sps.security.service;
 
 import com.sps.security.dao.AsignacionDAO;
+import com.sps.security.dao.JornadaDAO;
 import com.sps.security.model.operative.Asignacion;
+import com.sps.security.model.operative.Jornada;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +21,7 @@ public class AsignacionServiceTest {
 
     private AsignacionService service;
     private AsignacionDAOFalso dao;
+    private JornadaDAOFalso jornadaDAO;
     private ValidadorFalso validador;
 
     private final LocalDate fecha =
@@ -25,8 +30,37 @@ public class AsignacionServiceTest {
     @BeforeEach
     void preparar() {
         dao = new AsignacionDAOFalso();
+        jornadaDAO = new JornadaDAOFalso();
         validador = new ValidadorFalso();
-        service = new AsignacionService(dao, validador);
+
+        jornadaDAO.agregar(new Jornada(
+                1, "Matutino", LocalTime.of(8, 0),
+                LocalTime.of(14, 0), true
+        ));
+
+        jornadaDAO.agregar(new Jornada(
+                2, "Vespertino", LocalTime.of(14, 0),
+                LocalTime.of(22, 0), true
+        ));
+
+        jornadaDAO.agregar(new Jornada(
+                3, "Nocturno", LocalTime.of(22, 0),
+                LocalTime.of(6, 0), true
+        ));
+
+        jornadaDAO.agregar(new Jornada(
+                4, "Intermedio", LocalTime.of(12, 0),
+                LocalTime.of(20, 0), true
+        ));
+
+        jornadaDAO.agregar(new Jornada(
+                5, "Temprano", LocalTime.of(5, 0),
+                LocalTime.of(13, 0), true
+        ));
+
+        service = new AsignacionService(
+                dao, jornadaDAO, validador
+        );
     }
 
     @Test
@@ -122,11 +156,7 @@ public class AsignacionServiceTest {
                 .get(0).getIdAsignacion();
 
         service.actualizarAsignacion(
-                id,
-                1,
-                2,
-                2,
-                fecha.plusDays(1)
+                id, 1, 2, 2, fecha.plusDays(1)
         );
 
         Asignacion actualizada =
@@ -165,6 +195,81 @@ public class AsignacionServiceTest {
         assertEquals(1, resultado.get(0).getIdGuardia());
     }
 
+    @Test
+    void rechazarTraslapeMismoDia() {
+        service.registrarAsignacion(1, 1, 1, fecha);
+
+        IllegalArgumentException error = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarAsignacion(
+                        1, 2, 4, fecha
+                )
+        );
+
+        assertTrue(error.getMessage().contains("traslapa"));
+        assertEquals(1, service.listarAsignaciones().size());
+    }
+
+    @Test
+    void permitirJornadasConsecutivas() {
+        service.registrarAsignacion(1, 1, 1, fecha);
+        service.registrarAsignacion(1, 2, 2, fecha);
+
+        assertEquals(2, service.listarAsignaciones().size());
+    }
+
+    @Test
+    void rechazarTraslapeNocturnoDiaSiguiente() {
+        service.registrarAsignacion(1, 1, 3, fecha);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarAsignacion(
+                        1, 2, 5, fecha.plusDays(1)
+                )
+        );
+
+        assertEquals(1, service.listarAsignaciones().size());
+    }
+
+    @Test
+    void rechazarTraslapeNocturnoDiaAnterior() {
+        service.registrarAsignacion(
+                1, 1, 3, fecha.minusDays(1)
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarAsignacion(
+                        1, 2, 5, fecha
+                )
+        );
+
+        assertEquals(1, service.listarAsignaciones().size());
+    }
+
+    @Test
+    void rechazarActualizacionConTraslape() {
+        service.registrarAsignacion(1, 1, 1, fecha);
+        service.registrarAsignacion(1, 2, 2, fecha);
+
+        Integer idSegunda = service.listarAsignaciones()
+                .get(1).getIdAsignacion();
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.actualizarAsignacion(
+                        idSegunda, 1, 2, 4, fecha
+                )
+        );
+
+        Asignacion segunda =
+                service.obtenerAsignacionPorId(idSegunda)
+                        .orElseThrow();
+
+        assertEquals(2, segunda.getIdJornada());
+    }
+
     private static class ValidadorFalso
             implements AsignacionService.ValidadorReferencias {
 
@@ -185,6 +290,65 @@ public class AsignacionServiceTest {
         @Override
         public boolean jornadaActiva(Integer idJornada) {
             return jornadaActiva;
+        }
+    }
+
+    private static class JornadaDAOFalso
+            implements JornadaDAO {
+
+        private final List<Jornada> jornadas =
+                new ArrayList<>();
+
+        void agregar(Jornada jornada) {
+            jornadas.add(jornada);
+        }
+
+        @Override
+        public boolean guardar(Jornada jornada) {
+            jornadas.add(jornada);
+            return true;
+        }
+
+        @Override
+        public boolean actualizar(Jornada jornada) {
+            for (int i = 0; i < jornadas.size(); i++) {
+                if (jornadas.get(i).getIdJornada()
+                        == jornada.getIdJornada()) {
+                    jornadas.set(i, jornada);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean eliminar(Jornada jornada) {
+            return jornadas.removeIf(
+                    j -> j.getIdJornada()
+                            == jornada.getIdJornada()
+            );
+        }
+
+        @Override
+        public Optional<Jornada> obtenerPorId(Integer id) {
+            return jornadas.stream()
+                    .filter(j -> j.getIdJornada() == id)
+                    .findFirst();
+        }
+
+        @Override
+        public List<Jornada> obtenerTodos() {
+            return new ArrayList<>(jornadas);
+        }
+
+        @Override
+        public Optional<Jornada> obtenerPorNombre(
+                String nombreTurno) {
+
+            return jornadas.stream()
+                    .filter(j -> j.getNombre()
+                            .equalsIgnoreCase(nombreTurno))
+                    .findFirst();
         }
     }
 
@@ -214,7 +378,6 @@ public class AsignacionServiceTest {
                     return true;
                 }
             }
-
             return false;
         }
 

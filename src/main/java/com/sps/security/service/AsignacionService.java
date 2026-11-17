@@ -1,8 +1,18 @@
+
 package com.sps.security.service;
 
 import com.sps.security.dao.AsignacionDAO;
+import com.sps.security.dao.GuardiaDAO;
+import com.sps.security.dao.JornadaDAO;
+import com.sps.security.dao.ServicioDAO;
 import com.sps.security.dao.impl.AsignacionDAOImpl;
+import com.sps.security.dao.impl.GuardiaDAOImpl;
+import com.sps.security.dao.impl.JornadaDAOImpl;
+import com.sps.security.dao.impl.ServicioDAOImpl;
 import com.sps.security.model.operative.Asignacion;
+import com.sps.security.model.operative.Guardia;
+import com.sps.security.model.operative.Jornada;
+import com.sps.security.model.operative.Servicio;
 import com.sps.security.util.DatabaseConnection;
 
 import java.sql.Connection;
@@ -17,18 +27,42 @@ import java.util.Optional;
 public class AsignacionService {
 
     private final AsignacionDAO asignacionDAO;
+    private final JornadaDAO jornadaDAO;
     private final ValidadorReferencias validador;
 
     public AsignacionService() {
-        this(new AsignacionDAOImpl(), new ValidadorSQL());
+        this(
+                new AsignacionDAOImpl(),
+                new JornadaDAOImpl(),
+                new ValidadorSQL()
+        );
     }
 
     public AsignacionService(
             AsignacionDAO asignacionDAO,
+            JornadaDAO jornadaDAO,
             ValidadorReferencias validador) {
 
         this.asignacionDAO = Objects.requireNonNull(asignacionDAO);
+        this.jornadaDAO = Objects.requireNonNull(jornadaDAO);
         this.validador = Objects.requireNonNull(validador);
+    }
+
+    public List<Guardia> listarGuardiasActivos() {
+        GuardiaDAO guardiaDAO = new GuardiaDAOImpl();
+        return guardiaDAO.obtenerGuardiasActivos();
+    }
+
+    public List<Servicio> listarServiciosActivos() {
+        ServicioDAO servicioDAO = new ServicioDAOImpl();
+        return servicioDAO.obtenerServiciosActivos();
+    }
+
+    public List<Jornada> listarJornadasActivas() {
+        return jornadaDAO.obtenerTodos()
+                .stream()
+                .filter(Jornada::isActivo)
+                .toList();
     }
 
     public void registrarAsignacion(
@@ -51,6 +85,13 @@ public class AsignacionService {
         );
 
         validarDuplicados(
+                idGuardia,
+                idJornada,
+                fechaAsignacion,
+                null
+        );
+
+        validarTraslapes(
                 idGuardia,
                 idJornada,
                 fechaAsignacion,
@@ -96,6 +137,13 @@ public class AsignacionService {
         );
 
         validarDuplicados(
+                idGuardia,
+                idJornada,
+                fechaAsignacion,
+                idAsignacion
+        );
+
+        validarTraslapes(
                 idGuardia,
                 idJornada,
                 fechaAsignacion,
@@ -177,7 +225,9 @@ public class AsignacionService {
         }
     }
 
-    private void validarId(Integer id, String nombre) {
+    private void validarId(
+            Integer id,
+            String nombre) {
 
         if (id == null || id <= 0) {
             throw new IllegalArgumentException(
@@ -224,11 +274,12 @@ public class AsignacionService {
 
         for (Asignacion existente : asignaciones) {
 
-            boolean esOtraAsignacion =
-                    !Objects.equals(
-                            existente.getIdAsignacion(),
-                            idAsignacionActual
-                    );
+            if (Objects.equals(
+                    existente.getIdAsignacion(),
+                    idAsignacionActual
+            )) {
+                continue;
+            }
 
             boolean mismaJornada = Objects.equals(
                     existente.getIdJornada(),
@@ -240,16 +291,86 @@ public class AsignacionService {
                     fechaAsignacion
             );
 
-            if (esOtraAsignacion
-                    && mismaJornada
-                    && mismaFecha) {
-
+            if (mismaJornada && mismaFecha) {
                 throw new IllegalArgumentException(
                         "El guardia ya tiene una asignación "
                                 + "en esa fecha y jornada."
                 );
             }
         }
+    }
+
+    private void validarTraslapes(
+            Integer idGuardia,
+            Integer idJornada,
+            LocalDate fechaAsignacion,
+            Integer idAsignacionActual) {
+
+        Jornada nuevaJornada =
+                obtenerJornada(idJornada);
+
+        List<Asignacion> asignaciones =
+                asignacionDAO.obtenerAsignacionesPorGuardia(
+                        idGuardia
+                );
+
+        for (Asignacion existente : asignaciones) {
+
+            if (Objects.equals(
+                    existente.getIdAsignacion(),
+                    idAsignacionActual
+            )) {
+                continue;
+            }
+
+            LocalDate fechaExistente =
+                    existente.getFechaAsignacion();
+
+            if (fechaExistente == null) {
+                throw new IllegalStateException(
+                        "Una asignación existente no tiene fecha."
+                );
+            }
+
+            if (Math.abs(
+                    fechaExistente.toEpochDay()
+                            - fechaAsignacion.toEpochDay()
+            ) > 1) {
+                continue;
+            }
+
+            Jornada jornadaExistente =
+                    obtenerJornada(
+                            existente.getIdJornada()
+                    );
+
+            boolean hayTraslape =
+                    ValidadorTraslapes.seTraslapan(
+                            fechaAsignacion,
+                            nuevaJornada.getHoraInicio(),
+                            nuevaJornada.getHoraFin(),
+                            fechaExistente,
+                            jornadaExistente.getHoraInicio(),
+                            jornadaExistente.getHoraFin()
+                    );
+
+            if (hayTraslape) {
+                throw new IllegalArgumentException(
+                        "El guardia ya tiene una asignación "
+                                + "con un horario que se traslapa."
+                );
+            }
+        }
+    }
+
+    private Jornada obtenerJornada(
+            Integer idJornada) {
+
+        return jornadaDAO.obtenerPorId(idJornada)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No se encontró la jornada con ID "
+                                + idJornada
+                ));
     }
 
     public interface ValidadorReferencias {
@@ -265,7 +386,8 @@ public class AsignacionService {
             implements ValidadorReferencias {
 
         @Override
-        public boolean guardiaActivo(Integer idGuardia) {
+        public boolean guardiaActivo(
+                Integer idGuardia) {
 
             return existeRegistro(
                     "SELECT 1 FROM GUARDIA "
@@ -276,7 +398,8 @@ public class AsignacionService {
         }
 
         @Override
-        public boolean servicioActivo(Integer idServicio) {
+        public boolean servicioActivo(
+                Integer idServicio) {
 
             return existeRegistro(
                     "SELECT 1 FROM SERVICIO "
@@ -287,7 +410,8 @@ public class AsignacionService {
         }
 
         @Override
-        public boolean jornadaActiva(Integer idJornada) {
+        public boolean jornadaActiva(
+                Integer idJornada) {
 
             return existeRegistro(
                     "SELECT 1 FROM JORNADA "
@@ -308,14 +432,16 @@ public class AsignacionService {
 
                 stmt.setInt(1, id);
 
-                try (ResultSet rs = stmt.executeQuery()) {
+                try (ResultSet rs =
+                             stmt.executeQuery()) {
+
                     return rs.next();
                 }
 
             } catch (SQLException e) {
                 throw new IllegalStateException(
-                        "Error al validar los datos de "
-                                + "la asignación: "
+                        "Error al validar los datos "
+                                + "de la asignación: "
                                 + e.getMessage(),
                         e
                 );
