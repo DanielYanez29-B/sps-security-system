@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sps.security.controller.GestionDispositivosController" fitToWidth="true">
+ <VBox spacing="12" styleClass="operativo-content">
+  <Label text="Gestión de dispositivos" styleClass="operativo-title"/>
+  <GridPane hgap="10" vgap="8">
+   <Label text="Servicio" GridPane.rowIndex="0"/><ComboBox fx:id="campoServicio" prefWidth="300" GridPane.columnIndex="1"/>
+   <Label text="Número de serie" GridPane.rowIndex="1"/><TextField fx:id="campoSerie" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+   <Label text="MAC" GridPane.rowIndex="2"/><TextField fx:id="campoMac" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+   <Label text="IP" GridPane.rowIndex="3"/><TextField fx:id="campoIp" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+   <Label text="Fabricante" GridPane.rowIndex="4"/><TextField fx:id="campoFabricante" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+   <Label text="Instalación" GridPane.rowIndex="5"/><DatePicker fx:id="campoFecha" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+  </GridPane>
+  <HBox spacing="8"><Button fx:id="botonGuardar" text="Registrar dispositivo" onAction="#guardar"/><Button text="Nuevo" onAction="#nuevo"/><Button text="Desactivar" onAction="#desactivar"/><Button text="Actualizar" onAction="#actualizar"/></HBox>
+  <HBox spacing="8"><Button text="Iniciar simulador" onAction="#iniciarSimulador"/><Button text="Detener simulador" onAction="#detenerSimulador"/></HBox>
+  <TableView fx:id="tablaDispositivos" prefHeight="400"><columns><TableColumn fx:id="columnaId" text="ID"/><TableColumn fx:id="columnaSerie" text="Serie"/><TableColumn fx:id="columnaMac" text="MAC"/><TableColumn fx:id="columnaIp" text="IP"/><TableColumn fx:id="columnaEstado" text="Estado"/></columns></TableView>
+ </VBox>
+</ScrollPane>

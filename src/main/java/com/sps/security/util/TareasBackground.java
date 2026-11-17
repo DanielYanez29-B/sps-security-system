@@ -27,8 +27,8 @@ public final class TareasBackground {
             try {
                 tarea.run();
             } catch (Exception e) {
-                // Si una ejecución lanza excepción, el scheduler cancela las siguientes en silencio.
-                e.printStackTrace();
+                System.err.println("Error en tarea de segundo plano: "
+                        + e.getMessage());
             }
         }, 0, periodoSegundos, TimeUnit.SECONDS);
     }
@@ -42,7 +42,11 @@ public final class TareasBackground {
     public static synchronized void detenerTodo() {
         scheduler.shutdownNow();                 // interrumpe los hilos del pool
         accionesDeCierre.forEach(accion -> {
-            try { accion.run(); } catch (Exception e) { e.printStackTrace(); }
+            try {
+                accion.run();
+            } catch (Exception e) {
+                System.err.println("Error al cerrar tarea: " + e.getMessage());
+            }
         });
         accionesDeCierre.clear();
         scheduler = crearScheduler();            // pool nuevo para el próximo login
