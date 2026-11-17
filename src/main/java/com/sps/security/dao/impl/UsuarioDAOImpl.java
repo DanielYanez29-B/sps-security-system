@@ -26,6 +26,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             "SELECT * FROM USUARIO";
     private static final String AUTENTICAR =
             "SELECT * FROM USUARIO WHERE email = ?";
+    private static final String ActivosEInactivos =
+            "SELECT * FROM USUARIO WHERE estado_activo = ?";
 
     @Override
     public boolean guardar(Usuario usuario) {
@@ -55,7 +57,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
              PreparedStatement pstmt = conn.prepareStatement(UPDATE_USER)) {
 
             setStatementParams(pstmt, usuario);
-            pstmt.setInt(6, usuario.getIdUsuario());
+            pstmt.setInt(5, usuario.getIdUsuario());
 
             return pstmt.executeUpdate() > 0;
 
@@ -138,6 +140,24 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuariosActivosEInactivos(String activoEInactivo) {
+        List<Usuario> usuarios = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(ActivosEInactivos);
+             ) {
+            pstmt.setString(1, activoEInactivo);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                usuarios.add(mapearUsuario(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usuarios;
     }
 
 

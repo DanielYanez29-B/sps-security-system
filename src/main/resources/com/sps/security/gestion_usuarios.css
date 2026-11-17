@@ -1,0 +1,179 @@
+/* ================= CONTENEDOR PRINCIPAL ================= */
+.main-content {
+    -fx-background-color: #F6F7FB;
+    -fx-padding: 28 32 28 32;
+    -fx-font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+}
+
+.page-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E293B;
+}
+
+.page-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748B;
+}
+
+.status-online {
+    -fx-text-fill: #16A34A;
+    -fx-font-weight: bold;
+    -fx-font-size: 12.5px;
+}
+
+/* ================= PESTAÑAS Y BOTÓN MORADO ================= */
+.filter-bar {
+    -fx-background-color: #ECEEF5;
+    -fx-background-radius: 14;
+    -fx-padding: 4;
+}
+
+.filter-pill {
+    -fx-background-color: transparent;
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+    -fx-padding: 7 18 7 18;
+    -fx-background-radius: 11;
+    -fx-cursor: hand;
+}
+
+.filter-pill:hover {
+    -fx-text-fill: #1E293B;
+}
+
+.filter-pill-active {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #6D28D9;
+    -fx-font-weight: bold;
+    -fx-border-color: #A78BFA;
+    -fx-border-radius: 11;
+    -fx-background-radius: 11;
+}
+
+.btn-primary-purple {
+    -fx-background-color: linear-gradient(to right, #8B5CF6, #7C3AED);
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 10 22 10 22;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.30), 10, 0, 0, 4);
+}
+
+.btn-primary-purple:hover {
+    -fx-background-color: #6D28D9;
+}
+
+/* ================= TABLA MODERNA ================= */
+.table-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 18;
+    -fx-padding: 12 20 12 20;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.05), 16, 0, 0, 4);
+}
+
+.modern-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.modern-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #F1F5F9 transparent;
+    -fx-border-width: 1;
+}
+
+.modern-table .column-header,
+.modern-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 46px;
+    -fx-border-color: transparent;
+}
+
+.modern-table .column-header .label {
+    -fx-text-fill: #64748B;
+    -fx-font-weight: bold;
+    -fx-font-size: 12.5px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 8;
+}
+
+.modern-table .table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-cell-size: 54px;
+    -fx-border-color: transparent transparent #F1F5F9 transparent;
+    -fx-border-width: 1;
+}
+
+.modern-table .table-row-cell:hover {
+    -fx-background-color: #F8FAFC;
+}
+
+.modern-table .table-row-cell:selected {
+    -fx-background-color: #F3E8FF;
+}
+
+.modern-table .table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.modern-table .table-cell {
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 13.5px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 8 0 8;
+}
+
+/* ================= MODAL Y FORMULARIO ================= */
+.modal-backdrop {
+    -fx-background-color: rgba(15, 23, 42, 0.45);
+}
+
+.modal-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 18;
+    -fx-padding: 24 28 24 28;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 24, 0, 0, 8);
+}
+
+.modal-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E293B;
+}
+
+.btn-close-modal {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #64748B;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+}
+
+.form-label {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #475569;
+}
+
+.modern-input {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 9 12 9 12;
+}
+
+.modern-input:focused {
+    -fx-border-color: #7C3AED;
+    -fx-background-color: #FFFFFF;
+}
+
+/* Botones de acción */
+.btn-success { -fx-background-color: #16A34A; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 14; -fx-font-weight: bold; -fx-cursor: hand; }
+.btn-info    { -fx-background-color: #2563EB; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 14; -fx-font-weight: bold; -fx-cursor: hand; }
+.btn-danger  { -fx-background-color: #DC2626; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 14; -fx-font-weight: bold; -fx-cursor: hand; }
+.btn-neutral { -fx-background-color: #E2E8F0; -fx-text-fill: #334155; -fx-background-radius: 10; -fx-padding: 8 14; -fx-font-weight: bold; -fx-cursor: hand; }

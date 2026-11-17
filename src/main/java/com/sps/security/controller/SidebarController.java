@@ -34,6 +34,10 @@ public class SidebarController implements Initializable {
     private ToggleButton btnReportes;
     @FXML
     private ToggleButton btnConfig;
+    @FXML
+    private ToggleButton btnAsignaciones;
+    @FXML
+    private ToggleButton btnJornadas;
 
 
     @Override
@@ -67,7 +71,8 @@ public class SidebarController implements Initializable {
 
     @FXML
     public void onUsuarios() {
-        NavigationService.getInstance().cargarVista("usuarios-view.fxml");
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("usuarios-view.fxml");
     }
 
 
@@ -80,8 +85,16 @@ public class SidebarController implements Initializable {
 
     @FXML
     public void onServicios() {
-        NavigationService.getInstance()
-                .cargarVistaEnContenido("asignaciones-view.fxml");
+    }
+
+    @FXML
+    public void onJornadas (){
+        NavigationService.getInstance().cargarVistaEnContenido("jornadas-view.fxml");
+    }
+
+    @FXML
+    public void onAsignaciones (){
+        NavigationService.getInstance().cargarVistaEnContenido("asignaciones-view.fxml");
     }
 
     @FXML

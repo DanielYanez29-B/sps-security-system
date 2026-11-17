@@ -2,34 +2,42 @@
 package com.sps.security.controller;
 
 import com.sps.security.model.operative.Asignacion;
+import com.sps.security.model.operative.Guardia;
+import com.sps.security.model.operative.Jornada;
+import com.sps.security.model.operative.Servicio;
 import com.sps.security.service.AsignacionService;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class GestionAsignacionesController {
 
     @FXML
-    private TextField campoIdGuardia;
+    private ComboBox<Opcion> campoIdGuardia;
 
     @FXML
-    private TextField campoIdServicio;
+    private ComboBox<Opcion> campoIdServicio;
 
     @FXML
-    private TextField campoIdJornada;
+    private ComboBox<Opcion> campoIdJornada;
 
     @FXML
     private DatePicker campoFechaAsignacion;
+
+    @FXML
+    private DatePicker filtroFecha;
 
     @FXML
     private TableView<Asignacion> tablaAsignaciones;
@@ -55,7 +63,20 @@ public class GestionAsignacionesController {
     private final AsignacionService asignacionService =
             new AsignacionService();
 
+    private final List<Asignacion> todasLasAsignaciones =
+            new ArrayList<>();
+
     private Asignacion asignacionSeleccionada;
+
+    private record Opcion(
+            Integer id,
+            String descripcion) {
+
+        @Override
+        public String toString() {
+            return descripcion;
+        }
+    }
 
     @FXML
     public void initialize() {
@@ -63,7 +84,8 @@ public class GestionAsignacionesController {
         columnaId.setCellValueFactory(data ->
                 new SimpleStringProperty(
                         String.valueOf(
-                                data.getValue().getIdAsignacion()
+                                data.getValue()
+                                        .getIdAsignacion()
                         )
                 )
         );
@@ -71,7 +93,8 @@ public class GestionAsignacionesController {
         columnaGuardia.setCellValueFactory(data ->
                 new SimpleStringProperty(
                         String.valueOf(
-                                data.getValue().getIdGuardia()
+                                data.getValue()
+                                        .getIdGuardia()
                         )
                 )
         );
@@ -79,7 +102,8 @@ public class GestionAsignacionesController {
         columnaServicio.setCellValueFactory(data ->
                 new SimpleStringProperty(
                         String.valueOf(
-                                data.getValue().getIdServicio()
+                                data.getValue()
+                                        .getIdServicio()
                         )
                 )
         );
@@ -87,54 +111,157 @@ public class GestionAsignacionesController {
         columnaJornada.setCellValueFactory(data ->
                 new SimpleStringProperty(
                         String.valueOf(
-                                data.getValue().getIdJornada()
+                                data.getValue()
+                                        .getIdJornada()
                         )
                 )
         );
 
         columnaFecha.setCellValueFactory(data -> {
+
             LocalDate fecha =
-                    data.getValue().getFechaAsignacion();
+                    data.getValue()
+                            .getFechaAsignacion();
 
             return new SimpleStringProperty(
-                    fecha == null ? "" : fecha.toString()
+                    fecha == null
+                            ? ""
+                            : fecha.toString()
             );
         });
 
         tablaAsignaciones.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((observable, anterior, actual) -> {
-                    if (actual != null) {
-                        seleccionarAsignacion(actual);
-                    }
-                });
+                .addListener(
+                        (observable, anterior, actual) -> {
 
-        campoFechaAsignacion.setValue(LocalDate.now());
+                            if (actual != null) {
+                                seleccionarAsignacion(actual);
+                            }
+                        }
+                );
 
-        cargarAsignaciones();
+        filtroFecha.valueProperty()
+                .addListener(
+                        (observable, anterior, actual) ->
+                                aplicarFiltro()
+                );
+
+        campoFechaAsignacion.setValue(
+                LocalDate.now()
+        );
+
+        cargarDatos();
+    }
+
+    private void cargarDatos() {
+
+        try {
+            cargarOpciones();
+            cargarAsignaciones();
+
+        } catch (RuntimeException e) {
+
+            mostrarMensaje(
+                    Alert.AlertType.ERROR,
+                    "Error al cargar datos",
+                    e.getMessage()
+            );
+        }
+    }
+
+    private void cargarOpciones() {
+
+        List<Opcion> guardias =
+                asignacionService.listarGuardiasActivos()
+                        .stream()
+                        .map(this::crearOpcionGuardia)
+                        .toList();
+
+        List<Opcion> servicios =
+                asignacionService.listarServiciosActivos()
+                        .stream()
+                        .map(this::crearOpcionServicio)
+                        .toList();
+
+        List<Opcion> jornadas =
+                asignacionService.listarJornadasActivas()
+                        .stream()
+                        .map(this::crearOpcionJornada)
+                        .toList();
+
+        campoIdGuardia.getItems().setAll(guardias);
+        campoIdServicio.getItems().setAll(servicios);
+        campoIdJornada.getItems().setAll(jornadas);
+    }
+
+    private Opcion crearOpcionGuardia(
+            Guardia guardia) {
+
+        return new Opcion(
+                guardia.getIdGuardia(),
+                guardia.toString()
+                        + " (#"
+                        + guardia.getIdGuardia()
+                        + ")"
+        );
+    }
+
+    private Opcion crearOpcionServicio(
+            Servicio servicio) {
+
+        return new Opcion(
+                servicio.getIdServicio(),
+                servicio.getNombreServicio()
+                        + " (#"
+                        + servicio.getIdServicio()
+                        + ")"
+        );
+    }
+
+    private Opcion crearOpcionJornada(
+            Jornada jornada) {
+
+        return new Opcion(
+                jornada.getIdJornada(),
+                jornada.getNombre()
+                        + " (#"
+                        + jornada.getIdJornada()
+                        + ")"
+        );
     }
 
     @FXML
     private void guardarAsignacion() {
 
         try {
-            Integer idGuardia = convertirId(
-                    campoIdGuardia.getText(),
-                    "guardia"
-            );
 
-            Integer idServicio = convertirId(
-                    campoIdServicio.getText(),
-                    "servicio"
-            );
+            Integer idGuardia =
+                    obtenerIdSeleccionado(
+                            campoIdGuardia,
+                            "guardia"
+                    );
 
-            Integer idJornada = convertirId(
-                    campoIdJornada.getText(),
-                    "jornada"
-            );
+            Integer idServicio =
+                    obtenerIdSeleccionado(
+                            campoIdServicio,
+                            "servicio"
+                    );
+
+            Integer idJornada =
+                    obtenerIdSeleccionado(
+                            campoIdJornada,
+                            "jornada"
+                    );
 
             LocalDate fecha =
                     campoFechaAsignacion.getValue();
+
+            if (fecha == null) {
+                throw new IllegalArgumentException(
+                        "Debes seleccionar una fecha."
+                );
+            }
 
             if (asignacionSeleccionada == null) {
 
@@ -168,8 +295,8 @@ public class GestionAsignacionesController {
                 );
             }
 
-            cargarAsignaciones();
             limpiarFormulario();
+            cargarAsignaciones();
 
         } catch (IllegalArgumentException |
                  IllegalStateException e) {
@@ -182,6 +309,23 @@ public class GestionAsignacionesController {
         }
     }
 
+    private Integer obtenerIdSeleccionado(
+            ComboBox<Opcion> combo,
+            String nombreCampo) {
+
+        Opcion opcion =
+                combo.getValue();
+
+        if (opcion == null) {
+            throw new IllegalArgumentException(
+                    "Debes seleccionar un "
+                            + nombreCampo + "."
+            );
+        }
+
+        return opcion.id();
+    }
+
     @FXML
     private void eliminarAsignacion() {
 
@@ -192,19 +336,26 @@ public class GestionAsignacionesController {
                     "Selección requerida",
                     "Selecciona una asignación de la tabla."
             );
+
             return;
         }
 
-        Alert confirmacion = new Alert(
-                Alert.AlertType.CONFIRMATION
+        Alert confirmacion =
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
+
+        confirmacion.setTitle(
+                "Confirmar eliminación"
         );
 
-        confirmacion.setTitle("Confirmar eliminación");
         confirmacion.setHeaderText(
                 "¿Deseas eliminar esta asignación?"
         );
+
         confirmacion.setContentText(
-                "Esta acción eliminará el registro de la base de datos."
+                "Esta acción eliminará el registro "
+                        + "de la base de datos."
         );
 
         Optional<ButtonType> respuesta =
@@ -212,6 +363,7 @@ public class GestionAsignacionesController {
 
         if (respuesta.isEmpty()
                 || respuesta.get() != ButtonType.OK) {
+
             return;
         }
 
@@ -221,8 +373,8 @@ public class GestionAsignacionesController {
                     asignacionSeleccionada.getIdAsignacion()
             );
 
-            cargarAsignaciones();
             limpiarFormulario();
+            cargarAsignaciones();
 
             mostrarMensaje(
                     Alert.AlertType.INFORMATION,
@@ -249,30 +401,57 @@ public class GestionAsignacionesController {
     @FXML
     private void actualizarTabla() {
         limpiarFormulario();
-        cargarAsignaciones();
+        cargarDatos();
     }
 
-    private void seleccionarAsignacion(Asignacion asignacion) {
+    @FXML
+    private void limpiarFiltro() {
+        filtroFecha.setValue(null);
+    }
+
+    private void seleccionarAsignacion(
+            Asignacion asignacion) {
 
         asignacionSeleccionada = asignacion;
 
-        campoIdGuardia.setText(
-                String.valueOf(asignacion.getIdGuardia())
+        seleccionarOpcion(
+                campoIdGuardia,
+                asignacion.getIdGuardia()
         );
 
-        campoIdServicio.setText(
-                String.valueOf(asignacion.getIdServicio())
+        seleccionarOpcion(
+                campoIdServicio,
+                asignacion.getIdServicio()
         );
 
-        campoIdJornada.setText(
-                String.valueOf(asignacion.getIdJornada())
+        seleccionarOpcion(
+                campoIdJornada,
+                asignacion.getIdJornada()
         );
 
         campoFechaAsignacion.setValue(
                 asignacion.getFechaAsignacion()
         );
 
-        botonGuardar.setText("Actualizar asignación");
+        botonGuardar.setText(
+                "Actualizar asignación"
+        );
+    }
+
+    private void seleccionarOpcion(
+            ComboBox<Opcion> combo,
+            Integer id) {
+
+        combo.getItems()
+                .stream()
+                .filter(opcion ->
+                        opcion.id().equals(id)
+                )
+                .findFirst()
+                .ifPresentOrElse(
+                        combo::setValue,
+                        () -> combo.setValue(null)
+                );
     }
 
     private void cargarAsignaciones() {
@@ -282,9 +461,12 @@ public class GestionAsignacionesController {
             List<Asignacion> asignaciones =
                     asignacionService.listarAsignaciones();
 
-            tablaAsignaciones.getItems().setAll(
+            todasLasAsignaciones.clear();
+            todasLasAsignaciones.addAll(
                     asignaciones
             );
+
+            aplicarFiltro();
 
         } catch (RuntimeException e) {
 
@@ -296,6 +478,34 @@ public class GestionAsignacionesController {
         }
     }
 
+    private void aplicarFiltro() {
+
+        LocalDate fecha =
+                filtroFecha.getValue();
+
+        List<Asignacion> resultado =
+                todasLasAsignaciones
+                        .stream()
+                        .filter(asignacion ->
+                                fecha == null
+                                        || fecha.equals(
+                                        asignacion.getFechaAsignacion()
+                                )
+                        )
+                        .toList();
+
+        tablaAsignaciones.getItems()
+                .setAll(resultado);
+
+        if (asignacionSeleccionada != null
+                && !resultado.contains(
+                asignacionSeleccionada
+        )) {
+
+            limpiarFormulario();
+        }
+    }
+
     private void limpiarFormulario() {
 
         tablaAsignaciones.getSelectionModel()
@@ -303,43 +513,17 @@ public class GestionAsignacionesController {
 
         asignacionSeleccionada = null;
 
-        campoIdGuardia.clear();
-        campoIdServicio.clear();
-        campoIdJornada.clear();
+        campoIdGuardia.setValue(null);
+        campoIdServicio.setValue(null);
+        campoIdJornada.setValue(null);
 
-        campoFechaAsignacion.setValue(LocalDate.now());
+        campoFechaAsignacion.setValue(
+                LocalDate.now()
+        );
 
-        botonGuardar.setText("Registrar asignación");
-    }
-
-    private Integer convertirId(
-            String texto,
-            String nombreCampo) {
-
-        if (texto == null || texto.isBlank()) {
-            throw new IllegalArgumentException(
-                    "El ID de " + nombreCampo
-                            + " es obligatorio."
-            );
-        }
-
-        try {
-
-            int id = Integer.parseInt(texto.trim());
-
-            if (id <= 0) {
-                throw new NumberFormatException();
-            }
-
-            return id;
-
-        } catch (NumberFormatException e) {
-
-            throw new IllegalArgumentException(
-                    "El ID de " + nombreCampo
-                            + " debe ser un número positivo."
-            );
-        }
+        botonGuardar.setText(
+                "Registrar asignación"
+        );
     }
 
     private void mostrarMensaje(
