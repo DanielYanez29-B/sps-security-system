@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,20 +26,24 @@ public class ClienteServiceTest {
 
     @Test
     void registrarClienteCorrectamente() {
-        Cliente cliente = crearCliente(null, "Empresa ABC",
-                "ABC010101ABC", "empresa@gmail.com");
+        Cliente cliente = crearCliente(
+                null, "Empresa ABC",
+                "ABC010101ABC", "empresa@gmail.com"
+        );
 
         service.registrarCliente(cliente);
 
         assertEquals(1, service.listarClientes().size());
         assertEquals("Empresa ABC",
                 service.listarClientes().get(0).getNombre());
+        assertNotNull(cliente.getIdcliente());
     }
 
     @Test
     void rechazarNombreVacio() {
-        Cliente cliente = crearCliente(null, "",
-                "ABC010101ABC", "empresa@gmail.com");
+        Cliente cliente = crearCliente(
+                null, "", "ABC010101ABC", "empresa@gmail.com"
+        );
 
         assertThrows(
                 IllegalArgumentException.class,
@@ -51,8 +55,10 @@ public class ClienteServiceTest {
 
     @Test
     void rechazarCorreoInvalido() {
-        Cliente cliente = crearCliente(null, "Empresa ABC",
-                "ABC010101ABC", "correo-invalido");
+        Cliente cliente = crearCliente(
+                null, "Empresa ABC",
+                "ABC010101ABC", "correo-invalido"
+        );
 
         assertThrows(
                 IllegalArgumentException.class,
@@ -78,6 +84,19 @@ public class ClienteServiceTest {
         );
 
         assertEquals(1, service.listarClientes().size());
+    }
+
+    @Test
+    void rechazarClienteNuevoConId() {
+        Cliente cliente = crearCliente(
+                10, "Empresa ABC",
+                "ABC010101ABC", "empresa@gmail.com"
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarCliente(cliente)
+        );
     }
 
     @Test
@@ -110,9 +129,19 @@ public class ClienteServiceTest {
     }
 
     @Test
+    void rechazarBusquedaConCorreoVacio() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.buscarClientePorEmail("")
+        );
+    }
+
+    @Test
     void actualizarClienteCorrectamente() {
-        Cliente cliente = crearCliente(1, "Empresa ABC",
-                "ABC010101ABC", "abc@gmail.com");
+        Cliente cliente = crearCliente(
+                null, "Empresa ABC",
+                "ABC010101ABC", "abc@gmail.com"
+        );
 
         dao.guardar(cliente);
 
@@ -120,20 +149,73 @@ public class ClienteServiceTest {
 
         service.actualizarCliente(cliente);
 
-        assertEquals("Empresa Actualizada",
-                service.listarClientes().get(0).getNombre());
+        assertEquals(
+                "Empresa Actualizada",
+                service.listarClientes().get(0).getNombre()
+        );
+    }
+
+    @Test
+    void rechazarActualizacionSinId() {
+        Cliente cliente = crearCliente(
+                null, "Empresa ABC",
+                "ABC010101ABC", "abc@gmail.com"
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.actualizarCliente(cliente)
+        );
+    }
+
+    @Test
+    void rechazarActualizacionConCorreoDuplicado() {
+        Cliente primero = crearCliente(
+                null, "Empresa ABC",
+                "ABC010101ABC", "abc@gmail.com"
+        );
+
+        Cliente segundo = crearCliente(
+                null, "Empresa XYZ",
+                "XYZ010101XYZ", "xyz@gmail.com"
+        );
+
+        dao.guardar(primero);
+        dao.guardar(segundo);
+
+        segundo.setEmail("abc@gmail.com");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.actualizarCliente(segundo)
+        );
     }
 
     @Test
     void eliminarClienteCorrectamente() {
-        Cliente cliente = crearCliente(1, "Empresa ABC",
-                "ABC010101ABC", "abc@gmail.com");
+        Cliente cliente = crearCliente(
+                null, "Empresa ABC",
+                "ABC010101ABC", "abc@gmail.com"
+        );
 
         dao.guardar(cliente);
 
         service.eliminarCliente(cliente);
 
         assertTrue(service.listarClientes().isEmpty());
+    }
+
+    @Test
+    void rechazarEliminacionSinId() {
+        Cliente cliente = crearCliente(
+                null, "Empresa ABC",
+                "ABC010101ABC", "abc@gmail.com"
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.eliminarCliente(cliente)
+        );
     }
 
     @Test
@@ -144,8 +226,10 @@ public class ClienteServiceTest {
         );
     }
 
-    private Cliente crearCliente(Integer id, String nombre,
-                                 String rfc, String email) {
+    private Cliente crearCliente(
+            Integer id, String nombre,
+            String rfc, String email) {
+
         return new Cliente(
                 id,
                 nombre,
@@ -154,7 +238,6 @@ public class ClienteServiceTest {
                 email,
                 "Av. Principal",
                 "100",
-                null,
                 "Centro",
                 "Guadalajara",
                 "Jalisco",
@@ -165,9 +248,18 @@ public class ClienteServiceTest {
     private static class ClienteDAOFalso implements ClienteDAO {
 
         private final List<Cliente> clientes = new ArrayList<>();
+        private int siguienteId = 1;
 
         @Override
         public boolean guardar(Cliente cliente) {
+            if (cliente == null) {
+                return false;
+            }
+
+            if (cliente.getIdcliente() == null) {
+                cliente.setIdcliente(siguienteId++);
+            }
+
             clientes.add(cliente);
             return true;
         }
@@ -175,7 +267,8 @@ public class ClienteServiceTest {
         @Override
         public Optional<Cliente> obtenerPorId(Integer id) {
             return clientes.stream()
-                    .filter(c -> Objects.equals(c.getIdcliente(), id))
+                    .filter(c -> Objects.equals(
+                            c.getIdcliente(), id))
                     .findFirst();
         }
 
@@ -186,19 +279,29 @@ public class ClienteServiceTest {
 
         @Override
         public boolean actualizar(Cliente cliente) {
+            if (cliente == null || cliente.getIdcliente() == null) {
+                return false;
+            }
+
             for (int i = 0; i < clientes.size(); i++) {
                 if (Objects.equals(
                         clientes.get(i).getIdcliente(),
                         cliente.getIdcliente())) {
+
                     clientes.set(i, cliente);
                     return true;
                 }
             }
+
             return false;
         }
 
         @Override
         public boolean eliminar(Cliente cliente) {
+            if (cliente == null || cliente.getIdcliente() == null) {
+                return false;
+            }
+
             return clientes.removeIf(
                     c -> Objects.equals(
                             c.getIdcliente(),
@@ -208,6 +311,10 @@ public class ClienteServiceTest {
 
         @Override
         public Optional<Cliente> buscarPorEmail(String email) {
+            if (email == null) {
+                return Optional.empty();
+            }
+
             return clientes.stream()
                     .filter(c -> c.getEmail() != null)
                     .filter(c -> c.getEmail().equalsIgnoreCase(email))

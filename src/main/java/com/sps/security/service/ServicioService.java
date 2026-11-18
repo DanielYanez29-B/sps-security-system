@@ -1,4 +1,3 @@
-
 package com.sps.security.service;
 
 import com.sps.security.dao.ServicioDAO;
@@ -6,6 +5,7 @@ import com.sps.security.dao.impl.ServicioDAOImpl;
 import com.sps.security.model.operative.Servicio;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ServicioService {
@@ -13,11 +13,14 @@ public class ServicioService {
     private final ServicioDAO servicioDAO;
 
     public ServicioService() {
-        this.servicioDAO = new ServicioDAOImpl();
+        this(new ServicioDAOImpl());
     }
 
     public ServicioService(ServicioDAO servicioDAO) {
-        this.servicioDAO = servicioDAO;
+        this.servicioDAO = Objects.requireNonNull(
+                servicioDAO,
+                "El DAO de servicios no puede ser nulo."
+        );
     }
 
     public List<Servicio> listarServicios() {
@@ -29,9 +32,10 @@ public class ServicioService {
     }
 
     public Optional<Servicio> buscarServicioPorId(Integer id) {
-        if (id == null) {
+
+        if (id == null || id <= 0) {
             throw new IllegalArgumentException(
-                    "Debe proporcionar el ID del servicio."
+                    "Debe proporcionar un ID de servicio válido."
             );
         }
 
@@ -39,7 +43,14 @@ public class ServicioService {
     }
 
     public void registrarServicio(Servicio servicio) {
+
         validarServicio(servicio);
+
+        if (servicio.getIdServicio() != null) {
+            throw new IllegalArgumentException(
+                    "Un servicio nuevo no debe tener un ID asignado."
+            );
+        }
 
         if (servicio.getEstado() == null
                 || servicio.getEstado().isBlank()) {
@@ -56,9 +67,12 @@ public class ServicioService {
     }
 
     public void actualizarServicio(Servicio servicio) {
-        if (servicio == null || servicio.getIdServicio() == null) {
+
+        if (servicio == null
+                || servicio.getIdServicio() == null
+                || servicio.getIdServicio() <= 0) {
             throw new IllegalArgumentException(
-                    "Se requiere el ID del servicio para actualizar."
+                    "Se requiere un ID válido para actualizar el servicio."
             );
         }
 
@@ -74,7 +88,10 @@ public class ServicioService {
     }
 
     public void eliminarServicio(Servicio servicio) {
-        if (servicio == null || servicio.getIdServicio() == null) {
+
+        if (servicio == null
+                || servicio.getIdServicio() == null
+                || servicio.getIdServicio() <= 0) {
             throw new IllegalArgumentException(
                     "Debe seleccionar un servicio válido para eliminar."
             );
@@ -90,15 +107,17 @@ public class ServicioService {
     }
 
     private void validarServicio(Servicio servicio) {
+
         if (servicio == null) {
             throw new IllegalArgumentException(
                     "El servicio no puede ser nulo."
             );
         }
 
-        if (servicio.getIdCliente() == null) {
+        if (servicio.getIdCliente() == null
+                || servicio.getIdCliente() <= 0) {
             throw new IllegalArgumentException(
-                    "Debe seleccionar un cliente."
+                    "Debe seleccionar un cliente válido."
             );
         }
 

@@ -1,4 +1,3 @@
-
 package com.sps.security.service;
 
 import com.sps.security.dao.ElementoSupervisadoDAO;
@@ -6,6 +5,7 @@ import com.sps.security.dao.impl.ElementoSupervisadoDAOImpl;
 import com.sps.security.model.supervised.ElementoSupervisado;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ElementoSupervisadoService {
@@ -13,11 +13,14 @@ public class ElementoSupervisadoService {
     private final ElementoSupervisadoDAO elementoDAO;
 
     public ElementoSupervisadoService() {
-        this.elementoDAO = new ElementoSupervisadoDAOImpl();
+        this(new ElementoSupervisadoDAOImpl());
     }
 
     public ElementoSupervisadoService(ElementoSupervisadoDAO elementoDAO) {
-        this.elementoDAO = elementoDAO;
+        this.elementoDAO = Objects.requireNonNull(
+                elementoDAO,
+                "El DAO de elementos supervisados no puede ser nulo."
+        );
     }
 
     public List<ElementoSupervisado> listarElementos() {
@@ -25,9 +28,9 @@ public class ElementoSupervisadoService {
     }
 
     public List<ElementoSupervisado> listarElementosPorServicio(Integer idServicio) {
-        if (idServicio == null) {
+        if (idServicio == null || idServicio <= 0) {
             throw new IllegalArgumentException(
-                    "Debe proporcionar el ID del servicio."
+                    "Debe proporcionar un ID de servicio válido."
             );
         }
 
@@ -35,9 +38,9 @@ public class ElementoSupervisadoService {
     }
 
     public Optional<ElementoSupervisado> buscarElementoPorId(Integer id) {
-        if (id == null) {
+        if (id == null || id <= 0) {
             throw new IllegalArgumentException(
-                    "Debe proporcionar el ID del elemento."
+                    "Debe proporcionar un ID de elemento válido."
             );
         }
 
@@ -45,6 +48,18 @@ public class ElementoSupervisadoService {
     }
 
     public void registrarElemento(ElementoSupervisado elemento) {
+        if (elemento == null) {
+            throw new IllegalArgumentException(
+                    "El elemento supervisado no puede ser nulo."
+            );
+        }
+
+        if (elemento.getIdElemento() != null) {
+            throw new IllegalArgumentException(
+                    "Un elemento nuevo no debe tener un ID asignado."
+            );
+        }
+
         validarElemento(elemento);
 
         if (elemento.getEstadoActivo() == null) {
@@ -61,13 +76,21 @@ public class ElementoSupervisadoService {
     }
 
     public void actualizarElemento(ElementoSupervisado elemento) {
-        if (elemento == null || elemento.getIdElemento() == null) {
+        if (elemento == null
+                || elemento.getIdElemento() == null
+                || elemento.getIdElemento() <= 0) {
             throw new IllegalArgumentException(
-                    "Se requiere el ID del elemento para actualizar."
+                    "Se requiere un ID de elemento válido para actualizar."
             );
         }
 
         validarElemento(elemento);
+
+        if (elemento.getEstadoActivo() == null) {
+            throw new IllegalArgumentException(
+                    "Debe indicar si el elemento está activo o inactivo."
+            );
+        }
 
         boolean actualizado = elementoDAO.actualizar(elemento);
 
@@ -79,7 +102,9 @@ public class ElementoSupervisadoService {
     }
 
     public void eliminarElemento(ElementoSupervisado elemento) {
-        if (elemento == null || elemento.getIdElemento() == null) {
+        if (elemento == null
+                || elemento.getIdElemento() == null
+                || elemento.getIdElemento() <= 0) {
             throw new IllegalArgumentException(
                     "Debe seleccionar un elemento válido para eliminar."
             );
@@ -101,9 +126,10 @@ public class ElementoSupervisadoService {
             );
         }
 
-        if (elemento.getIdServicio() == null) {
+        if (elemento.getIdServicio() == null
+                || elemento.getIdServicio() <= 0) {
             throw new IllegalArgumentException(
-                    "Debe seleccionar un servicio."
+                    "Debe seleccionar un servicio válido."
             );
         }
 

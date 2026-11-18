@@ -1,8 +1,8 @@
-
 package com.sps.security.service;
 
 import com.sps.security.dao.ServicioDAO;
 import com.sps.security.model.operative.Servicio;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +32,17 @@ public class ServicioServiceTest {
         service.registrarServicio(servicio);
 
         assertEquals(1, service.listarServicios().size());
+        assertEquals("ACTIVO", servicio.getEstado());
+        assertNotNull(servicio.getIdServicio());
+    }
+
+    @Test
+    void registrarServicioConEstadoPorDefecto() {
+        Servicio servicio = crearServicio(1, "Monitoreo");
+        servicio.setEstado(null);
+
+        service.registrarServicio(servicio);
+
         assertEquals("ACTIVO", servicio.getEstado());
     }
 
@@ -66,6 +77,49 @@ public class ServicioServiceTest {
     }
 
     @Test
+    void rechazarClienteConIdInvalido() {
+        Servicio servicio = crearServicio(0, "Monitoreo");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarServicio(servicio)
+        );
+    }
+
+    @Test
+    void rechazarDireccionVacia() {
+        Servicio servicio = crearServicio(1, "Monitoreo");
+        servicio.setDireccion("");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarServicio(servicio)
+        );
+    }
+
+    @Test
+    void rechazarFechaInicioNula() {
+        Servicio servicio = crearServicio(1, "Monitoreo");
+        servicio.setFechaInicio(null);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarServicio(servicio)
+        );
+    }
+
+    @Test
+    void rechazarServicioNuevoConId() {
+        Servicio servicio = crearServicio(1, "Monitoreo");
+        servicio.setIdServicio(10);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registrarServicio(servicio)
+        );
+    }
+
+    @Test
     void listarServiciosCorrectamente() {
         dao.guardar(crearServicio(1, "Monitoreo"));
         dao.guardar(crearServicio(2, "Vigilancia"));
@@ -77,22 +131,36 @@ public class ServicioServiceTest {
     void listarServiciosActivosCorrectamente() {
         Servicio activo = crearServicio(1, "Monitoreo");
         Servicio inactivo = crearServicio(2, "Vigilancia");
+
         inactivo.setEstado("INACTIVO");
 
         dao.guardar(activo);
         dao.guardar(inactivo);
 
         assertEquals(1, service.listarServiciosActivos().size());
+        assertEquals(
+                "Monitoreo",
+                service.listarServiciosActivos().get(0).getNombreServicio()
+        );
     }
 
     @Test
     void buscarServicioPorId() {
-        dao.guardar(crearServicio(1, "Monitoreo"));
+        Servicio servicio = crearServicio(1, "Monitoreo");
+        dao.guardar(servicio);
 
-        Optional<Servicio> resultado = service.buscarServicioPorId(1);
+        Optional<Servicio> resultado =
+                service.buscarServicioPorId(servicio.getIdServicio());
 
         assertTrue(resultado.isPresent());
         assertEquals("Monitoreo", resultado.get().getNombreServicio());
+    }
+
+    @Test
+    void buscarServicioInexistente() {
+        Optional<Servicio> resultado = service.buscarServicioPorId(999);
+
+        assertTrue(resultado.isEmpty());
     }
 
     @Test
@@ -104,16 +172,41 @@ public class ServicioServiceTest {
     }
 
     @Test
-    void actualizarServicioCorrectamente() {
-        dao.guardar(crearServicio(1, "Monitoreo"));
+    void rechazarBusquedaConIdInvalido() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.buscarServicioPorId(0)
+        );
+    }
 
-        Servicio actualizado = crearServicio(1, "Monitoreo actualizado");
+    @Test
+    void actualizarServicioCorrectamente() {
+        Servicio original = crearServicio(1, "Monitoreo");
+        dao.guardar(original);
+
+        Servicio actualizado = crearServicio(
+                1, "Monitoreo actualizado"
+        );
+
+        actualizado.setIdServicio(original.getIdServicio());
 
         service.actualizarServicio(actualizado);
 
         assertEquals(
                 "Monitoreo actualizado",
-                service.buscarServicioPorId(1).get().getNombreServicio()
+                service.buscarServicioPorId(
+                        original.getIdServicio()
+                ).orElseThrow().getNombreServicio()
+        );
+    }
+
+    @Test
+    void rechazarActualizacionSinId() {
+        Servicio servicio = crearServicio(1, "Monitoreo");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.actualizarServicio(servicio)
         );
     }
 
@@ -127,9 +220,19 @@ public class ServicioServiceTest {
         assertTrue(service.listarServicios().isEmpty());
     }
 
+    @Test
+    void rechazarEliminacionSinId() {
+        Servicio servicio = crearServicio(1, "Monitoreo");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.eliminarServicio(servicio)
+        );
+    }
+
     private Servicio crearServicio(Integer idCliente, String nombre) {
         return new Servicio(
-                1,
+                null,
                 idCliente,
                 nombre,
                 "Av. Principal 100",
@@ -141,9 +244,15 @@ public class ServicioServiceTest {
     private static class ServicioDAOFalso implements ServicioDAO {
 
         private final List<Servicio> servicios = new ArrayList<>();
+        private int siguienteId = 1;
 
         @Override
         public boolean guardar(Servicio servicio) {
+            if (servicio == null || servicio.getIdServicio() != null) {
+                return false;
+            }
+
+            servicio.setIdServicio(siguienteId++);
             servicios.add(servicio);
             return true;
         }
@@ -151,7 +260,9 @@ public class ServicioServiceTest {
         @Override
         public Optional<Servicio> obtenerPorId(Integer id) {
             return servicios.stream()
-                    .filter(s -> Objects.equals(s.getIdServicio(), id))
+                    .filter(s -> Objects.equals(
+                            s.getIdServicio(), id
+                    ))
                     .findFirst();
         }
 
@@ -162,6 +273,10 @@ public class ServicioServiceTest {
 
         @Override
         public boolean actualizar(Servicio servicio) {
+            if (servicio == null || servicio.getIdServicio() == null) {
+                return false;
+            }
+
             for (int i = 0; i < servicios.size(); i++) {
                 if (Objects.equals(
                         servicios.get(i).getIdServicio(),
@@ -171,11 +286,16 @@ public class ServicioServiceTest {
                     return true;
                 }
             }
+
             return false;
         }
 
         @Override
         public boolean eliminar(Servicio servicio) {
+            if (servicio == null || servicio.getIdServicio() == null) {
+                return false;
+            }
+
             return servicios.removeIf(
                     s -> Objects.equals(
                             s.getIdServicio(),

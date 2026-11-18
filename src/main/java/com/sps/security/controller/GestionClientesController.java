@@ -1,4 +1,3 @@
-
 package com.sps.security.controller;
 
 import com.sps.security.model.users.Cliente;
@@ -20,27 +19,14 @@ public class GestionClientesController {
 
     private Cliente clienteSeleccionado;
 
-    // Tabla
-    @FXML
-    private TableView<Cliente> tblClientes;
-
-    @FXML
-    private TableColumn<Cliente, Integer> colId;
-
-    @FXML
-    private TableColumn<Cliente, String> colNombre;
-
-    @FXML
-    private TableColumn<Cliente, String> colRfc;
-
-    @FXML
-    private TableColumn<Cliente, String> colTelefono;
-
-    @FXML
-    private TableColumn<Cliente, String> colEmail;
-
-    @FXML
-    private TableColumn<Cliente, String> colCiudad;
+    // Tabla de clientes
+    @FXML private TableView<Cliente> tblClientes;
+    @FXML private TableColumn<Cliente, Integer> colId;
+    @FXML private TableColumn<Cliente, String> colNombre;
+    @FXML private TableColumn<Cliente, String> colRfc;
+    @FXML private TableColumn<Cliente, String> colTelefono;
+    @FXML private TableColumn<Cliente, String> colEmail;
+    @FXML private TableColumn<Cliente, String> colCiudad;
 
     // Campos del formulario
     @FXML private TextField txtNombre;
@@ -57,15 +43,18 @@ public class GestionClientesController {
     @FXML
     public void initialize() {
         configurarTabla();
-        cargarClientes();
 
         tblClientes.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, anterior, seleccionado) -> {
                     if (seleccionado != null) {
                         cargarFormulario(seleccionado);
+                    } else {
+                        clienteSeleccionado = null;
                     }
                 });
+
+        cargarClientes();
     }
 
     private void configurarTabla() {
@@ -108,11 +97,19 @@ public class GestionClientesController {
     }
 
     private void cargarClientes() {
-        tblClientes.setItems(
-                FXCollections.observableArrayList(
-                        clienteService.listarClientes()
-                )
-        );
+        try {
+            tblClientes.setItems(
+                    FXCollections.observableArrayList(
+                            clienteService.listarClientes()
+                    )
+            );
+        } catch (Exception e) {
+            mostrarAlerta(
+                    Alert.AlertType.ERROR,
+                    "Error al cargar clientes",
+                    e.getMessage()
+            );
+        }
     }
 
     @FXML
@@ -128,8 +125,8 @@ public class GestionClientesController {
                     "Cliente registrado correctamente."
             );
 
-            cargarClientes();
             handleLimpiar();
+            cargarClientes();
 
         } catch (Exception e) {
             mostrarAlerta(
@@ -165,8 +162,8 @@ public class GestionClientesController {
                     "Cliente actualizado correctamente."
             );
 
-            cargarClientes();
             handleLimpiar();
+            cargarClientes();
 
         } catch (Exception e) {
             mostrarAlerta(
@@ -189,7 +186,9 @@ public class GestionClientesController {
             return;
         }
 
-        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert confirmacion = new Alert(
+                Alert.AlertType.CONFIRMATION
+        );
 
         confirmacion.setTitle("Confirmar eliminación");
         confirmacion.setHeaderText(null);
@@ -199,27 +198,28 @@ public class GestionClientesController {
         );
 
         if (confirmacion.showAndWait().orElse(ButtonType.CANCEL)
-                == ButtonType.OK) {
+                != ButtonType.OK) {
+            return;
+        }
 
-            try {
-                clienteService.eliminarCliente(clienteSeleccionado);
+        try {
+            clienteService.eliminarCliente(clienteSeleccionado);
 
-                mostrarAlerta(
-                        Alert.AlertType.INFORMATION,
-                        "Éxito",
-                        "Cliente eliminado correctamente."
-                );
+            mostrarAlerta(
+                    Alert.AlertType.INFORMATION,
+                    "Éxito",
+                    "Cliente eliminado correctamente."
+            );
 
-                cargarClientes();
-                handleLimpiar();
+            handleLimpiar();
+            cargarClientes();
 
-            } catch (Exception e) {
-                mostrarAlerta(
-                        Alert.AlertType.ERROR,
-                        "Error al eliminar",
-                        e.getMessage()
-                );
-            }
+        } catch (Exception e) {
+            mostrarAlerta(
+                    Alert.AlertType.ERROR,
+                    "Error al eliminar",
+                    e.getMessage()
+            );
         }
     }
 
@@ -238,7 +238,6 @@ public class GestionClientesController {
         txtCp.clear();
 
         clienteSeleccionado = null;
-
         tblClientes.getSelectionModel().clearSelection();
     }
 
@@ -252,7 +251,6 @@ public class GestionClientesController {
                 obtenerTexto(txtEmail),
                 obtenerTexto(txtCalle),
                 obtenerTexto(txtNumExt),
-                null,
                 obtenerTexto(txtColonia),
                 obtenerTexto(txtCiudad),
                 obtenerTexto(txtEstado),
@@ -284,8 +282,8 @@ public class GestionClientesController {
     private void mostrarAlerta(
             Alert.AlertType tipo,
             String titulo,
-            String mensaje
-    ) {
+            String mensaje) {
+
         Alert alerta = new Alert(tipo);
         alerta.setTitle(titulo);
         alerta.setHeaderText(null);

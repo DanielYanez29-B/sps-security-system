@@ -5,6 +5,7 @@ import com.sps.security.dao.impl.ClienteDAOImpl;
 import com.sps.security.model.users.Cliente;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ClienteService {
@@ -16,7 +17,9 @@ public class ClienteService {
     }
 
     public ClienteService(ClienteDAO clienteDAO) {
-        this.clienteDAO = clienteDAO;
+        this.clienteDAO = Objects.requireNonNull(
+                clienteDAO, "El DAO de clientes no puede ser nulo."
+        );
     }
 
     public List<Cliente> listarClientes() {
@@ -25,14 +28,15 @@ public class ClienteService {
 
     public void registrarCliente(Cliente cliente) {
         validarCliente(cliente);
-        validarEmail(cliente.getEmail());
 
-        if (cliente.getEmail() != null && !cliente.getEmail().isBlank()
-                && clienteDAO.buscarPorEmail(cliente.getEmail()).isPresent()) {
+        if (cliente.getIdcliente() != null) {
             throw new IllegalArgumentException(
-                    "Ya existe un cliente registrado con ese correo electrónico."
+                    "El ID de un cliente nuevo debe ser generado por MySQL."
             );
         }
+
+        validarEmail(cliente.getEmail());
+        validarCorreoDuplicado(cliente.getEmail(), null);
 
         boolean guardado = clienteDAO.guardar(cliente);
 
@@ -44,6 +48,7 @@ public class ClienteService {
     }
 
     public void actualizarCliente(Cliente cliente) {
+
         if (cliente == null || cliente.getIdcliente() == null) {
             throw new IllegalArgumentException(
                     "Se requiere el ID del cliente para actualizar."
@@ -53,17 +58,10 @@ public class ClienteService {
         validarCliente(cliente);
         validarEmail(cliente.getEmail());
 
-        if (cliente.getEmail() != null && !cliente.getEmail().isBlank()) {
-            Optional<Cliente> existente =
-                    clienteDAO.buscarPorEmail(cliente.getEmail());
-
-            if (existente.isPresent()
-                    && !existente.get().getIdcliente().equals(cliente.getIdcliente())) {
-                throw new IllegalArgumentException(
-                        "Ese correo electrónico ya pertenece a otro cliente."
-                );
-            }
-        }
+        validarCorreoDuplicado(
+                cliente.getEmail(),
+                cliente.getIdcliente()
+        );
 
         boolean actualizado = clienteDAO.actualizar(cliente);
 
@@ -75,6 +73,7 @@ public class ClienteService {
     }
 
     public void eliminarCliente(Cliente cliente) {
+
         if (cliente == null || cliente.getIdcliente() == null) {
             throw new IllegalArgumentException(
                     "Debe seleccionar un cliente válido para eliminar."
@@ -91,7 +90,6 @@ public class ClienteService {
     }
 
     public Optional<Cliente> buscarClientePorEmail(String email) {
-        validarEmail(email);
 
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(
@@ -99,17 +97,22 @@ public class ClienteService {
             );
         }
 
-        return clienteDAO.buscarPorEmail(email);
+        String correo = email.trim();
+        validarEmail(correo);
+
+        return clienteDAO.buscarPorEmail(correo);
     }
 
     private void validarCliente(Cliente cliente) {
+
         if (cliente == null) {
             throw new IllegalArgumentException(
                     "El cliente no puede ser nulo."
             );
         }
 
-        if (cliente.getNombre() == null || cliente.getNombre().isBlank()) {
+        if (cliente.getNombre() == null ||
+                cliente.getNombre().isBlank()) {
             throw new IllegalArgumentException(
                     "El nombre o razón social es obligatorio."
             );
@@ -117,15 +120,39 @@ public class ClienteService {
     }
 
     private void validarEmail(String email) {
+
         if (email == null || email.isBlank()) {
             return;
         }
 
-        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        String regex =
+                "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
-        if (!email.matches(regex)) {
+        if (!email.trim().matches(regex)) {
             throw new IllegalArgumentException(
                     "El formato del correo electrónico es inválido."
+            );
+        }
+    }
+
+    private void validarCorreoDuplicado(
+            String email,
+            Integer idClienteActual) {
+
+        if (email == null || email.isBlank()) {
+            return;
+        }
+
+        Optional<Cliente> existente =
+                clienteDAO.buscarPorEmail(email.trim());
+
+        if (existente.isPresent() &&
+                !Objects.equals(
+                        existente.get().getIdcliente(),
+                        idClienteActual)) {
+
+            throw new IllegalArgumentException(
+                    "Ya existe otro cliente registrado con ese correo electrónico."
             );
         }
     }

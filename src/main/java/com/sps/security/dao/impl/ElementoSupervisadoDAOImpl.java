@@ -1,4 +1,3 @@
-
 package com.sps.security.dao.impl;
 
 import com.sps.security.dao.ElementoSupervisadoDAO;
@@ -11,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,15 +42,16 @@ public class ElementoSupervisadoDAOImpl implements ElementoSupervisadoDAO {
 
     @Override
     public boolean guardar(ElementoSupervisado elemento) {
+
+        if (!datosValidos(elemento) || elemento.getIdElemento() != null) {
+            return false;
+        }
+
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
-            statement.setInt(1, elemento.getIdServicio());
-            statement.setString(2, elemento.getTipoElemento().name());
-            statement.setString(3, elemento.getIdentificador());
-            statement.setString(4, elemento.getDescripcion());
-            statement.setBoolean(5, elemento.getEstadoActivo());
+            asignarParametros(statement, elemento);
 
             int filas = statement.executeUpdate();
 
@@ -72,6 +73,11 @@ public class ElementoSupervisadoDAOImpl implements ElementoSupervisadoDAO {
 
     @Override
     public Optional<ElementoSupervisado> obtenerPorId(Integer id) {
+
+        if (id == null || id <= 0) {
+            return Optional.empty();
+        }
+
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
 
@@ -92,6 +98,7 @@ public class ElementoSupervisadoDAOImpl implements ElementoSupervisadoDAO {
 
     @Override
     public List<ElementoSupervisado> obtenerTodos() {
+
         List<ElementoSupervisado> elementos = new ArrayList<>();
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -111,14 +118,17 @@ public class ElementoSupervisadoDAOImpl implements ElementoSupervisadoDAO {
 
     @Override
     public boolean actualizar(ElementoSupervisado elemento) {
+
+        if (!datosValidos(elemento)
+                || elemento.getIdElemento() == null
+                || elemento.getIdElemento() <= 0) {
+            return false;
+        }
+
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE)) {
 
-            statement.setInt(1, elemento.getIdServicio());
-            statement.setString(2, elemento.getTipoElemento().name());
-            statement.setString(3, elemento.getIdentificador());
-            statement.setString(4, elemento.getDescripcion());
-            statement.setBoolean(5, elemento.getEstadoActivo());
+            asignarParametros(statement, elemento);
             statement.setInt(6, elemento.getIdElemento());
 
             return statement.executeUpdate() > 0;
@@ -132,6 +142,13 @@ public class ElementoSupervisadoDAOImpl implements ElementoSupervisadoDAO {
 
     @Override
     public boolean eliminar(ElementoSupervisado elemento) {
+
+        if (elemento == null
+                || elemento.getIdElemento() == null
+                || elemento.getIdElemento() <= 0) {
+            return false;
+        }
+
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE)) {
 
@@ -148,10 +165,16 @@ public class ElementoSupervisadoDAOImpl implements ElementoSupervisadoDAO {
 
     @Override
     public List<ElementoSupervisado> obtenerPorServicio(Integer idServicio) {
+
         List<ElementoSupervisado> elementos = new ArrayList<>();
 
+        if (idServicio == null || idServicio <= 0) {
+            return elementos;
+        }
+
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_BY_SERVICIO)) {
+             PreparedStatement statement =
+                     connection.prepareStatement(SELECT_BY_SERVICIO)) {
 
             statement.setInt(1, idServicio);
 
@@ -168,14 +191,61 @@ public class ElementoSupervisadoDAOImpl implements ElementoSupervisadoDAO {
         return elementos;
     }
 
-    private ElementoSupervisado mapearElemento(ResultSet result) throws SQLException {
+    private boolean datosValidos(ElementoSupervisado elemento) {
+
+        return elemento != null
+                && elemento.getIdServicio() != null
+                && elemento.getIdServicio() > 0
+                && elemento.getTipoElemento() != null
+                && elemento.getIdentificador() != null
+                && !elemento.getIdentificador().isBlank()
+                && elemento.getEstadoActivo() != null;
+    }
+
+    private void asignarParametros(
+            PreparedStatement statement,
+            ElementoSupervisado elemento
+    ) throws SQLException {
+
+        statement.setInt(1, elemento.getIdServicio());
+        statement.setString(2, elemento.getTipoElemento().name());
+        statement.setString(3, elemento.getIdentificador());
+        statement.setString(4, elemento.getDescripcion());
+
+        if (elemento.getEstadoActivo() != null) {
+            statement.setBoolean(5, elemento.getEstadoActivo());
+        } else {
+            statement.setNull(5, Types.BOOLEAN);
+        }
+    }
+
+    private ElementoSupervisado mapearElemento(ResultSet result)
+            throws SQLException {
+
+        String tipo = result.getString("tipo_elemento");
+
+        TipoElemento tipoElemento = null;
+
+        if (tipo != null) {
+            try {
+                tipoElemento = TipoElemento.valueOf(tipo);
+            } catch (IllegalArgumentException e) {
+                throw new SQLException(
+                        "Tipo de elemento no reconocido: " + tipo, e
+                );
+            }
+        }
+
+        boolean activo = result.getBoolean("estado_activo");
+        Boolean estadoActivo = result.wasNull() ? null : activo;
+
         return new ElementoSupervisado(
                 result.getInt("id_elemento"),
                 result.getInt("id_servicio"),
-                TipoElemento.valueOf(result.getString("tipo_elemento")),
+                tipoElemento,
                 result.getString("identificador"),
                 result.getString("descripcion"),
-                result.getBoolean("estado_activo")
+                estadoActivo
         );
     }
 }

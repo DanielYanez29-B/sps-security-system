@@ -3,6 +3,7 @@ package com.sps.security.model.users;
 import java.util.Objects;
 
 public class Cliente {
+
     private Integer idcliente;
     private String nombre;
     private String rfc;
@@ -10,7 +11,6 @@ public class Cliente {
     private String email;
     private String calle;
     private String num_ext;
-    private String num_int;
     private String colonia;
     private String ciudad;
     private String estado;
@@ -23,7 +23,6 @@ public class Cliente {
                    String email,
                    String calle,
                    String num_ext,
-                   String num_int,
                    String colonia,
                    String ciudad,
                    String estado,
@@ -36,7 +35,6 @@ public class Cliente {
         this.email = email;
         this.calle = calle;
         this.num_ext = num_ext;
-        this.num_int = num_int;
         this.colonia = colonia;
         this.ciudad = ciudad;
         this.estado = estado;
@@ -47,7 +45,7 @@ public class Cliente {
         return idcliente;
     }
 
-    private void setIdcliente(Integer idcliente) {
+    public void setIdcliente(Integer idcliente) {
         this.idcliente = idcliente;
     }
 
@@ -99,14 +97,6 @@ public class Cliente {
         this.num_ext = num_ext;
     }
 
-    public String getNum_int() {
-        return num_int;
-    }
-
-    public void setNum_int(String num_int) {
-        this.num_int = num_int;
-    }
-
     public String getColonia() {
         return colonia;
     }
@@ -141,13 +131,38 @@ public class Cliente {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (!(o instanceof Cliente)) return false;
+
         Cliente cliente = (Cliente) o;
-        return Objects.equals(getIdcliente(), cliente.getIdcliente()) && Objects.equals(getNombre(), cliente.getNombre()) && Objects.equals(getRfc(), cliente.getRfc()) && Objects.equals(getTelefono(), cliente.getTelefono()) && Objects.equals(getEmail(), cliente.getEmail()) && Objects.equals(getCalle(), cliente.getCalle()) && Objects.equals(getNum_ext(), cliente.getNum_ext()) && Objects.equals(getNum_int(), cliente.getNum_int()) && Objects.equals(getColonia(), cliente.getColonia()) && Objects.equals(getCiudad(), cliente.getCiudad()) && Objects.equals(getEstado(), cliente.getEstado()) && Objects.equals(getCp(), cliente.getCp());
+
+        return Objects.equals(idcliente, cliente.idcliente)
+                && Objects.equals(nombre, cliente.nombre)
+                && Objects.equals(rfc, cliente.rfc)
+                && Objects.equals(telefono, cliente.telefono)
+                && Objects.equals(email, cliente.email)
+                && Objects.equals(calle, cliente.calle)
+                && Objects.equals(num_ext, cliente.num_ext)
+                && Objects.equals(colonia, cliente.colonia)
+                && Objects.equals(ciudad, cliente.ciudad)
+                && Objects.equals(estado, cliente.estado)
+                && Objects.equals(cp, cliente.cp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIdcliente(), getNombre(), getRfc(), getTelefono(), getEmail(), getCalle(), getNum_ext(), getNum_int(), getColonia(), getCiudad(), getEstado(), getCp());
+        return Objects.hash(
+                idcliente,
+                nombre,
+                rfc,
+                telefono,
+                email,
+                calle,
+                num_ext,
+                colonia,
+                ciudad,
+                estado,
+                cp
+        );
     }
 }
