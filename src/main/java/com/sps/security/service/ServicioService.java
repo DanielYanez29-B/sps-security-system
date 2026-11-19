@@ -78,6 +78,14 @@ public class ServicioService {
 
         validarServicio(servicio);
 
+        // Validar que el estado no sea nulo ni esté vacío
+        if (servicio.getEstado() == null
+                || servicio.getEstado().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Debe indicar el estado del servicio."
+            );
+        }
+
         boolean actualizado = servicioDAO.actualizar(servicio);
 
         if (!actualizado) {

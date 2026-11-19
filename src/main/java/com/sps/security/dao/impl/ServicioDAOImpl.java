@@ -186,14 +186,23 @@ public class ServicioDAOImpl implements ServicioDAO {
         return servicios;
     }
 
+
+
     private boolean datosValidos(Servicio servicio) {
 
         return servicio != null
                 && servicio.getIdCliente() != null
+                && servicio.getIdCliente() > 0
                 && servicio.getNombreServicio() != null
                 && !servicio.getNombreServicio().isBlank()
-                && servicio.getFechaInicio() != null;
+                && servicio.getDireccion() != null
+                && !servicio.getDireccion().isBlank()
+                && servicio.getFechaInicio() != null
+                && servicio.getEstado() != null
+                && !servicio.getEstado().isBlank();
     }
+
+
 
     private void asignarParametros(
             PreparedStatement statement,

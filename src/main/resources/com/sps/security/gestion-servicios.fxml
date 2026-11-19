@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.sps.security.controller.GestionServiciosController"
+            prefWidth="1050"
+            prefHeight="700">
+
+    <top>
+        <VBox spacing="5" style="-fx-padding: 20;">
+            <Label text="Gestión de Servicios"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="Registro y administración de servicios de seguridad"
+                   style="-fx-text-fill: #666666;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="10" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="120"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints minWidth="120"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="ID del cliente:"
+                       GridPane.rowIndex="0"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="txtIdCliente"
+                           promptText="Ej. 1"
+                           GridPane.rowIndex="0"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Nombre del servicio:"
+                       GridPane.rowIndex="0"
+                       GridPane.columnIndex="2"/>
+
+                <TextField fx:id="txtNombreServicio"
+                           promptText="Ej. Vigilancia residencial"
+                           GridPane.rowIndex="0"
+                           GridPane.columnIndex="3"/>
+
+                <Label text="Dirección:"
+                       GridPane.rowIndex="1"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="txtDireccion"
+                           promptText="Ubicación del servicio"
+                           GridPane.rowIndex="1"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Fecha de inicio:"
+                       GridPane.rowIndex="1"
+                       GridPane.columnIndex="2"/>
+
+                <DatePicker fx:id="dpFechaInicio"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="3"/>
+
+                <Label text="Estado:"
+                       GridPane.rowIndex="2"
+                       GridPane.columnIndex="0"/>
+
+                <ComboBox fx:id="cmbEstado"
+                          maxWidth="Infinity"
+                          GridPane.rowIndex="2"
+                          GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Guardar"
+                        onAction="#handleGuardar"
+                        prefWidth="110"/>
+
+                <Button text="Actualizar"
+                        onAction="#handleActualizar"
+                        prefWidth="110"/>
+
+                <Button text="Eliminar"
+                        onAction="#handleEliminar"
+                        prefWidth="110"/>
+
+                <Button text="Limpiar"
+                        onAction="#handleLimpiar"
+                        prefWidth="110"/>
+            </HBox>
+
+            <Label text="Servicios registrados"
+                   style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+            <TableView fx:id="tblServicios"
+                       VBox.vgrow="ALWAYS"
+                       prefHeight="350">
+
+                <columns>
+                    <TableColumn fx:id="colId"
+                                 text="ID"
+                                 prefWidth="65"/>
+
+                    <TableColumn fx:id="colCliente"
+                                 text="Cliente"
+                                 prefWidth="90"/>
+
+                    <TableColumn fx:id="colNombre"
+                                 text="Nombre del servicio"
+                                 prefWidth="200"/>
+
+                    <TableColumn fx:id="colDireccion"
+                                 text="Dirección"
+                                 prefWidth="230"/>
+
+                    <TableColumn fx:id="colFechaInicio"
+                                 text="Fecha de inicio"
+                                 prefWidth="140"/>
+
+                    <TableColumn fx:id="colEstado"
+                                 text="Estado"
+                                 prefWidth="110"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>
