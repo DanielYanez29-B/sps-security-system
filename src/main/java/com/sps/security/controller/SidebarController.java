@@ -35,6 +35,8 @@ public class SidebarController implements Initializable {
     @FXML
     private ToggleButton btnConfig;
     @FXML
+    private ToggleButton btnClientes;
+    @FXML
     private ToggleButton btnAsignaciones;
     @FXML
     private ToggleButton btnJornadas;
@@ -75,6 +77,12 @@ public class SidebarController implements Initializable {
                 .cargarVistaEnContenido("usuarios-view.fxml");
     }
 
+    @FXML
+    public void onSupervision() {
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("elementosupervisado-view.fxml");
+    }
+
 
     @FXML
     public void onGuardias() {
@@ -82,9 +90,16 @@ public class SidebarController implements Initializable {
                 .cargarVistaEnContenido("guardias-view.fxml");
     }
 
+    @FXML
+    public void onClientes() {
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("gestion-clientes.fxml");
+    }
 
     @FXML
     public void onServicios() {
+        NavigationService.getInstance()
+                .cargarVistaEnContenido("servicio-view.fxml");
     }
 
     @FXML

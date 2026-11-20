@@ -24,6 +24,8 @@
         <ToggleButton fx:id="btnAsignaciones" onAction="#onAsignaciones" text="Asignaciones" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnGuardias" onAction="#onGuardias" text="Guardias" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnServicios" onAction="#onServicios" text="Servicios" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnClientes" onAction="#onClientes" text="Clientes" styleClass="nav-button" maxWidth="Infinity"/>
+        <ToggleButton fx:id="btnSupervision" onAction="#onSupervision" text="Supervisión" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnMonitoreo" onAction="#onMonitoreo" text="Monitoreo" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnAlertas" onAction="#onAlertas" text="Alertas" styleClass="nav-button" maxWidth="Infinity"/>
         <ToggleButton fx:id="btnReportes" onAction="#onReportes" text="Reportes" styleClass="nav-button" maxWidth="Infinity"/>

@@ -18,6 +18,8 @@ module com.sps.security {
     opens com.sps.security.model.enums to javafx.fxml;
     opens com.sps.security.service to javafx.fxml;
     opens com.sps.security to javafx.fxml;
+    opens com.sps.security.model.operative to javafx.base;
+    opens com.sps.security.model.supervised to javafx.base;
     exports com.sps.security;
 
 }

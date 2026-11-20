@@ -27,6 +27,8 @@ public class Servicio {
         this.estado = estado;
     }
 
+    public Servicio() {}
+
     public Integer getIdServicio() {
         return idServicio;
     }
