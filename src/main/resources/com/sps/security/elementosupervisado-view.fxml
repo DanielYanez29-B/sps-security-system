@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.sps.security.controller.GestionElementosSupervisadosController"
+            fitToWidth="true"
+            hbarPolicy="NEVER">
+
+    <VBox spacing="22">
+
+        <VBox spacing="6">
+
+            <Label text="Gestión de Elementos Supervisados"/>
+
+            <Label text="Gestiona y consulta los elementos supervisados asignados a cada servicio."/>
+
+        </VBox>
+
+        <VBox spacing="18">
+
+            <Label text="Datos del elemento supervisado"/>
+
+            <GridPane hgap="16" vgap="14">
+
+                <columnConstraints>
+                    <ColumnConstraints minWidth="145"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="ID de servicio"
+                       GridPane.rowIndex="0"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoIdServicio"
+                           promptText="ID numérico del servicio"
+                           GridPane.rowIndex="0"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Tipo de elemento"
+                       GridPane.rowIndex="1"
+                       GridPane.columnIndex="0"/>
+
+                <ComboBox fx:id="comboTipoElemento"
+                          promptText="Selecciona el tipo de elemento"
+                          GridPane.rowIndex="1"
+                          GridPane.columnIndex="1"/>
+
+                <Label text="Identificador"
+                       GridPane.rowIndex="2"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoIdentificador"
+                           promptText="Placas, matrícula, serie o identificador"
+                           GridPane.rowIndex="2"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Descripción"
+                       GridPane.rowIndex="3"
+                       GridPane.columnIndex="0"/>
+
+                <TextField fx:id="campoDescripcion"
+                           promptText="Descripción o detalles adicionales (opcional)"
+                           GridPane.rowIndex="3"
+                           GridPane.columnIndex="1"/>
+
+                <Label text="Estado"
+                       GridPane.rowIndex="4"
+                       GridPane.columnIndex="0"/>
+
+                <ComboBox fx:id="comboEstado"
+                          GridPane.rowIndex="4"
+                          GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+            <HBox spacing="10">
+
+                <Button fx:id="botonGuardar"
+                        text="Registrar elemento"
+                        onAction="#guardarElemento"/>
+
+                <Button text="Nuevo / Limpiar"
+                        onAction="#nuevoElemento"/>
+
+                <Button text="Activar"
+                        onAction="#activarElemento"/>
+
+                <Button text="Desactivar"
+                        onAction="#desactivarElemento"/>
+
+                <Button text="Eliminar"
+                        onAction="#eliminarElemento"/>
+
+            </HBox>
+
+        </VBox>
+
+        <VBox spacing="16">
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+
+                <Label text="Elementos registrados"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <TextField fx:id="campoFiltroServicio"
+                           promptText="ID de servicio"
+                           prefWidth="130"/>
+
+                <Button text="Filtrar por servicio"
+                        onAction="#filtrarPorServicio"/>
+
+                <Button text="Mostrar todos"
+                        onAction="#actualizarTabla"/>
+
+            </HBox>
+
+            <TableView fx:id="tablaElementos"
+                       prefHeight="350"
+                       VBox.vgrow="ALWAYS">
+
+                <columns>
+
+                    <TableColumn fx:id="columnaId"
+                                 text="ID"
+                                 prefWidth="60"/>
+
+                    <TableColumn fx:id="columnaIdServicio"
+                                 text="ID Servicio"
+                                 prefWidth="90"/>
+
+                    <TableColumn fx:id="columnaTipo"
+                                 text="Tipo"
+                                 prefWidth="120"/>
+
+                    <TableColumn fx:id="columnaIdentificador"
+                                 text="Identificador"
+                                 prefWidth="170"/>
+
+                    <TableColumn fx:id="columnaDescripcion"
+                                 text="Descripción"
+                                 prefWidth="230"/>
+
+                    <TableColumn fx:id="columnaEstado"
+                                 text="Estado"
+                                 prefWidth="100"/>
+
+                </columns>
+
+            </TableView>
+
+        </VBox>
+
+    </VBox>
+
+</ScrollPane>

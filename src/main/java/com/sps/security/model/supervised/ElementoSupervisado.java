@@ -26,6 +26,8 @@ public class ElementoSupervisado {
         this.estadoActivo = estadoActivo;
     }
 
+    public ElementoSupervisado() {}
+
     public Integer getIdElemento() {
         return idElemento;
     }
