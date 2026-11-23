@@ -37,18 +37,26 @@
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
+                <!-- Fila 0: Guardia / Usuarios -->
                 <Label text="Guardia"
                        styleClass="operativo-label"
                        GridPane.rowIndex="0"
                        GridPane.columnIndex="0"/>
 
-                <ComboBox fx:id="campoIdGuardia"
-                          promptText="Selecciona un guardia"
-                          maxWidth="Infinity"
-                          styleClass="operativo-input"
-                          GridPane.rowIndex="0"
-                          GridPane.columnIndex="1"/>
+                <HBox spacing="8"
+                      GridPane.rowIndex="0"
+                      GridPane.columnIndex="1">
+                    <ComboBox fx:id="campoIdGuardia"
+                              promptText="Selecciona un guardia"
+                              maxWidth="Infinity"
+                              HBox.hgrow="ALWAYS"
+                              styleClass="operativo-input"/>
+                    <Button text="Administrar usuarios..."
+                            onAction="#abrirGestionUsuarios"
+                            styleClass="operativo-button,operativo-secondary"/>
+                </HBox>
 
+                <!-- Fila 1: Servicio (sin cambios) -->
                 <Label text="Servicio"
                        styleClass="operativo-label"
                        GridPane.rowIndex="1"
@@ -61,18 +69,24 @@
                           GridPane.rowIndex="1"
                           GridPane.columnIndex="1"/>
 
+                <!-- Fila 2: Jornada -->
                 <Label text="Jornada"
                        styleClass="operativo-label"
                        GridPane.rowIndex="2"
                        GridPane.columnIndex="0"/>
 
-                <ComboBox fx:id="campoIdJornada"
-                          promptText="Selecciona una jornada"
-                          maxWidth="Infinity"
-                          styleClass="operativo-input"
-                          GridPane.rowIndex="2"
-                          GridPane.columnIndex="1"/>
-
+                <HBox spacing="8"
+                      GridPane.rowIndex="2"
+                      GridPane.columnIndex="1">
+                    <ComboBox fx:id="campoIdJornada"
+                              promptText="Selecciona una jornada"
+                              maxWidth="Infinity"
+                              HBox.hgrow="ALWAYS"
+                              styleClass="operativo-input"/>
+                    <Button text="Administrar jornadas..."
+                            onAction="#abrirGestionJornadas"
+                            styleClass="operativo-button,operativo-secondary"/>
+                </HBox>
                 <Label text="Fecha de asignación"
                        styleClass="operativo-label"
                        GridPane.rowIndex="3"
