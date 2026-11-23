@@ -13,11 +13,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     private static final String INSERT_USER =
             "INSERT INTO USUARIO (id_rol, username, email, contrasena, estado_activo) VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_USER =
-            "UPDATE USUARIO SET " +
-                    "id_rol = ?, username = ?, email = ?, " +
-                    "estado_activo = ? " +
-                    "WHERE id_usuario = ?";
+    private static final String UPDATE_USER_WITH_PASSWORD =
+            "UPDATE USUARIO SET id_rol = ?, username = ?, email = ?, contrasena = ?, estado_activo = ? WHERE id_usuario = ?";
+
+    private static final String UPDATE_USER_WITHOUT_PASSWORD =
+            "UPDATE USUARIO SET id_rol = ?, username = ?, email = ?, estado_activo = ? WHERE id_usuario = ?";
     private static final String DELETE_USER =
             "DELETE FROM USUARIO WHERE id_usuario = ?";
     private static final String SELECT_USER_BY_ID =
@@ -53,11 +53,32 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public boolean actualizar(Usuario usuario) {
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(UPDATE_USER)) {
+        if (usuario == null || usuario.getIdUsuario() == null) {
+            return false;
+        }
 
-            setStatementParams(pstmt, usuario);
-            pstmt.setInt(5, usuario.getIdUsuario());
+        boolean actualizarContrasena = usuario.getContrasena() != null && !usuario.getContrasena().isBlank();
+        String sql = actualizarContrasena ? UPDATE_USER_WITH_PASSWORD : UPDATE_USER_WITHOUT_PASSWORD;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            if (usuario.getIdRol() != null) {
+                pstmt.setInt(1, usuario.getIdRol());
+            } else {
+                pstmt.setNull(1, Types.INTEGER);
+            }
+            pstmt.setString(2, usuario.getUsername());
+            pstmt.setString(3, usuario.getEmail());
+
+            if (actualizarContrasena) {
+                pstmt.setString(4, usuario.getContrasena());
+                pstmt.setBoolean(5, Boolean.TRUE.equals(usuario.getEstadoActivo()));
+                pstmt.setInt(6, usuario.getIdUsuario());
+            } else {
+                pstmt.setBoolean(4, Boolean.TRUE.equals(usuario.getEstadoActivo()));
+                pstmt.setInt(5, usuario.getIdUsuario());
+            }
 
             return pstmt.executeUpdate() > 0;
 
