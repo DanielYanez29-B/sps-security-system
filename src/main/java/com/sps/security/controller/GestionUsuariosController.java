@@ -19,12 +19,13 @@ public class GestionUsuariosController {
     @FXML private TableColumn<Usuario, String> colEmail;
     @FXML private TableColumn<Usuario, Integer> colRol;
     @FXML private TableColumn<Usuario, Boolean> colEstado;
+    @FXML private TableColumn<Usuario, Void> colAcciones;
 
     // Componentes FXML del Formulario
     @FXML private TextField txtUsername;
     @FXML private TextField txtEmail;
     @FXML private PasswordField txtContrasena;
-    @FXML private TextField txtIdRol;
+    @FXML private ComboBox<String> cmbIdRol;
     @FXML private CheckBox chkEstadoActivo;
     @FXML
     private StackPane modalFormulario;
@@ -33,6 +34,17 @@ public class GestionUsuariosController {
     private final UsuarioService usuarioService = new UsuarioService();
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     private Usuario usuarioSeleccionado = null;
+    private final ObservableList<String> roles = FXCollections.observableArrayList(
+            "Administrador",
+            "Operador",
+            "Guardia"
+    );
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        handleLimpiar();
+        mostrarFormulario();
+    }
 
     @FXML
     public void mostrarFormulario() {
@@ -50,6 +62,7 @@ public class GestionUsuariosController {
     public void initialize() {
         configurarTabla();
         cargarUsuarios();
+        cmbIdRol.setItems(roles);
 
         // Listener para sincronizar la fila seleccionada de la tabla con el formulario
         tblUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
@@ -72,6 +85,70 @@ public class GestionUsuariosController {
                 } else {
                     setText("●  Inactivo");
                     setStyle("-fx-text-fill: #94A3B8; -fx-font-weight: bold;");
+                }
+            }
+        });
+
+        colRol.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Integer idRol, boolean empty) {
+                super.updateItem(idRol, empty);
+                if (empty || idRol == null) {
+                    setText(null);
+                } else {
+                    String nombreRol = regresarIdRol(idRol);
+                    setText(nombreRol != null ? nombreRol : "Sin rol (" + idRol + ")");
+                }
+            }
+        });
+
+        colAcciones.setCellFactory(column -> new TableCell<>() {
+            private final Button btnEditar = new Button("✎");
+
+            {
+                btnEditar.setStyle(
+                        "-fx-background-color: transparent;" +
+                                "-fx-text-fill: #6366F1;" +
+                                "-fx-font-size: 16px;" +
+                                "-fx-cursor: hand;" +
+                                "-fx-padding: 2 8 2 8;"
+                );
+                btnEditar.setTooltip(new Tooltip("Editar usuario"));
+
+                // Efecto hover sencillo
+                btnEditar.setOnMouseEntered(e -> btnEditar.setStyle(
+                        "-fx-background-color: #EEF2FF;" +
+                                "-fx-text-fill: #4F46E5;" +
+                                "-fx-font-size: 16px;" +
+                                "-fx-background-radius: 6;" +
+                                "-fx-cursor: hand;" +
+                                "-fx-padding: 2 8 2 8;"
+                ));
+                btnEditar.setOnMouseExited(e -> btnEditar.setStyle(
+                        "-fx-background-color: transparent;" +
+                                "-fx-text-fill: #6366F1;" +
+                                "-fx-font-size: 16px;" +
+                                "-fx-cursor: hand;" +
+                                "-fx-padding: 2 8 2 8;"
+                ));
+
+                btnEditar.setOnAction(event -> {
+                    Usuario usuario = getTableView().getItems().get(getIndex());
+                    usuarioSeleccionado = usuario;
+                    tblUsuarios.getSelectionModel().select(usuario);
+                    cargarFormulario(usuario);
+                    mostrarFormulario();
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(btnEditar);
+                    setAlignment(javafx.geometry.Pos.CENTER);
                 }
             }
         });
@@ -165,7 +242,7 @@ public class GestionUsuariosController {
         txtUsername.clear();
         txtEmail.clear();
         txtContrasena.clear();
-        txtIdRol.clear();
+        cmbIdRol.setValue(null);
         chkEstadoActivo.setSelected(true);
         tblUsuarios.getSelectionModel().clearSelection();
     }
@@ -181,18 +258,35 @@ public class GestionUsuariosController {
     }
 
     private Integer parsearIdRol() {
-        try {
-            return Integer.parseInt(txtIdRol.getText().trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("El ID de Rol debe ser un número entero válido.");
+        String rolSeleccionado = cmbIdRol.getValue();
+        if (rolSeleccionado == null || rolSeleccionado.isBlank()) {
+            throw new IllegalArgumentException("Debe seleccionar un rol.");
         }
+        return switch (rolSeleccionado) {
+            case "Administrador" -> 1;
+            case "Operador" -> 2;
+            case "Guardia" -> 3;
+            default -> throw new IllegalArgumentException("Rol no válido: " + rolSeleccionado);
+        };
+    }
+
+    private String regresarIdRol(Integer idRol) {
+        if (idRol == null) {
+            return null;
+        }
+        return switch (idRol) {
+            case 1 -> "Administrador";
+            case 2 -> "Operador";
+            case 3 -> "Guardia";
+            default -> null; // O "Desconocido" si prefieres mostrar algo en el combo
+        };
     }
 
     private void cargarFormulario(Usuario u) {
         txtUsername.setText(u.getUsername());
         txtEmail.setText(u.getEmail());
         txtContrasena.clear(); // Por seguridad no se llena la contraseña existente
-        txtIdRol.setText(u.getIdRol() != null ? u.getIdRol().toString() : "");
+        cmbIdRol.setValue(regresarIdRol(u.getIdRol()));
         chkEstadoActivo.setSelected(u.getEstadoActivo() != null && u.getEstadoActivo());
     }
 
