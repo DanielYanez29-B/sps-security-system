@@ -40,6 +40,10 @@ public class SidebarController implements Initializable {
     private ToggleButton btnAsignaciones;
     @FXML
     private ToggleButton btnJornadas;
+    @FXML
+    private ToggleButton btnSupervision;
+    @FXML
+    private ToggleGroup menuGroup;
 
 
     @Override
@@ -56,6 +60,11 @@ public class SidebarController implements Initializable {
             });
         }
         verificarPermisosParaVistaDePestanas();
+        menuGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle == null) {
+                oldToggle.setSelected(true);
+            }
+        });
     }
 
     @FXML
