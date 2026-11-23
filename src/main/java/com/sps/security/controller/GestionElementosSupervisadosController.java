@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,8 @@ public class GestionElementosSupervisadosController {
     private final ElementoSupervisadoService elementoService;
     private final ObservableList<ElementoSupervisado> listaElementos;
     private ElementoSupervisado elementoSeleccionado;
+    @FXML private StackPane modalFormulario;
+    @FXML private Label lblModalTitulo;
 
     public GestionElementosSupervisadosController() {
         this.elementoService = new ElementoSupervisadoService();
@@ -79,8 +82,33 @@ public class GestionElementosSupervisadosController {
         tablaElementos.getSelectionModel().selectedItemProperty().addListener(
                 (obs, anterior, actual) -> cargarElementoEnFormulario(actual)
         );
+        tablaElementos.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tablaElementos.getSelectionModel().getSelectedItem() != null) {
+                lblModalTitulo.setText("Editar Elemento Supervisado");
+                mostrarFormulario();
+            }
+        });
 
         actualizarTabla();
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        limpiarFormulario();
+        lblModalTitulo.setText("Nuevo Elemento Supervisado");
+        mostrarFormulario();
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
     }
 
     private void configurarColumnas() {
@@ -129,6 +157,7 @@ public class GestionElementosSupervisadosController {
 
             limpiarFormulario();
             actualizarTabla();
+            ocultarFormulario();
 
         } catch (IllegalArgumentException e) {
             mostrarAlerta(Alert.AlertType.WARNING, "Datos inválidos", e.getMessage());
@@ -171,6 +200,7 @@ public class GestionElementosSupervisadosController {
                 mostrarAlerta(Alert.AlertType.INFORMATION, "Elemento eliminado", "El elemento supervisado fue eliminado correctamente.");
                 limpiarFormulario();
                 actualizarTabla();
+                ocultarFormulario();
             } catch (IllegalArgumentException e) {
                 mostrarAlerta(Alert.AlertType.WARNING, "Validación", e.getMessage());
             } catch (RuntimeException e) {

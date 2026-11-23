@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,10 @@ public class GestionJornadasController {
     @FXML private TextField txtNombre;
     @FXML private TextField txtHoraInicio;
     @FXML private TextField txtHoraFin;
+    @FXML private StackPane modalFormulario;
+    @FXML private Label lblModalTitulo;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnActualizar;
 
     private final JornadaService jornadaService =
             new JornadaService();
@@ -48,12 +53,50 @@ public class GestionJornadasController {
         tblJornadas.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, anterior, nueva) -> {
-
                     if (nueva != null) {
                         jornadaSeleccionada = nueva;
                         cargarFormulario(nueva);
                     }
                 });
+
+        tblJornadas.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tblJornadas.getSelectionModel().getSelectedItem() != null) {
+                abrirFormularioEdicion();
+            }
+        });
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        handleLimpiar();
+        lblModalTitulo.setText("Nueva Jornada");
+        configurarBotonesFormulario(true);
+        mostrarFormulario();
+    }
+
+    private void abrirFormularioEdicion() {
+        lblModalTitulo.setText("Editar Jornada");
+        configurarBotonesFormulario(false);
+        mostrarFormulario();
+    }
+
+    private void configurarBotonesFormulario(boolean nuevo) {
+        btnGuardar.setVisible(nuevo);
+        btnGuardar.setManaged(nuevo);
+        btnActualizar.setVisible(!nuevo);
+        btnActualizar.setManaged(!nuevo);
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
     }
 
     private void configurarTabla() {
@@ -134,6 +177,7 @@ public class GestionJornadasController {
 
             cargarJornadas();
             handleLimpiar();
+            ocultarFormulario();
 
         } catch (RuntimeException e) {
             mostrarAlerta(
@@ -180,6 +224,7 @@ public class GestionJornadasController {
 
             cargarJornadas();
             handleLimpiar();
+            ocultarFormulario();
 
         } catch (RuntimeException e) {
             mostrarAlerta(
@@ -215,6 +260,7 @@ public class GestionJornadasController {
 
             cargarJornadas();
             handleLimpiar();
+            ocultarFormulario();
 
         } catch (RuntimeException e) {
             mostrarAlerta(
@@ -250,6 +296,7 @@ public class GestionJornadasController {
 
             cargarJornadas();
             handleLimpiar();
+            ocultarFormulario();
 
         } catch (RuntimeException e) {
             mostrarAlerta(

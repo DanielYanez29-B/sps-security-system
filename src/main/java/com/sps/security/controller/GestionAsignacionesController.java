@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
 import java.io.IOException;
 
 import java.time.LocalDate;
@@ -65,6 +67,8 @@ public class GestionAsignacionesController {
 
     @FXML
     private Button botonGuardar;
+    @FXML private StackPane modalFormulario;
+    @FXML private Label lblModalTitulo;
 
     private final AsignacionService asignacionService =
             new AsignacionService();
@@ -158,6 +162,34 @@ public class GestionAsignacionesController {
         );
 
         cargarDatos();
+
+        tablaAsignaciones.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tablaAsignaciones.getSelectionModel().getSelectedItem() != null) {
+                lblModalTitulo.setText("Editar Asignación");
+                botonGuardar.setText("Actualizar asignación");
+                mostrarFormulario();
+            }
+        });
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        limpiarFormulario();
+        lblModalTitulo.setText("Nueva Asignación");
+        botonGuardar.setText("Guardar");
+        mostrarFormulario();
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
     }
 
     @FXML
@@ -357,6 +389,7 @@ public class GestionAsignacionesController {
 
             limpiarFormulario();
             cargarAsignaciones();
+            ocultarFormulario();
 
         } catch (IllegalArgumentException |
                  IllegalStateException e) {
@@ -435,6 +468,7 @@ public class GestionAsignacionesController {
 
             limpiarFormulario();
             cargarAsignaciones();
+            ocultarFormulario();
 
             mostrarMensaje(
                     Alert.AlertType.INFORMATION,

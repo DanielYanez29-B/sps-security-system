@@ -4,24 +4,25 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.sps.security.controller.MainController"
-            stylesheets="@styles.css"
             prefWidth="1280" prefHeight="800" styleClass="main-container">
 
-    <!-- Encabezado en la parte superior -->
-    <top>
-        <fx:include fx:id="header" source="HeaderView.fxml"/>
-    </top>
-
-    <!-- Barra lateral de navegación -->
+    <!-- Barra lateral de navegación a altura completa -->
     <left>
         <fx:include fx:id="sidebar" source="SidebarView.fxml"/>
     </left>
 
-    <!-- Área de contenido dinámico -->
+    <!-- Contenedor derecho: Header arriba + Área dinámica abajo -->
     <center>
-        <StackPane fx:id="contentArea" styleClass="content-area">
-            <!-- Las vistas se cargan dinámicamente aquí -->
-        </StackPane>
+        <BorderPane styleClass="right-shell">
+            <top>
+                <fx:include fx:id="header" source="HeaderView.fxml"/>
+            </top>
+            <center>
+                <StackPane fx:id="contentArea" styleClass="content-area">
+                    <!-- Las vistas se cargan dinámicamente aquí -->
+                </StackPane>
+            </center>
+        </BorderPane>
     </center>
 
 </BorderPane>

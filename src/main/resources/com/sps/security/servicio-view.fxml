@@ -1,154 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.sps.security.controller.GestionServiciosController"
-            fitToWidth="true"
-            hbarPolicy="NEVER">
-
-    <VBox spacing="22">
-
-        <VBox spacing="6">
-
-            <Label text="Gestión de Servicios"/>
-
-            <Label text="Gestiona y consulta los servicios operativos asignados a clientes."/>
-
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.sps.security.controller.GestionServiciosController"
+           styleClass="view-root">
+    <VBox spacing="18" styleClass="operativo-content">
+        <VBox spacing="4">
+            <Label text="Gestión de Servicios" styleClass="operativo-title"/>
+            <Label text="Gestiona y consulta los servicios operativos asignados a clientes." styleClass="operativo-subtitle"/>
         </VBox>
-
-        <VBox spacing="18">
-
-            <Label text="Datos del servicio"/>
-
-            <GridPane hgap="16" vgap="14">
-
-                <columnConstraints>
-                    <ColumnConstraints minWidth="145"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <Label text="ID de cliente"
-                       GridPane.rowIndex="0"
-                       GridPane.columnIndex="0"/>
-
-                <TextField fx:id="campoIdCliente"
-                           promptText="ID numérico del cliente"
-                           GridPane.rowIndex="0"
-                           GridPane.columnIndex="1"/>
-
-                <Label text="Nombre del servicio"
-                       GridPane.rowIndex="1"
-                       GridPane.columnIndex="0"/>
-
-                <TextField fx:id="campoNombreServicio"
-                           promptText="Nombre o tipo de servicio"
-                           GridPane.rowIndex="1"
-                           GridPane.columnIndex="1"/>
-
-                <Label text="Dirección"
-                       GridPane.rowIndex="2"
-                       GridPane.columnIndex="0"/>
-
-                <TextField fx:id="campoDireccion"
-                           promptText="Ubicación donde se presta el servicio"
-                           GridPane.rowIndex="2"
-                           GridPane.columnIndex="1"/>
-
-                <Label text="Fecha de inicio"
-                       GridPane.rowIndex="3"
-                       GridPane.columnIndex="0"/>
-
-                <DatePicker fx:id="campoFechaInicio"
-                            GridPane.rowIndex="3"
-                            GridPane.columnIndex="1"/>
-
-                <Label text="Estado"
-                       GridPane.rowIndex="4"
-                       GridPane.columnIndex="0"/>
-
-                <ComboBox fx:id="comboEstado"
-                          GridPane.rowIndex="4"
-                          GridPane.columnIndex="1"/>
-
-            </GridPane>
-
-            <HBox spacing="10">
-
-                <Button fx:id="botonGuardar"
-                        text="Registrar servicio"
-                        onAction="#guardarServicio"/>
-
-                <Button text="Nuevo / Limpiar"
-                        onAction="#nuevoServicio"/>
-
-                <Button text="Activar"
-                        onAction="#activarServicio"/>
-
-                <Button text="Desactivar"
-                        onAction="#desactivarServicio"/>
-
-                <Button text="Eliminar"
-                        onAction="#eliminarServicio"/>
-
-            </HBox>
-
-        </VBox>
-
-        <VBox spacing="16">
-
-            <HBox spacing="15" alignment="CENTER_LEFT">
-
-                <Label text="Servicios registrados"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <CheckBox fx:id="checkSoloActivos"
-                          text="Mostrar solo activos"
-                          onAction="#actualizarTabla"/>
-
-                <Button text="Actualizar tabla"
-                        onAction="#actualizarTabla"/>
-
-            </HBox>
-
-            <TableView fx:id="tablaServicios"
-                       prefHeight="350"
-                       VBox.vgrow="ALWAYS">
-
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <CheckBox fx:id="checkSoloActivos" text="Mostrar solo activos" onAction="#actualizarTabla" styleClass="operativo-checkbox"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#abrirFormularioNuevo" text="+ Nuevo servicio" styleClass="operativo-button,operativo-primary"/>
+        </HBox>
+        <VBox styleClass="operativo-card" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tablaServicios" styleClass="operativo-table" VBox.vgrow="ALWAYS">
                 <columns>
-
-                    <TableColumn fx:id="columnaId"
-                                 text="ID"
-                                 prefWidth="65"/>
-
-                    <TableColumn fx:id="columnaIdCliente"
-                                 text="ID Cliente"
-                                 prefWidth="95"/>
-
-                    <TableColumn fx:id="columnaNombre"
-                                 text="Servicio"
-                                 prefWidth="200"/>
-
-                    <TableColumn fx:id="columnaDireccion"
-                                 text="Dirección"
-                                 prefWidth="240"/>
-
-                    <TableColumn fx:id="columnaFechaInicio"
-                                 text="Fecha de inicio"
-                                 prefWidth="135"/>
-
-                    <TableColumn fx:id="columnaEstado"
-                                 text="Estado"
-                                 prefWidth="110"/>
-
+                    <TableColumn fx:id="columnaId" text="ID" prefWidth="65"/>
+                    <TableColumn fx:id="columnaIdCliente" text="ID Cliente" prefWidth="95"/>
+                    <TableColumn fx:id="columnaNombre" text="Servicio" prefWidth="200"/>
+                    <TableColumn fx:id="columnaDireccion" text="Dirección" prefWidth="240"/>
+                    <TableColumn fx:id="columnaFechaInicio" text="Fecha de inicio" prefWidth="135"/>
+                    <TableColumn fx:id="columnaEstado" text="Estado" prefWidth="110"/>
                 </columns>
-
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
             </TableView>
-
         </VBox>
-
     </VBox>
 
-</ScrollPane>
+    <StackPane fx:id="modalFormulario" managed="false" visible="false" styleClass="modal-backdrop">
+        <VBox maxWidth="440" spacing="12" styleClass="modal-card">
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="lblModalTitulo" text="Nuevo Servicio" styleClass="operativo-card-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button onAction="#ocultarFormulario" text="✕" styleClass="btn-close-modal"/>
+            </HBox>
+            <Separator/>
+            <VBox spacing="6"><Label text="ID de cliente" styleClass="operativo-label"/><TextField fx:id="campoIdCliente" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Nombre del servicio" styleClass="operativo-label"/><TextField fx:id="campoNombreServicio" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Dirección" styleClass="operativo-label"/><TextField fx:id="campoDireccion" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Fecha de inicio" styleClass="operativo-label"/><DatePicker fx:id="campoFechaInicio" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Estado" styleClass="operativo-label"/><ComboBox fx:id="comboEstado" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <HBox alignment="CENTER_RIGHT" spacing="8">
+                <VBox.margin><Insets top="10"/></VBox.margin>
+                <Button onAction="#nuevoServicio" text="Limpiar" styleClass="operativo-button,operativo-secondary"/>
+                <Button onAction="#desactivarServicio" text="Desactivar" styleClass="operativo-button,operativo-danger"/>
+                <Button onAction="#eliminarServicio" text="Eliminar" styleClass="operativo-button,operativo-danger"/>
+                <Button fx:id="botonGuardar" onAction="#guardarServicio" text="Guardar" styleClass="operativo-button,operativo-primary"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+</StackPane>

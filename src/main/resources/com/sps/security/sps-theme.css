@@ -1,0 +1,659 @@
+/* ==========================================================================
+   1. VARIABLES DE TEMA (TEMA CLARO POR DEFECTO)
+   ========================================================================== */
+.root {
+    /* Fondos */
+    -sps-bg: #F1F5F9;              /* Fondo general */
+    -sps-sidebar: #FFFFFF;         /* Barra lateral */
+    -sps-surface: #FFFFFF;         /* Cards, header, tablas */
+    -sps-surface-alt: #F8FAFC;     /* Superficie elevada: hover, header de tabla, inputs */
+    -sps-hover: #E2E8F0;           /* Hover sobre superficies elevadas */
+
+    /* Bordes */
+    -sps-border: #E2E8F0;
+    -sps-border-focus: #2563EB;
+
+    /* Textos */
+    -sps-text: #0F172A;            /* Texto principal: títulos, datos */
+    -sps-text-muted: #475569;      /* Texto secundario: subtítulos, labels */
+    -sps-text-subtle: #94A3B8;     /* Texto atenuado: placeholders */
+    -sps-text-on-accent: #FFFFFF;
+
+    /* Acentos y estados */
+    -sps-primary: #2563EB;
+    -sps-primary-hover: #1D4ED8;
+    -sps-primary-soft: #EFF6FF;
+
+    -sps-success: #16A34A;
+    -sps-success-hover: #15803D;
+    -sps-warning: #D97706;
+    -sps-danger: #DC2626;
+    -sps-danger-hover: #B91C1C;
+    -sps-info: #0284C7;
+
+    -fx-font-family: "Segoe UI", "Inter", "Roboto", sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: -sps-bg;
+    -fx-text-fill: -sps-text;
+}
+
+/* ==========================================================================
+   2. VARIABLES DE TEMA OSCURO (PALETA OFICIAL S.P.S.)
+   ========================================================================== */
+.root.dark-theme {
+    /* Fondos */
+    -sps-bg: #0B0F17;              /* Fondo general */
+    -sps-sidebar: #0F141D;         /* Barra lateral */
+    -sps-surface: #131A26;         /* Cards, header, tablas */
+    -sps-surface-alt: #1A2332;     /* Superficie elevada: hover, header de tabla, inputs */
+    -sps-hover: #222D40;           /* Hover sobre controles elevados */
+
+    /* Bordes */
+    -sps-border: #243044;          /* Bordes sutiles */
+    -sps-border-focus: #3B82F6;
+
+    /* Textos */
+    -sps-text: #E6EAF2;            /* Texto principal: títulos, datos */
+    -sps-text-muted: #9AA6B8;      /* Texto secundario: subtítulos, labels */
+    -sps-text-subtle: #66738A;     /* Texto atenuado: placeholders */
+    -sps-text-on-accent: #FFFFFF;
+
+    /* Acentos y estados */
+    -sps-primary: #3B82F6;         /* Botones primarios, item activo */
+    -sps-primary-hover: #60A5FA;   /* Hover acento */
+    -sps-primary-soft: rgba(59, 130, 246, 0.16);
+
+    -sps-success: #22C55E;         /* Activo / guardia en turno / sistema normal */
+    -sps-success-hover: #16A34A;
+    -sps-warning: #F59E0B;         /* Mantenimiento / alerta media */
+    -sps-danger: #EF4444;          /* Alarma crítica, eliminar, cerrar sesión */
+    -sps-danger-hover: #DC2626;
+    -sps-info: #38BDF8;            /* Información operativa */
+}
+/* ==========================================================================
+   3. SIDEBAR
+   ========================================================================== */
+.sidebar {
+    -fx-background-color: -sps-sidebar;
+    -fx-border-color: transparent -sps-border transparent transparent;
+    -fx-border-width: 1;
+}
+
+.logo-box {
+    -fx-padding: 10 0 15 0;
+}
+
+.logo-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -sps-primary;
+}
+
+.logo-subtitle {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -sps-text-muted;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 14 10 14;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: -sps-hover;
+    -fx-text-fill: -sps-text;
+}
+
+.nav-button:selected {
+    -fx-background-color: -sps-primary-soft;
+    -fx-text-fill: -sps-primary;
+}
+
+.status-card {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 12;
+}
+
+.status-card-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -sps-text;
+}
+
+.status-card-sub {
+    -fx-font-size: 11px;
+    -fx-text-fill: -sps-text-muted;
+}
+
+.user-card {
+    -fx-background-color: -sps-surface-alt;
+    -fx-background-radius: 10;
+    -fx-padding: 8 10 8 10;
+}
+
+.user-avatar {
+    -fx-background-color: -sps-primary;
+    -fx-background-radius: 20;
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-max-width: 34;
+    -fx-max-height: 34;
+}
+
+.avatar-text {
+    -fx-text-fill: -sps-text-on-accent;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.user-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: -sps-text;
+}
+
+.user-role {
+    -fx-font-size: 11px;
+    -fx-text-fill: -sps-text-muted;
+}
+
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: -sps-danger;
+    -fx-font-weight: 600;
+    -fx-padding: 8 12 8 12;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: -sps-danger;
+    -fx-border-color: -sps-danger;
+    -fx-text-fill: -sps-text-on-accent;
+}
+
+/* ==========================================================================
+   4. HEADER Y BOTÓN DE TEMA
+   ========================================================================== */
+.app-header {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: transparent transparent -sps-border transparent;
+    -fx-border-width: 1;
+    -fx-padding: 12 24 12 24;
+}
+
+.header-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -sps-text;
+}
+
+.theme-toggle-btn {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-text-fill: -sps-text;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.theme-toggle-btn:hover {
+    -fx-background-color: -sps-hover;
+}
+
+/* ==========================================================================
+   5. CONTENEDORES, TARJETAS Y MODALES FLOTANTES
+   ========================================================================== */
+.operativo-root {
+    -fx-background-color: -sps-bg;
+    -fx-background: -sps-bg;
+}
+
+.operativo-root > .viewport {
+    -fx-background-color: -sps-bg;
+}
+
+.operativo-content {
+    -fx-background-color: -sps-bg;
+    -fx-padding: 24;
+}
+
+.operativo-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -sps-text;
+}
+
+.operativo-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: -sps-text-muted;
+}
+
+.operativo-card, .modal-card {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: -sps-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 2);
+}
+
+.operativo-card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -sps-text;
+}
+
+/* ==========================================================================
+   6. FORMULARIOS E INPUTS
+   ========================================================================== */
+.operativo-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -sps-text-muted;
+}
+
+.operativo-input, .text-field, .combo-box, .date-picker > .text-field {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: -sps-text;
+    -fx-prompt-text-fill: -sps-text-subtle;
+    -fx-padding: 8 12 8 12;
+}
+
+.operativo-input:focused, .text-field:focused, .combo-box:focused {
+    -fx-border-color: -sps-border-focus;
+    -fx-background-color: -sps-surface;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: -sps-text;
+    -fx-background-color: transparent;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: -sps-border;
+}
+
+.combo-box-popup .list-cell:hover, .combo-box-popup .list-cell:selected {
+    -fx-background-color: -sps-primary-soft;
+    -fx-text-fill: -sps-primary;
+}
+
+.date-picker {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.date-picker > .arrow-button {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 0 8 8 0;
+    -fx-background-radius: 0 8 8 0;
+}
+
+/* ==========================================================================
+   7. BOTONES
+   ========================================================================== */
+.operativo-button {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+
+.operativo-primary {
+    -fx-background-color: #7D3CEE;
+    -fx-text-fill: -sps-text-on-accent;
+}
+.operativo-primary:hover {
+    -fx-background-color: #6D28D9;
+}
+
+.operativo-secondary {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-text-fill: -sps-text;
+}
+.operativo-secondary:hover {
+    -fx-background-color: -sps-hover;
+}
+
+.operativo-success {
+    -fx-background-color: -sps-success;
+    -fx-text-fill: -sps-text-on-accent;
+}
+.operativo-success:hover {
+    -fx-background-color: -sps-success-hover;
+}
+
+.operativo-danger {
+    -fx-background-color: -sps-danger;
+    -fx-text-fill: -sps-text-on-accent;
+}
+.operativo-danger:hover {
+    -fx-background-color: -sps-danger-hover;
+}
+
+/* ==========================================================================
+   8. TABLAS (TableView)
+   ========================================================================== */
+.operativo-table, .table-view {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: transparent; /* Elimina líneas verticales blancas */
+}
+
+/* Eliminar fondo blanco interno del VirtualFlow */
+.table-view .virtual-flow,
+.table-view .virtual-flow .clipped-container,
+.table-view .virtual-flow .sheet {
+    -fx-background-color: transparent;
+}
+
+/* Encabezado de columnas */
+.table-view .column-header-background {
+    -fx-background-color: -sps-surface-alt;
+    -fx-background-radius: 12 12 0 0;
+    -fx-border-color: transparent transparent -sps-border transparent;
+    -fx-border-width: 1;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent; /* Quita divisiones verticales en el header */
+    -fx-padding: 10 8 10 8;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Filas con datos */
+.table-view .table-row-cell {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: transparent transparent -sps-border transparent;
+    -fx-border-width: 0.5;
+    -fx-cell-size: 42px;
+}
+
+/* Ocultar completamente las filas vacías */
+.table-view .table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view .table-row-cell:empty .table-cell {
+    -fx-border-color: transparent;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: -sps-surface-alt;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: -sps-primary-soft;
+}
+
+/* Celdas sin bordes verticales ni blancos */
+.table-view .table-cell {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-text-fill: -sps-text;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 12 0 12;
+}
+
+.table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: -sps-primary;
+    -fx-font-weight: 600;
+}
+
+/* Esquina superior derecha de la barra de scroll */
+.table-view .column-header-background .show-hide-columns-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* ==========================================================================
+   9. COMPLEMENTOS DE MAIN, SIDEBAR Y HEADER
+   ========================================================================== */
+.main-container, .right-shell, .content-area {
+    -fx-background-color: -sps-bg;
+}
+
+.sidebar-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.sidebar-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.header-accent-bar {
+    -fx-background-color: -sps-success;
+    -fx-background-radius: 2;
+}
+
+.header-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -sps-text;
+}
+
+.header-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: -sps-text-muted;
+}
+
+.status-badge {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 6 12 6 12;
+}
+
+.status-dot-online {
+    -fx-background-color: -sps-success;
+    -fx-background-radius: 50;
+    -fx-min-width: 8;
+    -fx-min-height: 8;
+    -fx-max-width: 8;
+    -fx-max-height: 8;
+}
+
+.status-text {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -sps-text;
+}
+
+.icon-button {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 50;
+    -fx-background-radius: 50;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-max-width: 36;
+    -fx-max-height: 36;
+    -fx-text-fill: -sps-text;
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-background-color: -sps-hover;
+}
+
+.notification-badge {
+    -fx-background-color: -sps-danger;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 1 5 1 5;
+    -fx-translate-x: 2;
+    -fx-translate-y: -2;
+}
+
+.status-warning {
+    -fx-text-fill: -sps-warning;
+    -fx-font-weight: bold;
+}
+
+.status-info {
+    -fx-text-fill: -sps-info;
+    -fx-font-weight: bold;
+}
+
+.status-danger {
+    -fx-text-fill: -sps-danger;
+    -fx-font-weight: bold;
+}
+
+/* ==========================================================================
+   10. ESTÁNDAR DE VISTAS CON TABLA Y MODAL FLOTANTE
+   ========================================================================== */
+.view-root {
+    -fx-background-color: -sps-bg;
+}
+
+/* Barra y píldoras de filtro */
+.filter-bar {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 4;
+}
+
+.filter-pill {
+    -fx-background-color: transparent;
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 16;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.filter-pill:hover {
+    -fx-text-fill: -sps-text;
+    -fx-background-color: -sps-surface-alt;
+}
+
+.filter-pill:selected {
+    -fx-background-color: -sps-primary-soft;
+    -fx-text-fill: -sps-primary;
+}
+
+/* Modal flotante (Backdrop + Tarjeta) */
+.modal-backdrop {
+    -fx-background-color: rgba(15, 23, 42, 0.55);
+    -fx-padding: 24;
+}
+
+.modal-card {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: -sps-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 22;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 24, 0, 0, 8);
+}
+
+.btn-close-modal {
+    -fx-background-color: transparent;
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50;
+    -fx-min-width: 30;
+    -fx-min-height: 30;
+    -fx-cursor: hand;
+}
+
+.btn-close-modal:hover {
+    -fx-background-color: -sps-hover;
+    -fx-text-fill: -sps-text;
+}
+
+/* CheckBox adaptado al tema */
+.operativo-checkbox {
+    -fx-text-fill: -sps-text;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.operativo-checkbox .box {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.operativo-checkbox:selected .box {
+    -fx-background-color: -sps-primary;
+    -fx-border-color: -sps-primary;
+}
+
+.operativo-checkbox:selected .mark {
+    -fx-background-color: #FFFFFF;
+}
+
+/* Estados y botones dentro de TableView */
+.status-active {
+    -fx-text-fill: -sps-success;
+    -fx-font-weight: bold;
+}
+
+.status-inactive {
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-weight: bold;
+}
+
+.table-action-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -sps-primary;
+    -fx-font-size: 15px;
+    -fx-background-radius: 6;
+    -fx-padding: 3 8 3 8;
+    -fx-cursor: hand;
+}
+
+.table-action-btn:hover {
+    -fx-background-color: -sps-primary-soft;
+}

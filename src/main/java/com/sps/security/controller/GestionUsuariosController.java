@@ -2,10 +2,12 @@ package com.sps.security.controller;
 
 import com.sps.security.model.users.Usuario;
 import com.sps.security.service.UsuarioService;
+import com.sps.security.util.TableUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
@@ -27,10 +29,17 @@ public class GestionUsuariosController {
     @FXML private PasswordField txtContrasena;
     @FXML private ComboBox<String> cmbIdRol;
     @FXML private CheckBox chkEstadoActivo;
-    @FXML
-    private StackPane modalFormulario;
+    @FXML private StackPane modalFormulario;
+    @FXML private ToggleButton btnFiltroTodos;
+    @FXML private ToggleButton btnFiltroActivos;
+    @FXML private ToggleButton btnFiltroInactivos;
+    @FXML private Label lblModalTitulo;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnActualizar;
+    @FXML private Button btnEliminar;
 
-    // Servicio de Negocio y Lista de Datos
+    private FilteredList<Usuario> usuariosFiltrados;
+
     private final UsuarioService usuarioService = new UsuarioService();
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     private Usuario usuarioSeleccionado = null;
@@ -41,10 +50,44 @@ public class GestionUsuariosController {
     );
 
     @FXML
+    private void filtrarTodos() {
+        usuariosFiltrados.setPredicate(u -> true);
+    }
+
+    @FXML
+    private void filtrarActivos() {
+        usuariosFiltrados.setPredicate(u -> Boolean.TRUE.equals(u.getEstadoActivo()));
+    }
+
+    @FXML
+    private void filtrarInactivos() {
+        usuariosFiltrados.setPredicate(u -> !Boolean.TRUE.equals(u.getEstadoActivo()));
+    }
+
+    @FXML
     public void abrirFormularioNuevo() {
         handleLimpiar();
+        lblModalTitulo.setText("Nuevo Usuario");
+        btnGuardar.setVisible(true);
+        btnGuardar.setManaged(true);
+        btnActualizar.setVisible(false);
+        btnActualizar.setManaged(false);
+        btnEliminar.setVisible(false);
+        btnEliminar.setManaged(false);
         mostrarFormulario();
     }
+
+    private void mostrarFormularioEdicion() {
+        lblModalTitulo.setText("Editar Usuario");
+        btnGuardar.setVisible(false);
+        btnGuardar.setManaged(false);
+        btnActualizar.setVisible(true);
+        btnActualizar.setManaged(true);
+        btnEliminar.setVisible(true);
+        btnEliminar.setManaged(true);
+        mostrarFormulario();
+    }
+
 
     @FXML
     public void mostrarFormulario() {
@@ -60,35 +103,27 @@ public class GestionUsuariosController {
 
     @FXML
     public void initialize() {
+        // 1. Enlazar columnas, cargar datos de BD y llenar ComboBox de roles
         configurarTabla();
         cargarUsuarios();
         cmbIdRol.setItems(roles);
 
-        // Listener para sincronizar la fila seleccionada de la tabla con el formulario
-        tblUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
-            if (newSel != null) {
-                usuarioSeleccionado = newSel;
-                cargarFormulario(newSel);
-            }
-        });
-        // Indicador visual con punto de color en la columna Estado
-        colEstado.setCellFactory(column -> new javafx.scene.control.TableCell<>() {
-            @Override
-            protected void updateItem(Boolean activo, boolean empty) {
-                super.updateItem(activo, empty);
-                if (empty || activo == null) {
-                    setText(null);
-                    setStyle("");
-                } else if (activo) {
-                    setText("●  Activo");
-                    setStyle("-fx-text-fill: #16A34A; -fx-font-weight: bold;");
-                } else {
-                    setText("●  Inactivo");
-                    setStyle("-fx-text-fill: #94A3B8; -fx-font-weight: bold;");
-                }
-            }
+        // 2. Configurar grupo de píldoras y FilteredList
+        ToggleGroup grupoFiltros = new ToggleGroup();
+        btnFiltroTodos.setToggleGroup(grupoFiltros);
+        btnFiltroActivos.setToggleGroup(grupoFiltros);
+        btnFiltroInactivos.setToggleGroup(grupoFiltros);
+
+        grupoFiltros.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null) oldVal.setSelected(true);
         });
 
+        usuariosFiltrados = new FilteredList<>(listaUsuarios, u -> true);
+        tblUsuarios.setItems(usuariosFiltrados);
+
+        TableUtils.configurarAlturaAdaptativa(tblUsuarios, 42.0, 40.0, 520.0);
+
+        // 3. Mostrar nombre del rol en lugar del ID numérico
         colRol.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Integer idRol, boolean empty) {
@@ -102,74 +137,62 @@ public class GestionUsuariosController {
             }
         });
 
+        // 4. Celda de Estado usando clases CSS
+        colEstado.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Boolean activo, boolean empty) {
+                super.updateItem(activo, empty);
+                getStyleClass().removeAll("status-active", "status-inactive");
+                if (empty || activo == null) {
+                    setText(null);
+                } else if (activo) {
+                    setText("●  Activo");
+                    getStyleClass().add("status-active");
+                } else {
+                    setText("●  Inactivo");
+                    getStyleClass().add("status-inactive");
+                }
+            }
+        });
+
+        // 5. Celda de Acciones (botón lápiz para abrir modal)
         colAcciones.setCellFactory(column -> new TableCell<>() {
             private final Button btnEditar = new Button("✎");
-
             {
-                btnEditar.setStyle(
-                        "-fx-background-color: transparent;" +
-                                "-fx-text-fill: #6366F1;" +
-                                "-fx-font-size: 16px;" +
-                                "-fx-cursor: hand;" +
-                                "-fx-padding: 2 8 2 8;"
-                );
+                btnEditar.getStyleClass().add("table-action-btn");
                 btnEditar.setTooltip(new Tooltip("Editar usuario"));
-
-                // Efecto hover sencillo
-                btnEditar.setOnMouseEntered(e -> btnEditar.setStyle(
-                        "-fx-background-color: #EEF2FF;" +
-                                "-fx-text-fill: #4F46E5;" +
-                                "-fx-font-size: 16px;" +
-                                "-fx-background-radius: 6;" +
-                                "-fx-cursor: hand;" +
-                                "-fx-padding: 2 8 2 8;"
-                ));
-                btnEditar.setOnMouseExited(e -> btnEditar.setStyle(
-                        "-fx-background-color: transparent;" +
-                                "-fx-text-fill: #6366F1;" +
-                                "-fx-font-size: 16px;" +
-                                "-fx-cursor: hand;" +
-                                "-fx-padding: 2 8 2 8;"
-                ));
-
                 btnEditar.setOnAction(event -> {
                     Usuario usuario = getTableView().getItems().get(getIndex());
                     usuarioSeleccionado = usuario;
                     tblUsuarios.getSelectionModel().select(usuario);
                     cargarFormulario(usuario);
-                    mostrarFormulario();
+                    mostrarFormularioEdicion();
                 });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(btnEditar);
-                    setAlignment(javafx.geometry.Pos.CENTER);
-                }
+                setGraphic(empty ? null : btnEditar);
+                setAlignment(javafx.geometry.Pos.CENTER);
             }
         });
 
-// Abrir el modal automáticamente al hacer doble clic en un usuario para editar/eliminar
+        // 6. Doble clic en una fila abre el modal de edición
         tblUsuarios.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && tblUsuarios.getSelectionModel().getSelectedItem() != null) {
-                mostrarFormulario();
+                usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+                cargarFormulario(usuarioSeleccionado);
+                mostrarFormularioEdicion();
             }
         });
     }
-
     private void configurarTabla() {
-        // Mapeo seguro mediante Lambdas (evita que la tabla quede en blanco)
         colId.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getIdUsuario()));
         colUsername.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getUsername()));
         colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
         colRol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getIdRol()));
         colEstado.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getEstadoActivo()));
-
-        tblUsuarios.setItems(listaUsuarios);
     }
 
     private void cargarUsuarios() {
@@ -188,6 +211,7 @@ public class GestionUsuariosController {
         } catch (RuntimeException e) {
             mostrarAlerta(Alert.AlertType.WARNING, "Validación de Negocio", e.getMessage());
         }
+        ocultarFormulario();
     }
 
     @FXML
@@ -217,6 +241,7 @@ public class GestionUsuariosController {
         } catch (RuntimeException e) {
             mostrarAlerta(Alert.AlertType.WARNING, "Validación de Negocio", e.getMessage());
         }
+        ocultarFormulario();
     }
 
     @FXML
@@ -234,6 +259,7 @@ public class GestionUsuariosController {
         } catch (RuntimeException e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
+        ocultarFormulario();
     }
 
     @FXML

@@ -7,10 +7,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.layout.StackPane;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -55,6 +57,10 @@ public class GestionGuardiasController {
 
     @FXML
     private Button botonGuardar;
+    @FXML
+    private StackPane modalFormulario;
+    @FXML
+    private Label lblModalTitulo;
 
     private final GuardiaService guardiaService =
             new GuardiaService();
@@ -110,8 +116,35 @@ public class GestionGuardiasController {
                         seleccionarGuardia(actual);
                     }
                 });
+        tablaGuardias.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tablaGuardias.getSelectionModel().getSelectedItem() != null) {
+                lblModalTitulo.setText("Editar Guardia");
+                botonGuardar.setText("Actualizar guardia");
+                mostrarFormulario();
+            }
+        });
 
         cargarGuardias();
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        limpiarFormulario();
+        lblModalTitulo.setText("Nuevo Guardia");
+        botonGuardar.setText("Guardar");
+        mostrarFormulario();
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
     }
 
     @FXML
@@ -167,6 +200,7 @@ public class GestionGuardiasController {
 
             cargarGuardias();
             limpiarFormulario();
+            ocultarFormulario();
 
         } catch (IllegalArgumentException |
                  IllegalStateException e) {
@@ -199,6 +233,7 @@ public class GestionGuardiasController {
 
             cargarGuardias();
             limpiarFormulario();
+            ocultarFormulario();
 
             mostrarMensaje(
                     Alert.AlertType.INFORMATION,
@@ -237,6 +272,7 @@ public class GestionGuardiasController {
 
             cargarGuardias();
             limpiarFormulario();
+            ocultarFormulario();
 
             mostrarMensaje(
                     Alert.AlertType.INFORMATION,

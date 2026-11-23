@@ -15,7 +15,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             "INSERT INTO USUARIO (id_rol, username, email, contrasena, estado_activo) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_USER_WITH_PASSWORD =
             "UPDATE USUARIO SET id_rol = ?, username = ?, email = ?, contrasena = ?, estado_activo = ? WHERE id_usuario = ?";
-
     private static final String UPDATE_USER_WITHOUT_PASSWORD =
             "UPDATE USUARIO SET id_rol = ?, username = ?, email = ?, estado_activo = ? WHERE id_usuario = ?";
     private static final String DELETE_USER =

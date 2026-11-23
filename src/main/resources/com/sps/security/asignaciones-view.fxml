@@ -1,187 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.sps.security.controller.GestionAsignacionesController"
-            stylesheets="@operativo.css"
-            styleClass="operativo-root"
-            fitToWidth="true"
-            hbarPolicy="NEVER">
-
-    <VBox spacing="22" styleClass="operativo-content">
-
-        <VBox spacing="6">
-
-            <Label text="Gestión de Asignaciones"
-                   styleClass="operativo-title"/>
-
-            <Label text="Organiza el personal de seguridad por servicio, jornada y fecha."
-                   styleClass="operativo-subtitle"/>
-
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.sps.security.controller.GestionAsignacionesController"
+           styleClass="view-root">
+    <VBox spacing="18" styleClass="operativo-content">
+        <VBox spacing="4">
+            <Label text="Gestión de Asignaciones" styleClass="operativo-title"/>
+            <Label text="Organiza el personal de seguridad por servicio, jornada y fecha." styleClass="operativo-subtitle"/>
         </VBox>
-
-        <VBox spacing="18" styleClass="operativo-card">
-
-            <Label text="Datos de la asignación"
-                   styleClass="operativo-card-title"/>
-
-            <Label text="Selecciona un guardia, un servicio y una jornada activos."
-                   styleClass="operativo-subtitle"/>
-
-            <GridPane hgap="16" vgap="14">
-
-                <columnConstraints>
-                    <ColumnConstraints minWidth="155"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <!-- Fila 0: Guardia / Usuarios -->
-                <Label text="Guardia"
-                       styleClass="operativo-label"
-                       GridPane.rowIndex="0"
-                       GridPane.columnIndex="0"/>
-
-                <HBox spacing="8"
-                      GridPane.rowIndex="0"
-                      GridPane.columnIndex="1">
-                    <ComboBox fx:id="campoIdGuardia"
-                              promptText="Selecciona un guardia"
-                              maxWidth="Infinity"
-                              HBox.hgrow="ALWAYS"
-                              styleClass="operativo-input"/>
-                    <Button text="Administrar usuarios..."
-                            onAction="#abrirGestionUsuarios"
-                            styleClass="operativo-button,operativo-secondary"/>
-                </HBox>
-
-                <!-- Fila 1: Servicio (sin cambios) -->
-                <Label text="Servicio"
-                       styleClass="operativo-label"
-                       GridPane.rowIndex="1"
-                       GridPane.columnIndex="0"/>
-
-                <ComboBox fx:id="campoIdServicio"
-                          promptText="Selecciona un servicio"
-                          maxWidth="Infinity"
-                          styleClass="operativo-input"
-                          GridPane.rowIndex="1"
-                          GridPane.columnIndex="1"/>
-
-                <!-- Fila 2: Jornada -->
-                <Label text="Jornada"
-                       styleClass="operativo-label"
-                       GridPane.rowIndex="2"
-                       GridPane.columnIndex="0"/>
-
-                <HBox spacing="8"
-                      GridPane.rowIndex="2"
-                      GridPane.columnIndex="1">
-                    <ComboBox fx:id="campoIdJornada"
-                              promptText="Selecciona una jornada"
-                              maxWidth="Infinity"
-                              HBox.hgrow="ALWAYS"
-                              styleClass="operativo-input"/>
-                    <Button text="Administrar jornadas..."
-                            onAction="#abrirGestionJornadas"
-                            styleClass="operativo-button,operativo-secondary"/>
-                </HBox>
-                <Label text="Fecha de asignación"
-                       styleClass="operativo-label"
-                       GridPane.rowIndex="3"
-                       GridPane.columnIndex="0"/>
-
-                <DatePicker fx:id="campoFechaAsignacion"
-                            maxWidth="Infinity"
-                            styleClass="operativo-input"
-                            GridPane.rowIndex="3"
-                            GridPane.columnIndex="1"/>
-
-            </GridPane>
-
-            <HBox spacing="10">
-
-                <Button fx:id="botonGuardar"
-                        text="Registrar asignación"
-                        onAction="#guardarAsignacion"
-                        styleClass="operativo-button,operativo-primary"/>
-
-                <Button text="Nuevo / Limpiar"
-                        onAction="#nuevaAsignacion"
-                        styleClass="operativo-button,operativo-secondary"/>
-
-                <Button text="Eliminar asignación"
-                        onAction="#eliminarAsignacion"
-                        styleClass="operativo-button,operativo-danger"/>
-
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <HBox spacing="6" styleClass="filter-bar">
+                <Label text="Filtrar por fecha" styleClass="operativo-label"/>
+                <DatePicker fx:id="filtroFecha" promptText="Todas las fechas" styleClass="operativo-input"/>
             </HBox>
-
-        </VBox>
-
-        <VBox spacing="16" styleClass="operativo-card">
-
-            <HBox spacing="15" alignment="CENTER_LEFT">
-
-                <Label text="Asignaciones registradas"
-                       styleClass="operativo-card-title"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <Button text="Actualizar tabla"
-                        onAction="#actualizarTabla"
-                        styleClass="operativo-button,operativo-secondary"/>
-
-            </HBox>
-
-            <HBox spacing="12" alignment="CENTER_LEFT">
-
-                <Label text="Filtrar por fecha"
-                       styleClass="operativo-label"/>
-
-                <DatePicker fx:id="filtroFecha"
-                            promptText="Todas las fechas"
-                            styleClass="operativo-input"/>
-
-                <Button text="Limpiar filtro"
-                        onAction="#limpiarFiltro"
-                        styleClass="operativo-button,operativo-secondary"/>
-
-            </HBox>
-
-            <TableView fx:id="tablaAsignaciones"
-                       prefHeight="350"
-                       styleClass="operativo-table"
-                       VBox.vgrow="ALWAYS">
-
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#abrirFormularioNuevo" text="+ Nueva asignación" styleClass="operativo-button,operativo-primary"/>
+        </HBox>
+        <VBox styleClass="operativo-card" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tablaAsignaciones" styleClass="operativo-table" VBox.vgrow="ALWAYS">
                 <columns>
-
-                    <TableColumn fx:id="columnaId"
-                                 text="ID"
-                                 prefWidth="75"/>
-
-                    <TableColumn fx:id="columnaGuardia"
-                                 text="ID Guardia"
-                                 prefWidth="145"/>
-
-                    <TableColumn fx:id="columnaServicio"
-                                 text="ID Servicio"
-                                 prefWidth="145"/>
-
-                    <TableColumn fx:id="columnaJornada"
-                                 text="ID Jornada"
-                                 prefWidth="145"/>
-
-                    <TableColumn fx:id="columnaFecha"
-                                 text="Fecha de asignación"
-                                 prefWidth="190"/>
-
+                    <TableColumn fx:id="columnaId" text="ID" prefWidth="75"/>
+                    <TableColumn fx:id="columnaGuardia" text="Guardia" prefWidth="145"/>
+                    <TableColumn fx:id="columnaServicio" text="Servicio" prefWidth="145"/>
+                    <TableColumn fx:id="columnaJornada" text="Jornada" prefWidth="145"/>
+                    <TableColumn fx:id="columnaFecha" text="Fecha" prefWidth="190"/>
                 </columns>
-
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
             </TableView>
-
         </VBox>
-
     </VBox>
 
-</ScrollPane>
+    <StackPane fx:id="modalFormulario" managed="false" visible="false" styleClass="modal-backdrop">
+        <VBox maxWidth="440" spacing="12" styleClass="modal-card">
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="lblModalTitulo" text="Nueva Asignación" styleClass="operativo-card-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button onAction="#ocultarFormulario" text="✕" styleClass="btn-close-modal"/>
+            </HBox>
+            <Separator/>
+            <VBox spacing="6"><Label text="Guardia" styleClass="operativo-label"/><ComboBox fx:id="campoIdGuardia" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Servicio" styleClass="operativo-label"/><ComboBox fx:id="campoIdServicio" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Jornada" styleClass="operativo-label"/><ComboBox fx:id="campoIdJornada" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Fecha de asignación" styleClass="operativo-label"/><DatePicker fx:id="campoFechaAsignacion" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <HBox alignment="CENTER_RIGHT" spacing="8">
+                <VBox.margin><Insets top="10"/></VBox.margin>
+                <Button onAction="#nuevaAsignacion" text="Limpiar" styleClass="operativo-button,operativo-secondary"/>
+                <Button onAction="#eliminarAsignacion" text="Eliminar" styleClass="operativo-button,operativo-danger"/>
+                <Button fx:id="botonGuardar" onAction="#guardarAsignacion" text="Guardar" styleClass="operativo-button,operativo-primary"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+</StackPane>

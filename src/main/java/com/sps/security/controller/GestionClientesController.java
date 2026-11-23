@@ -9,10 +9,13 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 
 public class GestionClientesController {
 
@@ -53,6 +56,11 @@ public class GestionClientesController {
     @FXML private TextField txtCiudad;
     @FXML private TextField txtEstado;
     @FXML private TextField txtCp;
+    @FXML private StackPane modalFormulario;
+    @FXML private Label lblModalTitulo;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnActualizar;
+    @FXML private Button btnEliminar;
 
     @FXML
     public void initialize() {
@@ -66,6 +74,48 @@ public class GestionClientesController {
                         cargarFormulario(seleccionado);
                     }
                 });
+
+        tblClientes.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2
+                    && tblClientes.getSelectionModel().getSelectedItem() != null) {
+                abrirFormularioEdicion();
+            }
+        });
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        handleLimpiar();
+        lblModalTitulo.setText("Nuevo Cliente");
+        configurarBotonesFormulario(true);
+        mostrarFormulario();
+    }
+
+    private void abrirFormularioEdicion() {
+        lblModalTitulo.setText("Editar Cliente");
+        configurarBotonesFormulario(false);
+        mostrarFormulario();
+    }
+
+    private void configurarBotonesFormulario(boolean nuevo) {
+        btnGuardar.setVisible(nuevo);
+        btnGuardar.setManaged(nuevo);
+        btnActualizar.setVisible(!nuevo);
+        btnActualizar.setManaged(!nuevo);
+        btnEliminar.setVisible(!nuevo);
+        btnEliminar.setManaged(!nuevo);
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
     }
 
     private void configurarTabla() {
@@ -130,6 +180,7 @@ public class GestionClientesController {
 
             cargarClientes();
             handleLimpiar();
+            ocultarFormulario();
 
         } catch (Exception e) {
             mostrarAlerta(
@@ -167,6 +218,7 @@ public class GestionClientesController {
 
             cargarClientes();
             handleLimpiar();
+            ocultarFormulario();
 
         } catch (Exception e) {
             mostrarAlerta(
@@ -212,6 +264,7 @@ public class GestionClientesController {
 
                 cargarClientes();
                 handleLimpiar();
+                ocultarFormulario();
 
             } catch (Exception e) {
                 mostrarAlerta(

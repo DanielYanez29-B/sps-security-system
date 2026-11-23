@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 
 
 import java.time.LocalDate;
@@ -56,6 +57,8 @@ public class GestionServiciosController {
 
     @FXML
     private TableColumn<Servicio, String> columnaEstado;
+    @FXML private StackPane modalFormulario;
+    @FXML private Label lblModalTitulo;
 
     private final ServicioService servicioService;
     private final ObservableList<Servicio> listaServicios;
@@ -77,8 +80,33 @@ public class GestionServiciosController {
         tablaServicios.getSelectionModel().selectedItemProperty().addListener(
                 (obs, anterior, actual) -> cargarServicioEnFormulario(actual)
         );
+        tablaServicios.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tablaServicios.getSelectionModel().getSelectedItem() != null) {
+                lblModalTitulo.setText("Editar Servicio");
+                mostrarFormulario();
+            }
+        });
 
         actualizarTabla();
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        limpiarFormulario();
+        lblModalTitulo.setText("Nuevo Servicio");
+        mostrarFormulario();
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
     }
 
     private void configurarColumnas() {
@@ -122,6 +150,7 @@ public class GestionServiciosController {
 
             limpiarFormulario();
             actualizarTabla();
+            ocultarFormulario();
 
         } catch (IllegalArgumentException e) {
             mostrarAlerta(Alert.AlertType.WARNING, "Datos inválidos", e.getMessage());
@@ -164,6 +193,7 @@ public class GestionServiciosController {
                 mostrarAlerta(Alert.AlertType.INFORMATION, "Servicio eliminado", "El servicio fue eliminado correctamente.");
                 limpiarFormulario();
                 actualizarTabla();
+                ocultarFormulario();
             } catch (IllegalArgumentException e) {
                 mostrarAlerta(Alert.AlertType.WARNING, "Validación", e.getMessage());
             } catch (RuntimeException e) {

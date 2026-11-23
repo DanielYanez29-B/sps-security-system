@@ -112,11 +112,6 @@ public class SidebarController implements Initializable {
     }
 
     @FXML
-    public void onJornadas (){
-        NavigationService.getInstance().cargarVistaEnContenido("jornadas-view.fxml");
-    }
-
-    @FXML
     public void onAsignaciones (){
         NavigationService.getInstance().cargarVistaEnContenido("asignaciones-view.fxml");
     }
