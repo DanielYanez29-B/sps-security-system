@@ -8,6 +8,7 @@ import com.sps.security.service.SimuladorAlarmaService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import java.time.LocalDate;
 
 public class GestionDispositivosController {
@@ -17,6 +18,8 @@ public class GestionDispositivosController {
     @FXML private TextField campoSerie, campoMac, campoIp, campoFabricante;
     @FXML private DatePicker campoFecha;
     @FXML private Button botonGuardar;
+    @FXML private StackPane modalFormulario;
+    @FXML private Label lblModalTitulo;
     private final DispositivoService service = new DispositivoService();
     private final SimuladorAlarmaService simulador = new SimuladorAlarmaService();
     private final ServicioDAOImpl servicioDAO = new ServicioDAOImpl();
@@ -30,7 +33,32 @@ public class GestionDispositivosController {
         columnaEstado.setCellValueFactory(c -> text(Boolean.TRUE.equals(c.getValue().getEstadoActividad()) ? "ACTIVO" : "INACTIVO"));
         campoServicio.setCellFactory(v -> new ListCell<>() { @Override protected void updateItem(Servicio s, boolean empty) { super.updateItem(s,empty); setText(empty || s==null ? null : s.getNombreServicio()+" (#"+s.getIdServicio()+")"); }});
         tablaDispositivos.getSelectionModel().selectedItemProperty().addListener((o,old,value) -> seleccionar(value));
+        tablaDispositivos.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tablaDispositivos.getSelectionModel().getSelectedItem() != null) {
+                lblModalTitulo.setText("Editar Dispositivo");
+                mostrarFormulario();
+            }
+        });
         cargar();
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        limpiar();
+        lblModalTitulo.setText("Nuevo Dispositivo");
+        mostrarFormulario();
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
     }
     @FXML private void guardar() {
         try {
@@ -39,9 +67,10 @@ public class GestionDispositivosController {
             if (seleccionado != null) { d.setIdServicio(campoServicio.getValue().getIdServicio()); d.setNumSerie(campoSerie.getText()); d.setMacAddress(campoMac.getText()); d.setIpAsignada(campoIp.getText()); d.setFabricante(campoFabricante.getText()); d.setFechaInstalacion(campoFecha.getValue()); service.actualizar(d); }
             else service.registrar(d);
             limpiar(); cargarTabla(); mensaje(Alert.AlertType.INFORMATION,"Dispositivo guardado correctamente.");
+            ocultarFormulario();
         } catch (RuntimeException e) { mensaje(Alert.AlertType.ERROR,e.getMessage()); }
     }
-    @FXML private void desactivar() { if (seleccionado == null) { mensaje(Alert.AlertType.WARNING,"Selecciona un dispositivo."); return; } try { service.desactivar(seleccionado.getIdDispositivo()); cargarTabla(); limpiar(); } catch(RuntimeException e){mensaje(Alert.AlertType.ERROR,e.getMessage());} }
+    @FXML private void desactivar() { if (seleccionado == null) { mensaje(Alert.AlertType.WARNING,"Selecciona un dispositivo."); return; } try { service.desactivar(seleccionado.getIdDispositivo()); cargarTabla(); limpiar(); ocultarFormulario(); } catch(RuntimeException e){mensaje(Alert.AlertType.ERROR,e.getMessage());} }
     @FXML private void nuevo() { limpiar(); }
     @FXML private void actualizar() { cargar(); }
     @FXML private void iniciarSimulador() {

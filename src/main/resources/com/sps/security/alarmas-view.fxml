@@ -1,9 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sps.security.controller.GestionAlarmasController" spacing="10" styleClass="operativo-content">
- <Label text="Historial de alarmas" styleClass="operativo-title"/>
- <HBox spacing="8"><DatePicker fx:id="filtroDesde" promptText="Desde"/><DatePicker fx:id="filtroHasta" promptText="Hasta"/><ComboBox fx:id="filtroPrioridad" promptText="Prioridad"/><ComboBox fx:id="filtroEstado" promptText="Estado"/><Button text="Filtrar" onAction="#filtrar"/><Button text="Limpiar" onAction="#limpiarFiltros"/></HBox>
- <HBox spacing="8"><Button text="Marcar atendida" onAction="#marcarAtendida"/><Button text="Marcar falsa alarma" onAction="#marcarFalsa"/></HBox>
- <TableView fx:id="tablaAlarmas" VBox.vgrow="ALWAYS"><columns><TableColumn fx:id="columnaId" text="ID"/><TableColumn fx:id="columnaDispositivo" text="Dispositivo"/><TableColumn fx:id="columnaFecha" text="Fecha"/><TableColumn fx:id="columnaTipo" text="Tipo"/><TableColumn fx:id="columnaPrioridad" text="Prioridad"/><TableColumn fx:id="columnaEstado" text="Estado"/></columns></TableView>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sps.security.controller.GestionAlarmasController"
+      spacing="18" styleClass="view-root,operativo-content">
+    <VBox spacing="4">
+        <Label text="Historial de Alarmas" styleClass="operativo-title"/>
+        <Label text="Supervisa, filtra y atiende las alertas del sistema." styleClass="operativo-subtitle"/>
+    </VBox>
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <HBox spacing="8" styleClass="filter-bar">
+            <DatePicker fx:id="filtroDesde" promptText="Desde" styleClass="operativo-input"/>
+            <DatePicker fx:id="filtroHasta" promptText="Hasta" styleClass="operativo-input"/>
+            <ComboBox fx:id="filtroPrioridad" promptText="Prioridad" styleClass="operativo-input"/>
+            <ComboBox fx:id="filtroEstado" promptText="Estado" styleClass="operativo-input"/>
+            <Button text="Filtrar" onAction="#filtrar" styleClass="operativo-button,operativo-primary"/>
+            <Button text="Limpiar" onAction="#limpiarFiltros" styleClass="operativo-button,operativo-secondary"/>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Marcar atendida" onAction="#marcarAtendida" styleClass="operativo-button,operativo-success"/>
+        <Button text="Marcar falsa" onAction="#marcarFalsa" styleClass="operativo-button,operativo-danger"/>
+    </HBox>
+    <VBox styleClass="operativo-card" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tablaAlarmas" styleClass="operativo-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="columnaId" text="ID"/>
+                <TableColumn fx:id="columnaDispositivo" text="Dispositivo"/>
+                <TableColumn fx:id="columnaFecha" text="Fecha"/>
+                <TableColumn fx:id="columnaTipo" text="Tipo"/>
+                <TableColumn fx:id="columnaPrioridad" text="Prioridad"/>
+                <TableColumn fx:id="columnaEstado" text="Estado"/>
+            </columns>
+            <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+        </TableView>
+    </VBox>
 </VBox>

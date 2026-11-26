@@ -14,8 +14,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
+import java.io.IOException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -59,6 +67,8 @@ public class GestionAsignacionesController {
 
     @FXML
     private Button botonGuardar;
+    @FXML private StackPane modalFormulario;
+    @FXML private Label lblModalTitulo;
 
     private final AsignacionService asignacionService =
             new AsignacionService();
@@ -152,6 +162,88 @@ public class GestionAsignacionesController {
         );
 
         cargarDatos();
+
+        tablaAsignaciones.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tablaAsignaciones.getSelectionModel().getSelectedItem() != null) {
+                lblModalTitulo.setText("Editar Asignación");
+                botonGuardar.setText("Actualizar asignación");
+                mostrarFormulario();
+            }
+        });
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        limpiarFormulario();
+        lblModalTitulo.setText("Nueva Asignación");
+        botonGuardar.setText("Guardar");
+        mostrarFormulario();
+    }
+
+    @FXML
+    public void mostrarFormulario() {
+        modalFormulario.setVisible(true);
+        modalFormulario.setManaged(true);
+    }
+
+    @FXML
+    public void ocultarFormulario() {
+        modalFormulario.setVisible(false);
+        modalFormulario.setManaged(false);
+    }
+
+    @FXML
+    private void abrirGestionJornadas() {
+        // Ajusta la ruta al archivo FXML real de tus jornadas
+        abrirVentanaModal(
+                "/com/sps/security/jornadas-view.fxml",
+                "Administrar Jornadas"
+        );
+    }
+
+    @FXML
+    private void abrirGestionUsuarios() {
+        // Ajusta la ruta al archivo FXML real de tus usuarios/guardias
+        abrirVentanaModal(
+                "/com/sps/security/usuarios-view.fxml",
+                "Administrar Usuarios"
+        );
+    }
+
+    private void abrirVentanaModal(String rutaFxml, String titulo) {
+        try {
+            // Guardamos las selecciones actuales para no perderlas al recargar
+            Opcion guardiaPrevio = campoIdGuardia.getValue();
+            Opcion servicioPrevio = campoIdServicio.getValue();
+            Opcion jornadaPrevia = campoIdJornada.getValue();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFxml));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle(titulo);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(tablaAsignaciones.getScene().getWindow());
+
+            // Espera hasta que el usuario cierre la ventana secundaria
+            stage.showAndWait();
+
+            // Recarga los ComboBox con los nuevos registros creados
+            cargarOpciones();
+
+            // Restaura las selecciones que el usuario ya tenía elegidas
+            if (guardiaPrevio != null) seleccionarOpcion(campoIdGuardia, guardiaPrevio.id());
+            if (servicioPrevio != null) seleccionarOpcion(campoIdServicio, servicioPrevio.id());
+            if (jornadaPrevia != null) seleccionarOpcion(campoIdJornada, jornadaPrevia.id());
+
+        } catch (IOException e) {
+            mostrarMensaje(
+                    Alert.AlertType.ERROR,
+                    "Error de navegación",
+                    "No se pudo abrir la ventana: " + titulo + "\n" + e.getMessage()
+            );
+        }
     }
 
     private void cargarDatos() {
@@ -297,6 +389,7 @@ public class GestionAsignacionesController {
 
             limpiarFormulario();
             cargarAsignaciones();
+            ocultarFormulario();
 
         } catch (IllegalArgumentException |
                  IllegalStateException e) {
@@ -375,6 +468,7 @@ public class GestionAsignacionesController {
 
             limpiarFormulario();
             cargarAsignaciones();
+            ocultarFormulario();
 
             mostrarMensaje(
                     Alert.AlertType.INFORMATION,

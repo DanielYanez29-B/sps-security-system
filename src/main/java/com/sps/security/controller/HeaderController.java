@@ -9,8 +9,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ToggleButton;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -28,6 +30,15 @@ public class HeaderController implements Initializable {
 
     private final NotificacionService notificacionService = new NotificacionService();
 
+    @FXML
+    private ToggleButton btnTema;
+
+    @FXML
+    private void onToggleTema() {
+        NavigationService.getInstance().toggleTheme();
+        boolean isDark = NavigationService.getInstance().isDarkTheme();
+        btnTema.setText(isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro");
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Usuario u = AuthService.getCurrentUser();
@@ -36,6 +47,9 @@ public class HeaderController implements Initializable {
             actualizarContador(u.getIdUsuario());
         }
 
+        boolean isDark = NavigationService.getInstance().isDarkTheme();
+        btnTema.setSelected(isDark);
+        btnTema.setText(isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro");
 
         Timeline reloj = new Timeline(new KeyFrame(Duration.seconds(1),
                 e -> lblStatusTime.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")))));

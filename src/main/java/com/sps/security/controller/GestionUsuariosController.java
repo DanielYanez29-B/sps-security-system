@@ -2,10 +2,12 @@ package com.sps.security.controller;
 
 import com.sps.security.model.users.Usuario;
 import com.sps.security.service.UsuarioService;
+import com.sps.security.util.TableUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
@@ -19,20 +21,73 @@ public class GestionUsuariosController {
     @FXML private TableColumn<Usuario, String> colEmail;
     @FXML private TableColumn<Usuario, Integer> colRol;
     @FXML private TableColumn<Usuario, Boolean> colEstado;
+    @FXML private TableColumn<Usuario, Void> colAcciones;
 
     // Componentes FXML del Formulario
     @FXML private TextField txtUsername;
     @FXML private TextField txtEmail;
     @FXML private PasswordField txtContrasena;
-    @FXML private TextField txtIdRol;
+    @FXML private ComboBox<String> cmbIdRol;
     @FXML private CheckBox chkEstadoActivo;
-    @FXML
-    private StackPane modalFormulario;
+    @FXML private StackPane modalFormulario;
+    @FXML private ToggleButton btnFiltroTodos;
+    @FXML private ToggleButton btnFiltroActivos;
+    @FXML private ToggleButton btnFiltroInactivos;
+    @FXML private Label lblModalTitulo;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnActualizar;
+    @FXML private Button btnEliminar;
 
-    // Servicio de Negocio y Lista de Datos
+    private FilteredList<Usuario> usuariosFiltrados;
+
     private final UsuarioService usuarioService = new UsuarioService();
     private final ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     private Usuario usuarioSeleccionado = null;
+    private final ObservableList<String> roles = FXCollections.observableArrayList(
+            "Administrador",
+            "Operador",
+            "Guardia"
+    );
+
+    @FXML
+    private void filtrarTodos() {
+        usuariosFiltrados.setPredicate(u -> true);
+    }
+
+    @FXML
+    private void filtrarActivos() {
+        usuariosFiltrados.setPredicate(u -> Boolean.TRUE.equals(u.getEstadoActivo()));
+    }
+
+    @FXML
+    private void filtrarInactivos() {
+        usuariosFiltrados.setPredicate(u -> !Boolean.TRUE.equals(u.getEstadoActivo()));
+    }
+
+    @FXML
+    public void abrirFormularioNuevo() {
+        handleLimpiar();
+        lblModalTitulo.setText("Nuevo Usuario");
+        btnGuardar.setVisible(true);
+        btnGuardar.setManaged(true);
+        btnActualizar.setVisible(false);
+        btnActualizar.setManaged(false);
+        btnEliminar.setVisible(false);
+        btnEliminar.setManaged(false);
+        mostrarFormulario();
+    }
+
+    private void mostrarFormularioEdicion() {
+        lblModalTitulo.setText("Editar Usuario");
+        btnGuardar.setVisible(false);
+        btnGuardar.setManaged(false);
+        btnActualizar.setVisible(true);
+        btnActualizar.setManaged(true);
+        btnEliminar.setVisible(true);
+        btnEliminar.setManaged(true);
+        mostrarFormulario();
+    }
+
 
     @FXML
     public void mostrarFormulario() {
@@ -48,51 +103,96 @@ public class GestionUsuariosController {
 
     @FXML
     public void initialize() {
+        // 1. Enlazar columnas, cargar datos de BD y llenar ComboBox de roles
         configurarTabla();
         cargarUsuarios();
+        cmbIdRol.setItems(roles);
 
-        // Listener para sincronizar la fila seleccionada de la tabla con el formulario
-        tblUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
-            if (newSel != null) {
-                usuarioSeleccionado = newSel;
-                cargarFormulario(newSel);
-            }
+        // 2. Configurar grupo de píldoras y FilteredList
+        ToggleGroup grupoFiltros = new ToggleGroup();
+        btnFiltroTodos.setToggleGroup(grupoFiltros);
+        btnFiltroActivos.setToggleGroup(grupoFiltros);
+        btnFiltroInactivos.setToggleGroup(grupoFiltros);
+
+        grupoFiltros.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null) oldVal.setSelected(true);
         });
-        // Indicador visual con punto de color en la columna Estado
-        colEstado.setCellFactory(column -> new javafx.scene.control.TableCell<>() {
+
+        usuariosFiltrados = new FilteredList<>(listaUsuarios, u -> true);
+        tblUsuarios.setItems(usuariosFiltrados);
+
+        TableUtils.configurarAlturaAdaptativa(tblUsuarios, 42.0, 40.0, 520.0);
+
+        // 3. Mostrar nombre del rol en lugar del ID numérico
+        colRol.setCellFactory(column -> new TableCell<>() {
             @Override
-            protected void updateItem(Boolean activo, boolean empty) {
-                super.updateItem(activo, empty);
-                if (empty || activo == null) {
+            protected void updateItem(Integer idRol, boolean empty) {
+                super.updateItem(idRol, empty);
+                if (empty || idRol == null) {
                     setText(null);
-                    setStyle("");
-                } else if (activo) {
-                    setText("●  Activo");
-                    setStyle("-fx-text-fill: #16A34A; -fx-font-weight: bold;");
                 } else {
-                    setText("●  Inactivo");
-                    setStyle("-fx-text-fill: #94A3B8; -fx-font-weight: bold;");
+                    String nombreRol = regresarIdRol(idRol);
+                    setText(nombreRol != null ? nombreRol : "Sin rol (" + idRol + ")");
                 }
             }
         });
 
-// Abrir el modal automáticamente al hacer doble clic en un usuario para editar/eliminar
+        // 4. Celda de Estado usando clases CSS
+        colEstado.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Boolean activo, boolean empty) {
+                super.updateItem(activo, empty);
+                getStyleClass().removeAll("status-active", "status-inactive");
+                if (empty || activo == null) {
+                    setText(null);
+                } else if (activo) {
+                    setText("●  Activo");
+                    getStyleClass().add("status-active");
+                } else {
+                    setText("●  Inactivo");
+                    getStyleClass().add("status-inactive");
+                }
+            }
+        });
+
+        // 5. Celda de Acciones (botón lápiz para abrir modal)
+        colAcciones.setCellFactory(column -> new TableCell<>() {
+            private final Button btnEditar = new Button("✎");
+            {
+                btnEditar.getStyleClass().add("table-action-btn");
+                btnEditar.setTooltip(new Tooltip("Editar usuario"));
+                btnEditar.setOnAction(event -> {
+                    Usuario usuario = getTableView().getItems().get(getIndex());
+                    usuarioSeleccionado = usuario;
+                    tblUsuarios.getSelectionModel().select(usuario);
+                    cargarFormulario(usuario);
+                    mostrarFormularioEdicion();
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btnEditar);
+                setAlignment(javafx.geometry.Pos.CENTER);
+            }
+        });
+
+        // 6. Doble clic en una fila abre el modal de edición
         tblUsuarios.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && tblUsuarios.getSelectionModel().getSelectedItem() != null) {
-                mostrarFormulario();
+                usuarioSeleccionado = tblUsuarios.getSelectionModel().getSelectedItem();
+                cargarFormulario(usuarioSeleccionado);
+                mostrarFormularioEdicion();
             }
         });
     }
-
     private void configurarTabla() {
-        // Mapeo seguro mediante Lambdas (evita que la tabla quede en blanco)
         colId.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getIdUsuario()));
         colUsername.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getUsername()));
         colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
         colRol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getIdRol()));
         colEstado.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getEstadoActivo()));
-
-        tblUsuarios.setItems(listaUsuarios);
     }
 
     private void cargarUsuarios() {
@@ -111,6 +211,7 @@ public class GestionUsuariosController {
         } catch (RuntimeException e) {
             mostrarAlerta(Alert.AlertType.WARNING, "Validación de Negocio", e.getMessage());
         }
+        ocultarFormulario();
     }
 
     @FXML
@@ -140,6 +241,7 @@ public class GestionUsuariosController {
         } catch (RuntimeException e) {
             mostrarAlerta(Alert.AlertType.WARNING, "Validación de Negocio", e.getMessage());
         }
+        ocultarFormulario();
     }
 
     @FXML
@@ -157,6 +259,7 @@ public class GestionUsuariosController {
         } catch (RuntimeException e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
+        ocultarFormulario();
     }
 
     @FXML
@@ -165,7 +268,7 @@ public class GestionUsuariosController {
         txtUsername.clear();
         txtEmail.clear();
         txtContrasena.clear();
-        txtIdRol.clear();
+        cmbIdRol.setValue(null);
         chkEstadoActivo.setSelected(true);
         tblUsuarios.getSelectionModel().clearSelection();
     }
@@ -181,18 +284,35 @@ public class GestionUsuariosController {
     }
 
     private Integer parsearIdRol() {
-        try {
-            return Integer.parseInt(txtIdRol.getText().trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("El ID de Rol debe ser un número entero válido.");
+        String rolSeleccionado = cmbIdRol.getValue();
+        if (rolSeleccionado == null || rolSeleccionado.isBlank()) {
+            throw new IllegalArgumentException("Debe seleccionar un rol.");
         }
+        return switch (rolSeleccionado) {
+            case "Administrador" -> 1;
+            case "Operador" -> 2;
+            case "Guardia" -> 3;
+            default -> throw new IllegalArgumentException("Rol no válido: " + rolSeleccionado);
+        };
+    }
+
+    private String regresarIdRol(Integer idRol) {
+        if (idRol == null) {
+            return null;
+        }
+        return switch (idRol) {
+            case 1 -> "Administrador";
+            case 2 -> "Operador";
+            case 3 -> "Guardia";
+            default -> null; // O "Desconocido" si prefieres mostrar algo en el combo
+        };
     }
 
     private void cargarFormulario(Usuario u) {
         txtUsername.setText(u.getUsername());
         txtEmail.setText(u.getEmail());
         txtContrasena.clear(); // Por seguridad no se llena la contraseña existente
-        txtIdRol.setText(u.getIdRol() != null ? u.getIdRol().toString() : "");
+        cmbIdRol.setValue(regresarIdRol(u.getIdRol()));
         chkEstadoActivo.setSelected(u.getEstadoActivo() != null && u.getEstadoActivo());
     }
 

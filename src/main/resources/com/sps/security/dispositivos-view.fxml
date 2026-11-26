@@ -1,19 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<ScrollPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sps.security.controller.GestionDispositivosController" fitToWidth="true">
- <VBox spacing="12" styleClass="operativo-content">
-  <Label text="Gestión de dispositivos" styleClass="operativo-title"/>
-  <GridPane hgap="10" vgap="8">
-   <Label text="Servicio" GridPane.rowIndex="0"/><ComboBox fx:id="campoServicio" prefWidth="300" GridPane.columnIndex="1"/>
-   <Label text="Número de serie" GridPane.rowIndex="1"/><TextField fx:id="campoSerie" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-   <Label text="MAC" GridPane.rowIndex="2"/><TextField fx:id="campoMac" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-   <Label text="IP" GridPane.rowIndex="3"/><TextField fx:id="campoIp" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-   <Label text="Fabricante" GridPane.rowIndex="4"/><TextField fx:id="campoFabricante" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-   <Label text="Instalación" GridPane.rowIndex="5"/><DatePicker fx:id="campoFecha" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-  </GridPane>
-  <HBox spacing="8"><Button fx:id="botonGuardar" text="Registrar dispositivo" onAction="#guardar"/><Button text="Nuevo" onAction="#nuevo"/><Button text="Desactivar" onAction="#desactivar"/><Button text="Actualizar" onAction="#actualizar"/></HBox>
-  <HBox spacing="8"><Button text="Iniciar simulador" onAction="#iniciarSimulador"/><Button text="Detener simulador" onAction="#detenerSimulador"/></HBox>
-  <TableView fx:id="tablaDispositivos" prefHeight="400"><columns><TableColumn fx:id="columnaId" text="ID"/><TableColumn fx:id="columnaSerie" text="Serie"/><TableColumn fx:id="columnaMac" text="MAC"/><TableColumn fx:id="columnaIp" text="IP"/><TableColumn fx:id="columnaEstado" text="Estado"/></columns></TableView>
- </VBox>
-</ScrollPane>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.sps.security.controller.GestionDispositivosController"
+           styleClass="view-root">
+    <VBox spacing="18" styleClass="operativo-content">
+        <VBox spacing="4">
+            <Label text="Gestión de Dispositivos" styleClass="operativo-title"/>
+            <Label text="Administra los equipos asociados a los servicios." styleClass="operativo-subtitle"/>
+        </VBox>
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Button text="Iniciar simulador" onAction="#iniciarSimulador" styleClass="operativo-button,operativo-secondary"/>
+            <Button text="Detener simulador" onAction="#detenerSimulador" styleClass="operativo-button,operativo-secondary"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#abrirFormularioNuevo" text="+ Nuevo dispositivo" styleClass="operativo-button,operativo-primary"/>
+        </HBox>
+        <VBox styleClass="operativo-card" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tablaDispositivos" styleClass="operativo-table" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="columnaId" text="ID" prefWidth="70"/>
+                    <TableColumn fx:id="columnaSerie" text="Serie" prefWidth="180"/>
+                    <TableColumn fx:id="columnaMac" text="MAC" prefWidth="180"/>
+                    <TableColumn fx:id="columnaIp" text="IP" prefWidth="150"/>
+                    <TableColumn fx:id="columnaEstado" text="Estado" prefWidth="110"/>
+                </columns>
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+            </TableView>
+        </VBox>
+    </VBox>
+
+    <StackPane fx:id="modalFormulario" managed="false" visible="false" styleClass="modal-backdrop">
+        <VBox maxWidth="440" spacing="12" styleClass="modal-card">
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="lblModalTitulo" text="Nuevo Dispositivo" styleClass="operativo-card-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button onAction="#ocultarFormulario" text="✕" styleClass="btn-close-modal"/>
+            </HBox>
+            <Separator/>
+            <VBox spacing="6"><Label text="Servicio" styleClass="operativo-label"/><ComboBox fx:id="campoServicio" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Número de serie" styleClass="operativo-label"/><TextField fx:id="campoSerie" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="MAC" styleClass="operativo-label"/><TextField fx:id="campoMac" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="IP" styleClass="operativo-label"/><TextField fx:id="campoIp" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Fabricante" styleClass="operativo-label"/><TextField fx:id="campoFabricante" styleClass="operativo-input"/></VBox>
+            <VBox spacing="6"><Label text="Instalación" styleClass="operativo-label"/><DatePicker fx:id="campoFecha" maxWidth="Infinity" styleClass="operativo-input"/></VBox>
+            <HBox alignment="CENTER_RIGHT" spacing="8">
+                <VBox.margin><Insets top="10"/></VBox.margin>
+                <Button onAction="#nuevo" text="Limpiar" styleClass="operativo-button,operativo-secondary"/>
+                <Button onAction="#desactivar" text="Desactivar" styleClass="operativo-button,operativo-danger"/>
+                <Button fx:id="botonGuardar" onAction="#guardar" text="Guardar" styleClass="operativo-button,operativo-primary"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+</StackPane>
