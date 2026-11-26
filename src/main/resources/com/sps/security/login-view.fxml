@@ -86,8 +86,8 @@
 
                     <!-- Campo Usuario / Email -->
                     <VBox spacing="6">
-                        <Label text="Usuario" styleClass="field-label"/>
-                        <TextField fx:id="txtEmail" promptText="Ingresa tu usuario" styleClass="custom-input"/>
+                        <Label text="Email" styleClass="field-label"/>
+                        <TextField fx:id="txtEmail" promptText="Ingresa tu correo" styleClass="custom-input"/>
                     </VBox>
 
                     <!-- Campo Contraseña -->
