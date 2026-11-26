@@ -77,7 +77,7 @@ public class SidebarController implements Initializable {
 
     @FXML
     public void onInicio() {
-        // NavigationService.getInstance().cargarVista("inicio-view.fxml");
+        NavigationService.getInstance().cargarVistaEnContenido("dashboard-view.fxml");
     }
 
     @FXML

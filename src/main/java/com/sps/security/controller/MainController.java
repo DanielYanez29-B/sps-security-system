@@ -3,6 +3,7 @@ package com.sps.security.controller;
 import com.sps.security.model.enums.EstadoAlarma;
 import com.sps.security.service.AlarmaService;
 import com.sps.security.util.AlarmaEventBus;
+import com.sps.security.util.NavigationService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -19,7 +20,10 @@ public class MainController {
 
     @FXML
     public void initialize() {
+
         AlarmaEventBus.suscribir(this::mostrarAlarma);
+        Platform.runLater(() ->
+                NavigationService.getInstance().cargarVistaEnContenido("dashboard-view.fxml"));
     }
 
     private void mostrarAlarma(com.sps.security.model.telemetry.Alarma alarma) {

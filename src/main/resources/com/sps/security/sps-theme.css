@@ -693,3 +693,164 @@
     -fx-padding: 0;
     -fx-pref-height: 0;
 }
+
+/* ==========================================================================
+11. DASHBOARD / INICIO (ADAPTADO A TEMA CLARO Y OSCURO)
+   ========================================================================== */
+.dash-root {
+    -fx-background-color: -sps-bg;
+    -fx-padding: 5;
+}
+
+.dash-title {
+    -fx-text-fill: -sps-text;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.dash-subtitle {
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 12px;
+}
+
+/* KPI cards */
+.kpi-card {
+    -fx-background-color: -sps-surface;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: -sps-border;
+    -fx-border-width: 1 1 1 4;
+    -fx-padding: 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
+}
+
+.kpi-red    { -fx-border-color: -sps-border -sps-border -sps-border -sps-danger; }
+.kpi-green  { -fx-border-color: -sps-border -sps-border -sps-border -sps-success; }
+.kpi-blue   { -fx-border-color: -sps-border -sps-border -sps-border -sps-primary; }
+.kpi-yellow { -fx-border-color: -sps-border -sps-border -sps-border -sps-warning; }
+
+.kpi-label {
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.kpi-value {
+    -fx-text-fill: -sps-text;
+    -fx-font-size: 38px;
+    -fx-font-weight: bold;
+}
+
+.kpi-hint {
+    -fx-text-fill: -sps-text-subtle;
+    -fx-font-size: 11px;
+}
+
+.kpi-red .kpi-value    { -fx-text-fill: -sps-danger; }
+.kpi-green .kpi-value  { -fx-text-fill: -sps-success; }
+.kpi-blue .kpi-value   { -fx-text-fill: -sps-primary; }
+.kpi-yellow .kpi-value { -fx-text-fill: -sps-warning; }
+
+/* Tarjetas inferiores */
+.dash-card {
+    -fx-background-color: -sps-surface;
+    -fx-background-radius: 12;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 12;
+    -fx-padding: 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
+}
+
+.dash-card-title {
+    -fx-text-fill: -sps-text;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+/* Tabla del Dashboard (hereda el estilo limpio de .table-view) */
+.dash-table {
+    -fx-background-color: -sps-surface;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.dash-table .column-header-background {
+    -fx-background-color: -sps-surface-alt;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.dash-table .column-header .label {
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.dash-table .table-row-cell:odd {
+    -fx-background-color: -sps-surface;
+}
+
+.dash-table .table-row-cell:even {
+    -fx-background-color: -sps-surface-alt;
+}
+
+.dash-table .table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.dash-table .table-row-cell:hover {
+    -fx-background-color: -sps-hover;
+}
+
+.dash-table .table-row-cell:selected {
+    -fx-background-color: -sps-primary-soft;
+}
+
+.dash-table .table-cell {
+    -fx-text-fill: -sps-text;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.dash-table .placeholder .label {
+    -fx-text-fill: -sps-text-subtle;
+}
+
+/* Prioridad / estado en tabla */
+.prio-critica        { -fx-text-fill: -sps-danger; font-weight: bold; }
+.prio-alta           { -fx-text-fill: #F97316; -fx-font-weight: bold; }
+.prio-media          { -fx-text-fill: -sps-warning; -fx-font-weight: bold; }
+.prio-baja           { -fx-text-fill: -sps-primary; -fx-font-weight: bold; }
+.estado-pendiente    { -fx-text-fill: -sps-danger; -fx-font-weight: bold; }
+.estado-atendida     { -fx-text-fill: -sps-success; -fx-font-weight: bold; }
+.estado-falsa_alarma { -fx-text-fill: -sps-text-muted; }
+
+/* Barras de prioridad */
+.dash-prio-nombre {
+    -fx-text-fill: -sps-text-muted;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.dash-prio-valor {
+    -fx-text-fill: -sps-text;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.dash-bar .track {
+    -fx-background-color: -sps-surface-alt;
+    -fx-border-color: -sps-border;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-pref-height: 10;
+}
+
+.dash-bar .bar {
+    -fx-background-radius: 6;
+    -fx-padding: 5;
+}
+
+.dash-bar-critica .bar { -fx-background-color: -sps-danger; }
+.dash-bar-alta .bar    { -fx-background-color: #F97316; }
+.dash-bar-media .bar   { -fx-background-color: -sps-warning; }
+.dash-bar-baja .bar    { -fx-background-color: -sps-primary; }

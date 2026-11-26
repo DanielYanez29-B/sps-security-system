@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:id="root"
+      fx:controller="com.sps.security.controller.DashboardController"
+      styleClass="dash-root" spacing="20">
+
+    <!-- Encabezado -->
+    <HBox alignment="CENTER_LEFT">
+        <VBox spacing="2">
+            <Label text="Resumen operativo" styleClass="dash-title"/>
+            <Label text="Estado en tiempo real del centro de monitoreo" styleClass="dash-subtitle"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblActualizado" styleClass="dash-subtitle"/>
+    </HBox>
+
+    <!-- KPIs -->
+    <HBox spacing="16">
+        <VBox styleClass="kpi-card, kpi-red" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="6">
+            <Label text="ALARMAS PENDIENTES" styleClass="kpi-label"/>
+            <Label fx:id="lblPendientes" text="0" styleClass="kpi-value"/>
+            <Label text="Requieren atención inmediata" styleClass="kpi-hint"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card, kpi-green" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="6">
+            <Label text="GUARDIAS EN TURNO" styleClass="kpi-label"/>
+            <Label fx:id="lblGuardias" text="0" styleClass="kpi-value"/>
+            <Label text="Según asignaciones vigentes" styleClass="kpi-hint"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card, kpi-blue" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="6">
+            <Label text="DISPOSITIVOS ACTIVOS" styleClass="kpi-label"/>
+            <Label fx:id="lblDispositivos" text="0" styleClass="kpi-value"/>
+            <Label text="ESP32 y sensores en línea" styleClass="kpi-hint"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card, kpi-yellow" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="6">
+            <Label text="NOTIFICACIONES SIN LEER" styleClass="kpi-label"/>
+            <Label fx:id="lblNoLeidas" text="0" styleClass="kpi-value"/>
+            <Label text="Bandeja del usuario actual" styleClass="kpi-hint"/>
+        </VBox>
+    </HBox>
+
+    <!-- Parte inferior -->
+    <HBox spacing="16" VBox.vgrow="ALWAYS">
+        <VBox styleClass="dash-card" spacing="12" HBox.hgrow="ALWAYS" prefWidth="620">
+            <Label text="Últimas 5 alarmas" styleClass="dash-card-title"/>
+            <TableView fx:id="tablaUltimas" styleClass="dash-table" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colFecha" text="Fecha"/>
+                    <TableColumn fx:id="colTipo" text="Tipo"/>
+                    <TableColumn fx:id="colPrioridad" text="Prioridad"/>
+                    <TableColumn fx:id="colEstado" text="Estado"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+
+        <VBox styleClass="dash-card" spacing="16" prefWidth="360" minWidth="320">
+            <Label text="Pendientes por prioridad" styleClass="dash-card-title"/>
+            <VBox fx:id="contenedorPrioridades" spacing="14"/>
+        </VBox>
+    </HBox>
+</VBox>
