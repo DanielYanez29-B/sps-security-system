@@ -40,7 +40,8 @@
     </VBox>
 
     <StackPane fx:id="modalFormulario" managed="false" visible="false" styleClass="modal-backdrop">
-        <VBox maxWidth="440.0" spacing="12.0" styleClass="modal-card">
+        <VBox maxWidth="540.0" spacing="12.0" styleClass="modal-card">
+            <!-- Encabezado fijo -->
             <HBox alignment="CENTER_LEFT">
                 <Label fx:id="lblModalTitulo" text="Nuevo Cliente" styleClass="operativo-card-title"/>
                 <Region HBox.hgrow="ALWAYS"/>
@@ -48,49 +49,72 @@
             </HBox>
             <Separator/>
 
-            <VBox spacing="6.0">
-                <Label text="Nombre o razón social:" styleClass="operativo-label"/>
-                <TextField fx:id="txtNombre" promptText="Nombre del cliente" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="RFC:" styleClass="operativo-label"/>
-                <TextField fx:id="txtRfc" promptText="RFC" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Teléfono:" styleClass="operativo-label"/>
-                <TextField fx:id="txtTelefono" promptText="Teléfono" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Email:" styleClass="operativo-label"/>
-                <TextField fx:id="txtEmail" promptText="correo@ejemplo.com" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Calle:" styleClass="operativo-label"/>
-                <TextField fx:id="txtCalle" promptText="Calle" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Número exterior:" styleClass="operativo-label"/>
-                <TextField fx:id="txtNumExt" promptText="Número exterior" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Colonia:" styleClass="operativo-label"/>
-                <TextField fx:id="txtColonia" promptText="Colonia" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Ciudad:" styleClass="operativo-label"/>
-                <TextField fx:id="txtCiudad" promptText="Ciudad" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Estado:" styleClass="operativo-label"/>
-                <TextField fx:id="txtEstado" promptText="Estado" styleClass="operativo-input"/>
-            </VBox>
-            <VBox spacing="6.0">
-                <Label text="Código postal:" styleClass="operativo-label"/>
-                <TextField fx:id="txtCp" promptText="Código postal" styleClass="operativo-input"/>
-            </VBox>
+            <!-- Cuerpo deslizable -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="modal-scroll">
+                <VBox spacing="10.0">
+                    <padding>
+                        <Insets right="6.0" bottom="4.0"/>
+                    </padding>
 
+                    <VBox spacing="4.0">
+                        <Label text="Nombre o razón social:" styleClass="operativo-label"/>
+                        <TextField fx:id="txtNombre" promptText="Nombre del cliente" styleClass="operativo-input"/>
+                    </VBox>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <Label text="RFC:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtRfc" promptText="RFC" styleClass="operativo-input"/>
+                        </VBox>
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <Label text="Teléfono:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtTelefono" promptText="Teléfono" styleClass="operativo-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="4.0">
+                        <Label text="Email:" styleClass="operativo-label"/>
+                        <TextField fx:id="txtEmail" promptText="correo@ejemplo.com" styleClass="operativo-input"/>
+                    </VBox>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <Label text="Calle:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtCalle" promptText="Calle" styleClass="operativo-input"/>
+                        </VBox>
+                        <VBox spacing="4.0" prefWidth="140.0">
+                            <Label text="Número exterior:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtNumExt" promptText="Núm. ext." styleClass="operativo-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <Label text="Colonia:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtColonia" promptText="Colonia" styleClass="operativo-input"/>
+                        </VBox>
+                        <VBox spacing="4.0" prefWidth="140.0">
+                            <Label text="Código postal:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtCp" promptText="C.P." styleClass="operativo-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <Label text="Ciudad:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtCiudad" promptText="Ciudad" styleClass="operativo-input"/>
+                        </VBox>
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <Label text="Estado:" styleClass="operativo-label"/>
+                            <TextField fx:id="txtEstado" promptText="Estado" styleClass="operativo-input"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Botones fijos abajo -->
             <HBox alignment="CENTER_RIGHT" spacing="8.0">
-                <VBox.margin><Insets top="10.0"/></VBox.margin>
+                <VBox.margin><Insets top="6.0"/></VBox.margin>
                 <Button onAction="#handleLimpiar" text="Limpiar" styleClass="operativo-button,operativo-secondary"/>
                 <Button fx:id="btnEliminar" onAction="#handleEliminar" text="Eliminar" styleClass="operativo-button,operativo-danger"/>
                 <Button fx:id="btnActualizar" onAction="#handleActualizar" text="Actualizar" styleClass="operativo-button,operativo-primary"/>

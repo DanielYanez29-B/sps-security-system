@@ -1,4 +1,20 @@
 /* --- RAÍZ Y FONDO GLOBAL --- */
+.login-root .main-container {
+    -fx-background-color: transparent;
+}
+
+.login-root .custom-input {
+    -fx-background-color: #141F2B;
+    -fx-border-color: #243447;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #475569;
+}
+
+.login-root .custom-input:focused {
+    -fx-border-color: #10B981;
+    -fx-background-color: #162433;
+}
+
 .login-root {
     -fx-background-color: #060B11;
     -fx-font-family: 'Segoe UI', sans-serif;

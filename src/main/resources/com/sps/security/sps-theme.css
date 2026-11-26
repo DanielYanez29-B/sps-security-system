@@ -657,3 +657,39 @@
 .table-action-btn:hover {
     -fx-background-color: -sps-primary-soft;
 }
+/* ScrollPane transparente dentro de modales */
+.modal-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.modal-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Barra de desplazamiento estilizada */
+.modal-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8px;
+}
+
+.modal-scroll .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.modal-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: -sps-border;
+    -fx-background-radius: 4px;
+}
+
+.modal-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: -sps-text-subtle;
+}
+
+.modal-scroll .scroll-bar .increment-button,
+.modal-scroll .scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-pref-height: 0;
+}
